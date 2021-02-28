@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace SWE2
 {
@@ -23,6 +24,14 @@ namespace SWE2
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Button_OnClick(object sender, RoutedEventArgs e)
+        {
+            // Increment counter on click
+            // See: https://stackoverflow.com/a/45920648/12347616
+            var number = Int32.Parse(Counter.Text);
+            Counter.Text = (++number).ToString();
         }
     }
 }

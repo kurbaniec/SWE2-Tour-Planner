@@ -13,8 +13,11 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <!-- Components -->
-        <Label Content="0" HorizontalContentAlignment="Center"/>
-        <Button Grid.Column="1" Name="Button">+</Button>
+        <TextBlock Name="Counter" HorizontalAlignment="Center" 
+                   VerticalAlignment="Center" FontSize="72">
+            0
+        </TextBlock>
+        <Button Grid.Column="1" Name="Button" FontSize="72" Click="Button_OnClick">+</Button>
     </Grid>
 </Window>
                 
