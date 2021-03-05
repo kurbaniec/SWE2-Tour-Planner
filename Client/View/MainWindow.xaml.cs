@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace SWE2
+namespace Client.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

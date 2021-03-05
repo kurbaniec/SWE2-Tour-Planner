@@ -31,7 +31,7 @@ jobs:
 
   build_client:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     defaults:
       run:
         working-directory: Client
@@ -43,7 +43,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.301
+        dotnet-version: 5.0.100
     - name: Install dependencies
       run: dotnet restore
     - name: Build Client
