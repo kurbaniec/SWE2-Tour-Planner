@@ -9,45 +9,41 @@ namespace Client.ViewModel
 {
     public class TourListModel : INotifyPropertyChanged
     {
-        // Declare the event
-        public event PropertyChangedEventHandler PropertyChanged;
+        // Declare event
+        // See: https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/how-to-implement-property-change-notification?view=netframeworkdesktop-4.8
+        public event PropertyChangedEventHandler? PropertyChanged = null!;
         
-        // Update lists in WPF
-        // See: https://markheath.net/post/list-filtering-in-wpf-with-m-v-vm
-
         public ObservableCollection<TourViewModel> Tours { get; private set; }
-        private ICollectionView toursView;
-        
-        
-        
-        
-        private string filter;
+        private readonly ICollectionView toursView;
 
+        private string filter;
         public string Filter
         {
-            get
-            {
-                return filter;
-            }
+            get => filter;
             set
             {
-                if (value != filter)
-                {
-                    filter = value;
-                    toursView.Refresh();
-                    OnPropertyChanged();
-                }
+                if (value == filter) return;
+                filter = value;
+                toursView.Refresh();
+                OnPropertyChanged();
             }
         }
 
         public TourListModel()
         {
+            // Initialize properties
             filter = "";
             Tours = new ObservableCollection<TourViewModel>();
+            // Add Dummy Tours
             var tour = new TourViewModel("TourA");
+            var tour2 = new TourViewModel("A long tour");
             Tours.Add(tour);
+            Tours.Add(tour2);
+            // Setup Filter
+            // See: https://markheath.net/post/list-filtering-in-wpf-with-m-v-vm
             toursView = CollectionViewSource.GetDefaultView(Tours);
-            toursView.Filter = o => string.IsNullOrEmpty(Filter) || ((string)o).Contains(Filter);
+            toursView.Filter = o => string.IsNullOrEmpty(Filter) || 
+                                    ((TourViewModel) o).Name.ToLower().Contains(filter.ToLower());
 
         }
         
