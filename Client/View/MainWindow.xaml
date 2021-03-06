@@ -13,7 +13,7 @@
     </Window.DataContext>
     <Grid>
         <!-- Set different ViewModel https://stackoverflow.com/a/680029/12347616 -->
-        <StackPanel  Orientation="Vertical" DataContext="{Binding TourList }">
+        <StackPanel Orientation="Vertical" DataContext="{Binding TourList }">
             <!-- Stretch textbox https://stackoverflow.com/a/37663956/12347616 -->
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
@@ -21,7 +21,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBox Text="{Binding Path=Filter, UpdateSourceTrigger=PropertyChanged}" />
-                <Button Grid.Column="1">Clear</Button>
+                <Button Grid.Column="1" Command="{Binding ClearFilter}">Clear</Button>
             </Grid>
             <!-- Set Display property https://stackoverflow.com/a/4430063/12347616 -->
             <ListBox Margin="5" ItemsSource="{Binding Tours}" DisplayMemberPath="Name"/>
