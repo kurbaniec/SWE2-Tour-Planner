@@ -4,8 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
+        xmlns:viewModel="clr-namespace:Client.ViewModel"
         mc:Ignorable="d"
         Title="Tour Planner" Height="450" Width="800">
+    <!-- Set main ViewModel https://stackoverflow.com/a/4590471/12347616 -->
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
     <Grid>
         <!-- Column definition -->
         <Grid.ColumnDefinitions>
@@ -13,11 +18,22 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <!-- Components -->
+        <!--
         <TextBlock Name="Counter" HorizontalAlignment="Center" 
                    VerticalAlignment="Center" FontSize="72">
             0
         </TextBlock>
-        <Button Grid.Column="1" Name="Button" FontSize="72" Click="Button_OnClick">+</Button>
+        <Button Grid.Column="1" Name="Button" FontSize="72" Click="Button_OnClick">+</Button>-->
+        
+        <!-- Set different ViewModel https://stackoverflow.com/a/680029/12347616 -->
+        <WrapPanel Grid.Column="0" DataContext="{Binding TourList }">
+            <TextBox Margin="5" 
+                     Text="{Binding Path=Filter, UpdateSourceTrigger=PropertyChanged}" 
+                     Width="150" />
+            <ListBox Margin="5" ItemsSource="{Binding Tours}" />
+        </WrapPanel>
+        
+        
     </Grid>
 </Window>
                 
