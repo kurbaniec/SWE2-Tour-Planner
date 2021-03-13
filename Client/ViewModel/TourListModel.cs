@@ -18,6 +18,19 @@ namespace Client.ViewModel
         public ObservableCollection<TourViewModel> Tours { get; }
         private readonly ICollectionView toursView;
 
+        private TourViewModel? selectedTour;
+
+        public TourViewModel? SelectedTour
+        {
+            get => selectedTour;
+            set
+            {
+                if (value == selectedTour) return;
+                selectedTour = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string filter;
         public string Filter
         {
@@ -52,6 +65,7 @@ namespace Client.ViewModel
             // Initialize properties
             filter = "";
             Tours = new ObservableCollection<TourViewModel>();
+            selectedTour = null;
             // Add Dummy Tours
             var tour = new TourViewModel("TourA");
             var tour2 = new TourViewModel("A long tour");
