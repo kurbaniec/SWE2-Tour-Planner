@@ -11,9 +11,10 @@
     <!-- Set type checking via d.DataContext https://stackoverflow.com/a/29399984/12347616 -->
     
     <!-- Set different ViewModel https://stackoverflow.com/a/680029/12347616 -->
-    <StackPanel Orientation="Vertical" DataContext="{Binding TourList }">
+    <DockPanel DataContext="{Binding TourList }">
+        
         <!-- Stretch textbox https://stackoverflow.com/a/37663956/12347616 -->
-        <Grid Margin="5">
+        <Grid DockPanel.Dock="Top" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto" />
@@ -21,29 +22,39 @@
             <TextBox Text="{Binding Path=Filter, UpdateSourceTrigger=PropertyChanged}" />
             <Button Grid.Column="1" Command="{Binding ClearFilter}">Clear</Button>
         </Grid>
-        <!-- Set Display property https://stackoverflow.com/a/4430063/12347616 -->
-        <ListBox Margin="5" ItemsSource="{Binding Tours}" DisplayMemberPath="Name"
-                 SelectedItem="{Binding SelectedTour, Mode=TwoWay}"/>
         
-        <TextBlock>
-            <Run Text="Tour"/> 
-            <Run Text="{Binding SelectedTour.Name}"/><Run Text=","/>
-            <!-- Hide if tour is null https://stackoverflow.com/a/54378282/12347616 -->
-            <TextBlock.Style>
-                <Style TargetType="TextBlock">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedTour}" Value="">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding SelectedTour}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Hidden"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
+        <ListBox DockPanel.Dock="Left" Margin="5" Grid.Column="0" MinWidth="60"
+                 ItemsSource="{Binding Tours}" DisplayMemberPath="Name"
+                 SelectedItem="{Binding SelectedTour}"/>
         
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <!-- Set Display property https://stackoverflow.com/a/4430063/12347616 -->
+            
+            <Grid Grid.Row="0" >
+                <TextBlock>
+                    <Run Text="Tour"/> 
+                    <Run Text="{Binding SelectedTour.Name}"/><Run Text=","/>
+                    <!-- Hide if tour is null https://stackoverflow.com/a/54378282/12347616 -->
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTour}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SelectedTour}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </Grid>
         
-    </StackPanel>
+    </DockPanel>
     
 </UserControl>

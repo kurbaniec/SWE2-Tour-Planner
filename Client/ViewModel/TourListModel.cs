@@ -25,7 +25,7 @@ namespace Client.ViewModel
             get => selectedTour;
             set
             {
-                if (value == selectedTour) return;
+                if (value == selectedTour || value == null) return;
                 selectedTour = value;
                 OnPropertyChanged();
             }

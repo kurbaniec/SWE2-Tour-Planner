@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebService-Lib", "WebServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebService-Test", "WebServiceLib\WebService-Test\WebService-Test.csproj", "{C072B07B-BDF6-4748-861C-F7899959BCED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "WebServiceLib\Example\Example.csproj", "{24DBF57A-00ED-486C-B895-5756F6599A72}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,17 +86,5 @@ Global
 		{C072B07B-BDF6-4748-861C-F7899959BCED}.Release|x64.Build.0 = Release|Any CPU
 		{C072B07B-BDF6-4748-861C-F7899959BCED}.Release|x86.ActiveCfg = Release|Any CPU
 		{C072B07B-BDF6-4748-861C-F7899959BCED}.Release|x86.Build.0 = Release|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Debug|x64.Build.0 = Debug|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Debug|x86.Build.0 = Debug|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Release|x64.ActiveCfg = Release|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Release|x64.Build.0 = Release|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Release|x86.ActiveCfg = Release|Any CPU
-		{24DBF57A-00ED-486C-B895-5756F6599A72}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
