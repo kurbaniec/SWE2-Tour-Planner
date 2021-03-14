@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using System.Windows.Input;
 using Client.Command;
+using Client.View;
 
 namespace Client.ViewModel
 {
@@ -58,8 +59,26 @@ namespace Client.ViewModel
                 return clearFilter;
             }
         }
-        
-        
+
+        private AppAddTour? addDialog;
+        private ICommand? openAddTour;
+        public ICommand? OpenAddTour
+        {
+            get
+            {
+                if (openAddTour != null) return openAddTour;
+                openAddTour = new RelayCommand(
+                    p => true,
+                    p =>
+                    {
+                        // Set DataContext to this
+                        // See: https://stackoverflow.com/a/26426111/12347616
+                        addDialog = new AppAddTour {DataContext = this};
+                        addDialog.ShowDialog();
+                    });
+                return openAddTour;
+            }
+        }
 
         private ICommand? addTour;
         public ICommand AddTour
@@ -69,8 +88,16 @@ namespace Client.ViewModel
                 if (addTour != null) return addTour;
                 addTour = new RelayCommand(
                    p => true,
-                   p => Console.WriteLine("Added!")
-                );
+                   p =>
+                   {
+                       if (addDialog is not { } dialog) return;
+                       var name = addDialog.TourName.Text;
+                       Console.WriteLine($"Added tour {name}");
+                       // Close Dialog properly
+                       // See: https://stackoverflow.com/a/41325121/12347616
+                       addDialog.DialogResult = true;
+
+                   });
                 return addTour;
             }
         }
@@ -81,6 +108,7 @@ namespace Client.ViewModel
             filter = "";
             Tours = new ObservableCollection<TourViewModel>();
             selectedTour = null;
+            addDialog = null;
             // Add Dummy Tours
             var tour = new TourViewModel("TourA");
             var tour2 = new TourViewModel("TourB");
