@@ -63,15 +63,51 @@
         </Grid>
         
         <ScrollViewer HorizontalScrollBarVisibility="Auto" >
-            <StackPanel>
-                <Label FontWeight="Bold" 
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" FontWeight="Bold"
                        Content="{Binding SelectedTour.Name}">
                     <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->
-                    <Label.RenderTransform>
-                        <ScaleTransform ScaleX="2" ScaleY="2" />
-                    </Label.RenderTransform>
+                    <!-- Use LayoutTransform instead of Render https://stackoverflow.com/a/5554823/12347616 -->
+                    <Label.LayoutTransform><ScaleTransform ScaleX="2" ScaleY="2"/></Label.LayoutTransform>
                 </Label>
-            </StackPanel>
+                <Label Grid.Column="0" Grid.Row="1">
+                    Tour Description:
+                    <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
+                </Label>
+                <Label Grid.Row="2">
+                    Route Information:
+                    <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
+                </Label>
+                <Label Grid.Row="3">
+                    Tour Distance:
+                    <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
+                </Label>
+                <Label Grid.Row="4">
+                    Logs:
+                    <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
+                </Label>
+            
+                <Expander Grid.Row="5" Header="01.01.2000" Margin="20 0 0 0">
+                    <StackPanel>
+                        <Label>Duration:</Label>
+                        <Label>Distance:</Label>
+                        <Label>Rating:</Label>
+                        <Label>Report:</Label>
+                        <Label>Average Speed:</Label>
+                        <Label>Stops:</Label>
+                        <Label>Stops:</Label>
+                    </StackPanel>
+                </Expander>
+            </Grid>
+            
             <!-- Hide if tour is null https://stackoverflow.com/a/54378282/12347616 -->
             <ScrollViewer.Style>
                 <Style TargetType="ScrollViewer">
