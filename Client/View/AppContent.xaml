@@ -40,6 +40,7 @@
             
             <Label Grid.Column="0" Grid.Row="0" >
                 Please Select a Tour!
+                <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
             </Label>
             
             <Grid.Resources>
@@ -64,6 +65,10 @@
         
         <ScrollViewer HorizontalScrollBarVisibility="Auto" >
             <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -71,8 +76,9 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" FontWeight="Bold"
+                <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold"
                        Content="{Binding SelectedTour.Name}">
                     <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->
                     <!-- Use LayoutTransform instead of Render https://stackoverflow.com/a/5554823/12347616 -->
@@ -82,27 +88,33 @@
                     Tour Description:
                     <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                 </Label>
-                <Label Grid.Row="2">
+                <TextBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"
+                        TextWrapping="Wrap" AcceptsReturn="True" >
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                </TextBox>
+                <Label Grid.Column="0" Grid.Row="3">
                     Route Information:
                     <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                 </Label>
-                <Label Grid.Row="3">
+                <Label Grid.Column="0" Grid.Row="4">
                     Tour Distance:
                     <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                 </Label>
-                <Label Grid.Row="4">
+                <Label Grid.Column="0" Grid.Row="5">
                     Logs:
                     <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                 </Label>
             
-                <Expander Grid.Row="5" Header="01.01.2000" Margin="20 0 0 0">
+                <Expander Grid.Column="0" Grid.Row="6" Header="01.01.2000" Margin="20 0 0 0">
                     <StackPanel>
+                        <Label>Type:</Label>
                         <Label>Duration:</Label>
                         <Label>Distance:</Label>
                         <Label>Rating:</Label>
                         <Label>Report:</Label>
                         <Label>Average Speed:</Label>
-                        <Label>Stops:</Label>
+                        <Label>Max Speed:</Label>
+                        <Label>Height difference</Label>
                         <Label>Stops:</Label>
                     </StackPanel>
                 </Expander>
