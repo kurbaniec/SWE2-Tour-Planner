@@ -91,7 +91,16 @@ namespace Client.ViewModel
                    p =>
                    {
                        if (addDialog is not { } dialog) return;
+                       // TODO call API
                        var name = addDialog.TourName.Text;
+                       // Dummy data
+                       var tour = new TourViewModel(
+                           name, 
+                           100, 
+                           "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+                           "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/A_large_blank_world_map_with_oceans_marked_in_blue.svg/4500px-A_large_blank_world_map_with_oceans_marked_in_blue.svg.png"
+                       );
+                       Tours.Add(tour);
                        Console.WriteLine($"Added tour {name}");
                        // Close Dialog properly
                        // See: https://stackoverflow.com/a/41325121/12347616
@@ -110,8 +119,18 @@ namespace Client.ViewModel
             selectedTour = null;
             addDialog = null;
             // Add Dummy Tours
-            var tour = new TourViewModel("TourA");
-            var tour2 = new TourViewModel("TourB");
+            var tour = new TourViewModel(
+                "TourA", 
+                22, 
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/A_large_blank_world_map_with_oceans_marked_in_blue.svg/4500px-A_large_blank_world_map_with_oceans_marked_in_blue.svg.png"
+            );
+            var tour2 = new TourViewModel(
+                "TourB", 
+                202, 
+                "Better Tour Than A",
+                "https://homepage.univie.ac.at/horst.prillinger/ubahn/m/largemap-s-wien.png"
+            );
             Tours.Add(tour);
             Tours.Add(tour2);
             // Setup Filter
