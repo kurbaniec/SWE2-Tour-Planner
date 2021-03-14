@@ -92,6 +92,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold"
                            Content="{Binding SelectedTour.Name}">
@@ -100,26 +101,30 @@
                         <Label.LayoutTransform><ScaleTransform ScaleX="2" ScaleY="2"/></Label.LayoutTransform>
                     </Label>
                     <Label Grid.Column="0" Grid.Row="1">
-                        Tour Distance:
+                        <TextBlock TextDecorations="Underline">Tour Distance</TextBlock>
                         <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                     </Label>
-                    <Label Grid.Column="0" Grid.Row="2">
-                        Tour Description:
+                    <TextBlock Grid.Column="0" Grid.Row="2">
+                        20
+                        <Run Text=" km"/>
+                    </TextBlock>
+                    <Label Grid.Column="0" Grid.Row="3">
+                        <TextBlock TextDecorations="Underline">Tour Description</TextBlock>
                         <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                     </Label>
-                    <TextBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"
-                            TextWrapping="Wrap" AcceptsReturn="True">
+                    <TextBlock Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
+                            TextWrapping="Wrap">
                         Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                    </TextBox>
-                    <Label Grid.Column="0" Grid.Row="4">
-                        Route Information:
+                    </TextBlock>
+                    <Label Grid.Column="0" Grid.Row="5">
+                        <TextBlock TextDecorations="Underline">Route Information</TextBlock>
                         <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                     </Label>
-                    <Image Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Source="https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/A_large_blank_world_map_with_oceans_marked_in_blue.svg/4500px-A_large_blank_world_map_with_oceans_marked_in_blue.svg.png" />
+                    <Image Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Source="https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/A_large_blank_world_map_with_oceans_marked_in_blue.svg/4500px-A_large_blank_world_map_with_oceans_marked_in_blue.svg.png" />
                 </Grid>
                 <StackPanel >
                     <Label>
-                        Logs:
+                        <TextBlock TextDecorations="Underline">Logs</TextBlock>
                         <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                     </Label>
                     <Expander Header="01.01.2000" Margin="10 0 0 0">

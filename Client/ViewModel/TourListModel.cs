@@ -58,6 +58,22 @@ namespace Client.ViewModel
                 return clearFilter;
             }
         }
+        
+        
+
+        private ICommand? addTour;
+        public ICommand AddTour
+        {
+            get
+            {
+                if (addTour != null) return addTour;
+                addTour = new RelayCommand(
+                   p => true,
+                   p => Console.WriteLine("Added!")
+                );
+                return addTour;
+            }
+        }
 
         public TourListModel()
         {
