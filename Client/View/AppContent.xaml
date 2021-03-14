@@ -12,7 +12,7 @@
     <!-- Set type checking via d.DataContext https://stackoverflow.com/a/29399984/12347616 -->
     
     <!-- Set different ViewModel https://stackoverflow.com/a/680029/12347616 -->
-    <DockPanel LastChildFill="True"
+    <DockPanel Name="Dock" LastChildFill="True"
         DataContext="{Binding TourList }">
         
         <!-- Stretch textbox https://stackoverflow.com/a/37663956/12347616 -->
@@ -26,9 +26,22 @@
         </Grid>
         
         <!-- Set Display property https://stackoverflow.com/a/4430063/12347616 -->
-        <ListBox DockPanel.Dock="Left" Margin="5" Grid.Column="0" MinWidth="60"
-                 ItemsSource="{Binding Tours}" DisplayMemberPath="Name"
-                 SelectedItem="{Binding SelectedTour}"/>
+        <Grid DockPanel.Dock="Left" Margin="5 5 0 5" MinWidth="85" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Button Grid.Column="0" Grid.Row="0">
+                Add Tour
+                <Button.LayoutTransform><ScaleTransform ScaleX="1.2" ScaleY="1.2"/></Button.LayoutTransform>
+            </Button>
+            <ListBox Grid.Column="0" Grid.Row="1" 
+                ItemsSource="{Binding Tours}" DisplayMemberPath="Name"
+                SelectedItem="{Binding SelectedTour}">
+                <ListBox.LayoutTransform><ScaleTransform ScaleX="1.2" ScaleY="1.2"/></ListBox.LayoutTransform>
+            </ListBox>
+        </Grid>
         
         <!-- This Grid is shown when `SelectedTour` is null with the help of a converter 
                     https://stackoverflow.com/a/356690/12347616 -->
@@ -63,62 +76,68 @@
             </Grid.Style>
         </Grid>
         
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" >
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold"
-                       Content="{Binding SelectedTour.Name}">
-                    <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->
-                    <!-- Use LayoutTransform instead of Render https://stackoverflow.com/a/5554823/12347616 -->
-                    <Label.LayoutTransform><ScaleTransform ScaleX="2" ScaleY="2"/></Label.LayoutTransform>
-                </Label>
-                <Label Grid.Column="0" Grid.Row="1">
-                    Tour Description:
-                    <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
-                </Label>
-                <TextBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"
-                        TextWrapping="Wrap" AcceptsReturn="True" >
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                </TextBox>
-                <Label Grid.Column="0" Grid.Row="3">
-                    Route Information:
-                    <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
-                </Label>
-                <Label Grid.Column="0" Grid.Row="4">
-                    Tour Distance:
-                    <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
-                </Label>
-                <Label Grid.Column="0" Grid.Row="5">
-                    Logs:
-                    <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
-                </Label>
-            
-                <Expander Grid.Column="0" Grid.Row="6" Header="01.01.2000" Margin="20 0 0 0">
-                    <StackPanel>
-                        <Label>Type:</Label>
-                        <Label>Duration:</Label>
-                        <Label>Distance:</Label>
-                        <Label>Rating:</Label>
-                        <Label>Report:</Label>
-                        <Label>Average Speed:</Label>
-                        <Label>Max Speed:</Label>
-                        <Label>Height difference</Label>
-                        <Label>Stops:</Label>
-                    </StackPanel>
-                </Expander>
-            </Grid>
+        <ScrollViewer Name="Area" HorizontalScrollBarVisibility="Disabled" >
+            <WrapPanel Name="Panel" Margin="5">
+                <!-- Use Converter to force wrapping via MaxWidth https://stackoverflow.com/a/20326885/12347616 -->
+                <Grid
+                    MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, Converter={conv:WidthConverter}, ConverterParameter='0.5'}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold"
+                           Content="{Binding SelectedTour.Name}">
+                        <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->
+                        <!-- Use LayoutTransform instead of Render https://stackoverflow.com/a/5554823/12347616 -->
+                        <Label.LayoutTransform><ScaleTransform ScaleX="2" ScaleY="2"/></Label.LayoutTransform>
+                    </Label>
+                    <Label Grid.Column="0" Grid.Row="1">
+                        Tour Distance:
+                        <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
+                    </Label>
+                    <Label Grid.Column="0" Grid.Row="2">
+                        Tour Description:
+                        <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
+                    </Label>
+                    <TextBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"
+                            TextWrapping="Wrap" AcceptsReturn="True">
+                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                    </TextBox>
+                    <Label Grid.Column="0" Grid.Row="4">
+                        Route Information:
+                        <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
+                    </Label>
+                    <Image Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Source="https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/A_large_blank_world_map_with_oceans_marked_in_blue.svg/4500px-A_large_blank_world_map_with_oceans_marked_in_blue.svg.png" />
+                </Grid>
+                <StackPanel >
+                    <Label>
+                        Logs:
+                        <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
+                    </Label>
+                    <Expander Header="01.01.2000" Margin="10 0 0 0">
+                        <StackPanel>
+                            <Label>Type:</Label>
+                            <Label>Duration:</Label>
+                            <Label>Distance:</Label>
+                            <Label>Rating:</Label>
+                            <Label>Report:</Label>
+                            <Label>Average Speed:</Label>
+                            <Label>Max Speed:</Label>
+                            <Label>Height difference</Label>
+                            <Label>Stops:</Label>
+                        </StackPanel>
+                    </Expander>
+                </StackPanel>
+                
+            </WrapPanel>
             
             <!-- Hide if tour is null https://stackoverflow.com/a/54378282/12347616 -->
             <ScrollViewer.Style>
