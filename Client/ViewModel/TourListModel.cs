@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using System.Windows.Input;
 using Client.Command;
-using Client.Model;
 
 namespace Client.ViewModel
 {
@@ -68,7 +67,7 @@ namespace Client.ViewModel
             selectedTour = null;
             // Add Dummy Tours
             var tour = new TourViewModel("TourA");
-            var tour2 = new TourViewModel("A long tour");
+            var tour2 = new TourViewModel("TourB");
             Tours.Add(tour);
             Tours.Add(tour2);
             // Setup Filter

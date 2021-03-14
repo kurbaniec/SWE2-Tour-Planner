@@ -7,7 +7,7 @@
         xmlns:viewModel="clr-namespace:Client.ViewModel"
         xmlns:component="clr-namespace:Client.View"
         mc:Ignorable="d"
-        Title="Tour Planner" Height="450" Width="800">
+        Title="Tour Planner" MinHeight="450" MinWidth="800" Height="600" Width="1000">
     <!-- Set main ViewModel https://stackoverflow.com/a/4590471/12347616 -->
     <Window.DataContext>
         <viewModel:MainViewModel/>

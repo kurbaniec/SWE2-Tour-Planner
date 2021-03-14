@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Client.Model;
+using Model;
 
 namespace Client.ViewModel
 {

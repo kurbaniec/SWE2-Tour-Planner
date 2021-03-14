@@ -5,13 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Client.View"
              xmlns:viewModel="clr-namespace:Client.ViewModel"
+             xmlns:conv="clr-namespace:Client.Converter"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=True}">
     <!-- Set type checking via d.DataContext https://stackoverflow.com/a/29399984/12347616 -->
     
     <!-- Set different ViewModel https://stackoverflow.com/a/680029/12347616 -->
-    <DockPanel DataContext="{Binding TourList }">
+    <DockPanel LastChildFill="True"
+        DataContext="{Binding TourList }">
         
         <!-- Stretch textbox https://stackoverflow.com/a/37663956/12347616 -->
         <Grid DockPanel.Dock="Top" Margin="5">
@@ -23,37 +25,68 @@
             <Button Grid.Column="1" Command="{Binding ClearFilter}">Clear</Button>
         </Grid>
         
+        <!-- Set Display property https://stackoverflow.com/a/4430063/12347616 -->
         <ListBox DockPanel.Dock="Left" Margin="5" Grid.Column="0" MinWidth="60"
                  ItemsSource="{Binding Tours}" DisplayMemberPath="Name"
                  SelectedItem="{Binding SelectedTour}"/>
         
+        <!-- This Grid is shown when `SelectedTour` is null with the help of a converter 
+                    https://stackoverflow.com/a/356690/12347616 -->
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <!-- Set Display property https://stackoverflow.com/a/4430063/12347616 -->
             
-            <Grid Grid.Row="0" >
-                <TextBlock>
-                    <Run Text="Tour"/> 
-                    <Run Text="{Binding SelectedTour.Name}"/><Run Text=","/>
-                    <!-- Hide if tour is null https://stackoverflow.com/a/54378282/12347616 -->
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedTour}" Value="">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedTour}" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Hidden"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </Grid>
+            <Label Grid.Column="0" Grid.Row="0" >
+                Please Select a Tour!
+            </Label>
+            
+            <Grid.Resources>
+                <conv:IsNullConverter x:Key="IsNullConverter"/>
+            </Grid.Resources>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedTour}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SelectedTour, 
+                                Converter={StaticResource IsNullConverter}}" Value="False">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                            <Setter Property="Width" Value="0"></Setter>
+                            <Setter Property="Height" Value="0"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
         </Grid>
+        
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" >
+            <StackPanel>
+                <Label FontWeight="Bold" 
+                       Content="{Binding SelectedTour.Name}">
+                    <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->
+                    <Label.RenderTransform>
+                        <ScaleTransform ScaleX="2" ScaleY="2" />
+                    </Label.RenderTransform>
+                </Label>
+            </StackPanel>
+            <!-- Hide if tour is null https://stackoverflow.com/a/54378282/12347616 -->
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedTour}" Value="">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SelectedTour}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+        </ScrollViewer>
+        
         
     </DockPanel>
     

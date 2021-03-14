@@ -1,4 +1,6 @@
-﻿namespace Client.Model
+﻿using System;
+
+namespace Model
 {
     public class Tour
     {
