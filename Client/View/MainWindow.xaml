@@ -25,7 +25,8 @@
         <!-- Main content -->
         <!--<component:AppContent Grid.Row="1"/>-->
         
-        <Frame Grid.Row="1" Source="Welcome.xaml"/>
+        <Frame Grid.Row="1" Source="Welcome.xaml" DataContext="{Binding WelcomeViewModel}"/>
+        <!-- Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/> -->
 
     </Grid>
 </Window>
