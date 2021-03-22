@@ -4,12 +4,15 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:Client.View"
+      xmlns:viewModel="clr-namespace:Client.ViewModel"
       mc:Ignorable="d"
-      Title="Welcome" Height="450" Width="800">
+      Title="Welcome" Height="450" Width="800"
+      d:DataContext="{d:DesignInstance viewModel:WelcomeViewModel, IsDesignTimeCreatable=True}">
     <Grid>
         <Label Grid.Column="0" Grid.Row="0" >
             Please Select a Tour!
             <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
         </Label>
+        <Button Command="{Binding Navigate}">Try</Button>
     </Grid>
 </Page>

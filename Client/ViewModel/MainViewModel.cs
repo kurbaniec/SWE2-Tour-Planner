@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
+using Client.View;
 
 namespace Client.ViewModel
 {
@@ -20,11 +22,19 @@ namespace Client.ViewModel
 
         private WelcomeViewModel welcomeViewModel;
         public WelcomeViewModel WelcomeViewModel => welcomeViewModel;
+
+        public void NavigateSomeWhere()
+        {
+            var layout = new Layout();
+            currentPage.NavigationService.Navigate(layout);
+            Console.WriteLine(currentPage);
+        }
         
         public MainViewModel()
         {
-            tourList = new TourListModel();
-            welcomeViewModel = new WelcomeViewModel();
+            tourList = new TourListModel(this);
+            welcomeViewModel = new WelcomeViewModel(this);
+            currentPage = new Welcome {DataContext = welcomeViewModel};
         }
     }
 }

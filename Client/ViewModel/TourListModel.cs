@@ -14,6 +14,8 @@ namespace Client.ViewModel
         // Declare event
         // See: https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/how-to-implement-property-change-notification?view=netframeworkdesktop-4.8
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public readonly MainViewModel Callback;
         
         public ObservableCollection<TourViewModel> Tours { get; }
         private readonly ICollectionView toursView;
@@ -28,6 +30,8 @@ namespace Client.ViewModel
                 if (value == selectedTour || value == null) return;
                 selectedTour = value;
                 OnPropertyChanged();
+                // TODO remove later, only for testing
+                Callback.NavigateSomeWhere();
             }
         }
 
@@ -111,8 +115,9 @@ namespace Client.ViewModel
             }
         }
 
-        public TourListModel()
+        public TourListModel(MainViewModel callback)
         {
+            Callback = callback;
             // Initialize properties
             filter = "";
             Tours = new ObservableCollection<TourViewModel>();

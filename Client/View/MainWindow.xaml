@@ -25,8 +25,13 @@
         <!-- Main content -->
         <!--<component:AppContent Grid.Row="1"/>-->
         
-        <Frame Grid.Row="1" Source="Welcome.xaml" DataContext="{Binding WelcomeViewModel}"/>
-        <!-- Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/> -->
+        <!--<Frame Grid.Row="1" Source="Welcome.xaml" DataContext="{Binding WelcomeViewModel}"/>-->
+        <!-- Disable navigation 
+        See: https://stackoverflow.com/a/14156372/12347616 
+        -->
+        <!-- TODO Disable ShortCuts -->
+        <Frame Grid.Row="1" NavigationUIVisibility="Hidden" 
+               Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
     </Grid>
 </Window>

@@ -2,9 +2,9 @@
 
 namespace Client.View
 {
-    public partial class Test : Page
+    public partial class Layout : Page
     {
-        public Test()
+        public Layout()
         {
             InitializeComponent();
         }
