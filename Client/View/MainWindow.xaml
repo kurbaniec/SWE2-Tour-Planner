@@ -30,7 +30,9 @@
         See: https://stackoverflow.com/a/14156372/12347616 
         -->
         <!-- TODO Disable ShortCuts -->
-        <Frame Grid.Row="1" NavigationUIVisibility="Hidden" 
+        
+        <!-- Binding: See: https://stackoverflow.com/a/2824996/12347616 -->
+        <Frame Grid.Row="1" NavigationUIVisibility="Hidden" x:Name="Frame"
                Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
     </Grid>

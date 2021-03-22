@@ -1,11 +1,20 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using Client.View;
 
 namespace Client.ViewModel
 {
     public class MainViewModel : BaseViewModel
     {
+
+        // Bind navigation service
+        // See: https://stackoverflow.com/a/52459022/12347616
+        // Frame is the name of the `Frame`-Element
+        private static NavigationService navigation 
+            = ((Application.Current.MainWindow as MainWindow)!).Frame.NavigationService;
+        
         private Page currentPage;
         public Page CurrentPage
         {
@@ -26,7 +35,7 @@ namespace Client.ViewModel
         public void NavigateSomeWhere()
         {
             var layout = new Layout();
-            currentPage.NavigationService.Navigate(layout);
+            navigation.Navigate(layout);
             Console.WriteLine(currentPage);
         }
         
