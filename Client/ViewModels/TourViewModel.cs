@@ -68,5 +68,10 @@ namespace Client.ViewModels
         {
             tour = new Tour(name, distance, description, image);
         }
+
+        public TourViewModel(string name, int distance, string description, string image, List<TourLog> logs)
+        {
+            tour = new Tour(name, distance, description, image, logs);
+        }
     }
 }

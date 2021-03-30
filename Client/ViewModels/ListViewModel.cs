@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -6,6 +7,8 @@ using System.Windows.Input;
 using Client.Utils.Commands;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
+using Model;
+using Type = Model.Type;
 
 namespace Client.ViewModels
 {
@@ -81,7 +84,20 @@ namespace Client.ViewModels
                 "TourA", 
                 22, 
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/A_large_blank_world_map_with_oceans_marked_in_blue.svg/4500px-A_large_blank_world_map_with_oceans_marked_in_blue.svg.png"
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/A_large_blank_world_map_with_oceans_marked_in_blue.svg/4500px-A_large_blank_world_map_with_oceans_marked_in_blue.svg.png",
+                new List<TourLog>() {
+                        new TourLog(
+                            DateTime.Now, 
+                            Type.Car,
+                            TimeSpan.Zero, 
+                            100,
+                            10,
+                            "Great",
+                            55.0,
+                            60,
+                            100,
+                            2
+                )}
             );
             var tour2 = new TourViewModel(
                 "TourB", 

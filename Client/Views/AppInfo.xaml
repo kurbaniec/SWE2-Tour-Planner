@@ -58,19 +58,38 @@
                         <TextBlock TextDecorations="Underline">Logs</TextBlock>
                         <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                     </Label>
-                    <Expander Header="01.01.2000" Margin="10 0 0 0">
-                        <StackPanel>
-                            <Label>Type:</Label>
-                            <Label>Duration:</Label>
-                            <Label>Distance:</Label>
-                            <Label>Rating:</Label>
-                            <Label>Report:</Label>
-                            <Label>Average Speed:</Label>
-                            <Label>Max Speed:</Label>
-                            <Label>Height difference</Label>
-                            <Label>Stops:</Label>
-                        </StackPanel>
-                    </Expander>
+                    <!-- Expander List See: https://stackoverflow.com/a/10486411/12347616 -->
+                    <ListView ItemsSource="{Binding SelectedTour.Logs}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Expander Header="{Binding Date}" Margin="10 0 0 0">
+                                    <StackPanel>
+                                        <!-- See: ttps://stackoverflow.com/a/34621714/12347616 -->
+                                        <!-- And: https://stackoverflow.com/a/4209539/12347616 -->
+                                        <Label Content="{Binding Type}"
+                                               ContentStringFormat="Type: {0}"/>
+                                        <Label Content="{Binding Duration}"
+                                               ContentStringFormat="Duration: {0}"/>
+                                        <Label Content="{Binding Distance}"
+                                               ContentStringFormat="Distance: {0}"/>
+                                        <Label Content="{Binding Rating}"
+                                               ContentStringFormat="Rating: {0}"/>
+                                        <Label Content="{Binding Report}"
+                                               ContentStringFormat="Report: {0}"/>
+                                        <Label Content="{Binding AvgSpeed}"
+                                               ContentStringFormat="Average Speed: {0}"/>
+                                        <Label Content="{Binding MaxSpeed}"
+                                               ContentStringFormat="Max Speed: {0}"/>
+                                        <Label Content="{Binding HeightDifference}"
+                                               ContentStringFormat="Height difference: {0}"/>
+                                        <Label Content="{Binding Stops}"
+                                               ContentStringFormat="Stops: {0}"/>
+                                    </StackPanel>
+                                </Expander>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    
                 </StackPanel>
                 
             </WrapPanel>
