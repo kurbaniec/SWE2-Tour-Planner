@@ -1,10 +1,10 @@
 ﻿using System.Windows.Controls;
 
-namespace Client.View
+namespace Client.Views
 {
-    public partial class AppContent : UserControl
+    public partial class AppList : UserControl
     {
-        public AppContent()
+        public AppList()
         {
             InitializeComponent();
         }

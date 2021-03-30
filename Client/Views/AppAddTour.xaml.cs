@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Client.View
+namespace Client.Views
 {
     public partial class AppAddTour : Window
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Client.Command
+namespace Client.Utils.Commands
 {
     /// <summary>
     /// RelayCommand definition for code reuse

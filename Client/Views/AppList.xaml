@@ -1,21 +1,17 @@
-﻿<UserControl x:Class="Client.View.AppMenu"
+﻿<UserControl x:Class="Client.Views.AppList"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Client.View"
-             xmlns:viewModel="clr-namespace:Client.ViewModel"
+             xmlns:local="clr-namespace:Client.Views"
+             xmlns:viewModel="clr-namespace:Client.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=True}">
     
     <!-- Set menu https://www.wpf-tutorial.com/common-interface-controls/menu-control/ -->
-    <Menu DockPanel.Dock="Top">
-        <MenuItem Header="File">
-            <MenuItem Header="Export" />
-        </MenuItem>
-        <MenuItem Header="Settings"></MenuItem>
-        <MenuItem Header="Help"></MenuItem>
-    </Menu>
+    
+    <Button>List comes here!</Button>
+    
     
 </UserControl>

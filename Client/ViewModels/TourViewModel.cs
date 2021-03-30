@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Model;
 
-namespace Client.ViewModel
+namespace Client.ViewModels
 {
     public class TourViewModel : INotifyPropertyChanged
     {

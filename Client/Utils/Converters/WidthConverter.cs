@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace Client.Converter
+namespace Client.Utils.Converters
 {
     public class WidthConverter : MarkupExtension, IValueConverter
     {

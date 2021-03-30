@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Client.Converter
+namespace Client.Utils.Converters
 {
     public class IsNullConverter : IValueConverter
     {

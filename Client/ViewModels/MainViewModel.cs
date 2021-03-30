@@ -2,18 +2,22 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using Client.View;
+using Client.Utils.Navigation;
+using Client.Views;
+using Client.ViewModels;
 
-namespace Client.ViewModel
+namespace Client.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-
+        
         // Bind navigation service
         // See: https://stackoverflow.com/a/52459022/12347616
         // Frame is the name of the `Frame`-Element
         private static NavigationService navigation 
             = ((Application.Current.MainWindow as MainWindow)!).Frame.NavigationService;
+
+        private readonly ContentNavigation nav;
         
         private Page currentPage;
         public Page CurrentPage
@@ -34,14 +38,12 @@ namespace Client.ViewModel
 
         public void NavigateSomeWhere()
         {
-            //var layout = new Layout();
-            //navigation.Navigate(new Uri("View/Layout.xaml", UriKind.RelativeOrAbsolute));
-            navigation.Navigate(new Layout());
-            Console.WriteLine(currentPage);
+            nav.Navigate(ContentPage.Layout);
         }
         
-        public MainViewModel()
+        public MainViewModel(ContentNavigation nav)
         {
+            this.nav = nav;
             tourList = new TourListModel(this);
             welcomeViewModel = new WelcomeViewModel(this);
             currentPage = new Welcome {DataContext = welcomeViewModel};

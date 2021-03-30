@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
-using Client.Command;
+using Client.Utils.Commands;
 
-namespace Client.ViewModel
+namespace Client.ViewModels
 {
     public class WelcomeViewModel : BaseViewModel
     {

@@ -1,10 +1,10 @@
 ﻿using System.Windows.Controls;
 
-namespace Client.View
+namespace Client.Views
 {
-    public partial class Layout : Page
+    public partial class AppMenu : UserControl
     {
-        public Layout()
+        public AppMenu()
         {
             InitializeComponent();
         }

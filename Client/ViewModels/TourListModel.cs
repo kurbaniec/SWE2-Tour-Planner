@@ -4,10 +4,10 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using System.Windows.Input;
-using Client.Command;
-using Client.View;
+using Client.Utils.Commands;
+using Client.Views;
 
-namespace Client.ViewModel
+namespace Client.ViewModels
 {
     public class TourListModel : INotifyPropertyChanged
     {
