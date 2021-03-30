@@ -34,6 +34,7 @@
         <Frame Grid.Row="1" Grid.Column="2" 
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
             NavigationUIVisibility="Hidden" x:Name="Frame"
+            Source="Welcome.xaml"
             Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
     </Grid>

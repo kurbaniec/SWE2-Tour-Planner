@@ -7,11 +7,21 @@
              xmlns:viewModel="clr-namespace:Client.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=True}">
-    
-    <!-- Set menu https://www.wpf-tutorial.com/common-interface-controls/menu-control/ -->
-    
-    <Button>List comes here!</Button>
-    
-    
+             DataContext="{Binding ListViewModel, Source={StaticResource Container}}">
+    <Grid Margin="5 5 0 5" MinWidth="85" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button Grid.Column="0" Grid.Row="0" Command="{Binding OpenAddTour}">
+            Add Tour
+            <Button.LayoutTransform><ScaleTransform ScaleX="1.2" ScaleY="1.2"/></Button.LayoutTransform>
+        </Button>
+        <ListBox Grid.Column="0" Grid.Row="1" 
+                 ItemsSource="{Binding Tours}" DisplayMemberPath="Name"
+                 SelectedItem="{Binding SelectedTour}">
+            <ListBox.LayoutTransform><ScaleTransform ScaleX="1.2" ScaleY="1.2"/></ListBox.LayoutTransform>
+        </ListBox>
+    </Grid>
 </UserControl>

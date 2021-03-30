@@ -12,10 +12,11 @@ namespace Client.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private readonly Mediator mediator;
-        
+
         private readonly ContentNavigation nav;
-        
+
         private Page currentPage;
+
         public Page CurrentPage
         {
             get => currentPage;
@@ -26,8 +27,8 @@ namespace Client.ViewModels
             }
         }
 
-        private TourListModel tourList;
-        public TourListModel TourList => tourList;
+        private TourListModelLegacy tourList;
+        public TourListModelLegacy TourList => tourList;
 
         private WelcomeViewModel welcomeViewModel;
         public WelcomeViewModel WelcomeViewModel => welcomeViewModel;
@@ -36,14 +37,20 @@ namespace Client.ViewModels
         {
             nav.Navigate(ContentPage.Layout);
         }
-        
+
         public MainViewModel(Mediator mediator, ContentNavigation nav)
         {
             this.mediator = mediator;
             this.nav = nav;
-            tourList = new TourListModel(this);
-            welcomeViewModel = new WelcomeViewModel(this);
-            currentPage = new Welcome {DataContext = welcomeViewModel};
+            //tourList = new TourListModelLegacy(this);
+            //welcomeViewModel = new WelcomeViewModel(this);
+            //currentPage = new Welcome {DataContext = welcomeViewModel};
+
+            mediator.Register(o =>
+            {
+                var model = (TourViewModel) o;
+                Console.WriteLine($"Selected {model.Name}");
+            }, ViewModelMessages.TourSelected);
         }
     }
 }

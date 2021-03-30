@@ -13,6 +13,6 @@
             Please Select a Tour!
             <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
         </Label>
-        <Button Command="{Binding Navigate}">Try</Button>
+        <!--<Button Command="{Binding Navigate}">Try</Button>-->
     </Grid>
 </Page>

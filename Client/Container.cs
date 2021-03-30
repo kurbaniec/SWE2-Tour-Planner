@@ -22,13 +22,17 @@ namespace Client
             services.AddSingleton<ContentNavigation>();
             // Provide dependencies
             // See: https://stackoverflow.com/a/53884452/12347616
-            services.AddSingleton<MainViewModel>(x 
-                => new MainViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
-            
+            services.AddSingleton<MainViewModel>(x =>
+                new MainViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
+            services.AddSingleton<ListViewModel>(x =>
+                new ListViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             serviceProvider = services.BuildServiceProvider();
         }
 
         public MainViewModel MainViewModel
             => serviceProvider.GetService<MainViewModel>()!;
+
+        public ListViewModel ListViewModel
+            => serviceProvider.GetService<ListViewModel>()!;
     }
 }

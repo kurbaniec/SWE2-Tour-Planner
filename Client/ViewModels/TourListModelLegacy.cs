@@ -9,7 +9,7 @@ using Client.Views;
 
 namespace Client.ViewModels
 {
-    public class TourListModel : INotifyPropertyChanged
+    public class TourListModelLegacy : INotifyPropertyChanged
     {
         // Declare event
         // See: https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/how-to-implement-property-change-notification?view=netframeworkdesktop-4.8
@@ -115,7 +115,7 @@ namespace Client.ViewModels
             }
         }
 
-        public TourListModel(MainViewModel callback)
+        public TourListModelLegacy(MainViewModel callback)
         {
             Callback = callback;
             // Initialize properties
