@@ -18,22 +18,31 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="100" MaxWidth="250"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         
         <!-- Import other views (UserControls) https://stackoverflow.com/a/224816/12347616 -->
         <!-- Menu -->
-        <component:AppMenu Grid.Row="0"/>
+        <component:AppMenu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"/>
+        
         <!-- Main content -->
         <!--<component:AppContent Grid.Row="1"/>-->
+        <component:AppList Grid.Row="1" Grid.Column="0"/>
+        <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
         
         <!--<Frame Grid.Row="1" Source="Welcome.xaml" DataContext="{Binding WelcomeViewModel}"/>-->
         <!-- Disable navigation 
         See: https://stackoverflow.com/a/14156372/12347616 
         -->
         <!-- TODO Disable ShortCuts -->
-        
         <!-- Binding: See: https://stackoverflow.com/a/2824996/12347616 -->
-        <Frame Grid.Row="1" NavigationUIVisibility="Hidden" x:Name="Frame"
-               Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <Frame Grid.Row="1" Grid.Column="2" 
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            NavigationUIVisibility="Hidden" x:Name="Frame"
+            Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
     </Grid>
 </Window>

@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Client.View"
       xmlns:viewModel="clr-namespace:Client.ViewModel"
       mc:Ignorable="d"
-      Title="Welcome" Height="450" Width="800"
+      Title="Welcome"
       d:DataContext="{d:DesignInstance viewModel:WelcomeViewModel, IsDesignTimeCreatable=True}">
     <Grid>
         <Label Grid.Column="0" Grid.Row="0" >

@@ -34,8 +34,9 @@ namespace Client.ViewModel
 
         public void NavigateSomeWhere()
         {
-            var layout = new Layout();
-            navigation.Navigate(layout);
+            //var layout = new Layout();
+            //navigation.Navigate(new Uri("View/Layout.xaml", UriKind.RelativeOrAbsolute));
+            navigation.Navigate(new Layout());
             Console.WriteLine(currentPage);
         }
         
