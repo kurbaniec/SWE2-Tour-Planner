@@ -5,10 +5,8 @@ using Model;
 
 namespace Client.ViewModels
 {
-    public class TourViewModel : INotifyPropertyChanged
+    public class TourViewModel : BaseViewModel
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        
         private Tour tour;
 
         public string Name
@@ -69,13 +67,6 @@ namespace Client.ViewModels
         public TourViewModel(string name, int distance, string description, string image)
         {
             tour = new Tour(name, distance, description, image);
-        }
-        
-        // Create the OnPropertyChanged method to raise the event
-        // The calling member's name will be used as the parameter.
-        private void OnPropertyChanged([CallerMemberName] string name = null!)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

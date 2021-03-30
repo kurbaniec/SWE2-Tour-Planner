@@ -23,6 +23,7 @@ namespace Client.Utils.Navigation
 
     public enum ContentPage
     {
-        Layout,
+        AppWelcome,
+        AppInfo,
     }
 }

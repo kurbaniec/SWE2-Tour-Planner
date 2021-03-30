@@ -28,7 +28,8 @@ namespace Client.ViewModels
                 if (value == selectedTour || value == null) return;
                 selectedTour = value;
                 OnPropertyChanged();
-                mediator.NotifyColleagues(ViewModelMessages.TourSelected, selectedTour);
+                mediator.NotifyColleagues(ViewModelMessages.SelectedTourChange, selectedTour);
+                nav.Navigate(ContentPage.AppInfo);
             }
         }
 
@@ -70,6 +71,12 @@ namespace Client.ViewModels
         {
             this.mediator = mediator;
             this.nav = nav;
+
+            mediator.Register(o =>
+            {
+                if (selectedTour != null)
+                    mediator.NotifyColleagues(ViewModelMessages.SelectedTourChange, selectedTour);
+            }, ViewModelMessages.GetSelectedTour);
 
             filter = "";
             

@@ -33,11 +33,6 @@ namespace Client.ViewModels
         private WelcomeViewModel welcomeViewModel;
         public WelcomeViewModel WelcomeViewModel => welcomeViewModel;
 
-        public void NavigateSomeWhere()
-        {
-            nav.Navigate(ContentPage.Layout);
-        }
-
         public MainViewModel(Mediator mediator, ContentNavigation nav)
         {
             this.mediator = mediator;
@@ -50,7 +45,7 @@ namespace Client.ViewModels
             {
                 var model = (TourViewModel) o;
                 Console.WriteLine($"Selected {model.Name}");
-            }, ViewModelMessages.TourSelected);
+            }, ViewModelMessages.SelectedTourChange);
         }
     }
 }

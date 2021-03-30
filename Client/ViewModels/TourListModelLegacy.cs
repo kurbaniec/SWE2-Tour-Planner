@@ -31,7 +31,7 @@ namespace Client.ViewModels
                 selectedTour = value;
                 OnPropertyChanged();
                 // TODO remove later, only for testing
-                Callback.NavigateSomeWhere();
+               //Callback.NavigateSomeWhere();
             }
         }
 

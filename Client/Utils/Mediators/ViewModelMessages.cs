@@ -2,6 +2,7 @@
 {
     public enum ViewModelMessages
     {
-        TourSelected = 1
+        SelectedTourChange,
+        GetSelectedTour,
     };
 }

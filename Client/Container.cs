@@ -26,6 +26,8 @@ namespace Client
                 new MainViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<ListViewModel>(x =>
                 new ListViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
+            services.AddSingleton<InfoViewModel>(x =>
+                new InfoViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             serviceProvider = services.BuildServiceProvider();
         }
 
@@ -34,5 +36,8 @@ namespace Client
 
         public ListViewModel ListViewModel
             => serviceProvider.GetService<ListViewModel>()!;
+
+        public InfoViewModel InfoViewModel
+            => serviceProvider.GetService<InfoViewModel>()!;
     }
 }
