@@ -27,19 +27,10 @@ namespace Client.ViewModels
             }
         }
 
-        private TourListModelLegacy tourList;
-        public TourListModelLegacy TourList => tourList;
-
-        private WelcomeViewModel welcomeViewModel;
-        public WelcomeViewModel WelcomeViewModel => welcomeViewModel;
-
         public MainViewModel(Mediator mediator, ContentNavigation nav)
         {
             this.mediator = mediator;
             this.nav = nav;
-            //tourList = new TourListModelLegacy(this);
-            //welcomeViewModel = new WelcomeViewModel(this);
-            //currentPage = new Welcome {DataContext = welcomeViewModel};
 
             mediator.Register(o =>
             {

@@ -4,5 +4,6 @@
     {
         SelectedTourChange,
         GetSelectedTour,
+        FilterChange,
     };
 }

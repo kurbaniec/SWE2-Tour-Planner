@@ -24,6 +24,8 @@ namespace Client
             // See: https://stackoverflow.com/a/53884452/12347616
             services.AddSingleton<MainViewModel>(x =>
                 new MainViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
+            services.AddSingleton<MenuViewModel>(x =>
+                new MenuViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<ListViewModel>(x =>
                 new ListViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<InfoViewModel>(x =>
@@ -33,6 +35,9 @@ namespace Client
 
         public MainViewModel MainViewModel
             => serviceProvider.GetService<MainViewModel>()!;
+        
+        public MenuViewModel MenuViewModel
+            => serviceProvider.GetService<MenuViewModel>()!;
 
         public ListViewModel ListViewModel
             => serviceProvider.GetService<ListViewModel>()!;

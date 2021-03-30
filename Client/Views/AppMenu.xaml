@@ -7,15 +7,25 @@
              xmlns:viewModel="clr-namespace:Client.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=True}">
-    
-    <!-- Set menu https://www.wpf-tutorial.com/common-interface-controls/menu-control/ -->
-    <Menu DockPanel.Dock="Top">
-        <MenuItem Header="File">
-            <MenuItem Header="Export" />
-        </MenuItem>
-        <MenuItem Header="Settings"></MenuItem>
-        <MenuItem Header="Help"></MenuItem>
-    </Menu>
+             DataContext="{Binding MenuViewModel, Source={StaticResource Container}}">
+    <DockPanel>
+        <!-- Set menu https://www.wpf-tutorial.com/common-interface-controls/menu-control/ -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Export" />
+            </MenuItem>
+            <MenuItem Header="Settings"></MenuItem>
+            <MenuItem Header="Help"></MenuItem>
+        </Menu>
+        <!-- Stretch textbox https://stackoverflow.com/a/37663956/12347616 -->
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding Path=Filter, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Grid.Column="1" Command="{Binding ClearFilter}">Clear</Button>
+        </Grid>
+    </DockPanel>
     
 </UserControl>
