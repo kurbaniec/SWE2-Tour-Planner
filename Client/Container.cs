@@ -1,4 +1,5 @@
-﻿using Client.Utils.Navigation;
+﻿using Client.Utils.Mediators;
+using Client.Utils.Navigation;
 using Client.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,11 +18,12 @@ namespace Client
         {
             var services = new ServiceCollection();
 
+            services.AddSingleton<Mediator>();
             services.AddSingleton<ContentNavigation>();
             // Provide dependencies
             // See: https://stackoverflow.com/a/53884452/12347616
             services.AddSingleton<MainViewModel>(x 
-                => new MainViewModel(x.GetService<ContentNavigation>()!));
+                => new MainViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             
             serviceProvider = services.BuildServiceProvider();
         }

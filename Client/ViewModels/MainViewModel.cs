@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using Client.Utils.Mediators;
 using Client.Utils.Navigation;
 using Client.Views;
 using Client.ViewModels;
@@ -10,13 +11,8 @@ namespace Client.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
+        private readonly Mediator mediator;
         
-        // Bind navigation service
-        // See: https://stackoverflow.com/a/52459022/12347616
-        // Frame is the name of the `Frame`-Element
-        private static NavigationService navigation 
-            = ((Application.Current.MainWindow as MainWindow)!).Frame.NavigationService;
-
         private readonly ContentNavigation nav;
         
         private Page currentPage;
@@ -41,8 +37,9 @@ namespace Client.ViewModels
             nav.Navigate(ContentPage.Layout);
         }
         
-        public MainViewModel(ContentNavigation nav)
+        public MainViewModel(Mediator mediator, ContentNavigation nav)
         {
+            this.mediator = mediator;
             this.nav = nav;
             tourList = new TourListModel(this);
             welcomeViewModel = new WelcomeViewModel(this);
