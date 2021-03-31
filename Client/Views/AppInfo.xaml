@@ -13,7 +13,7 @@
             <WrapPanel Name="Panel" Margin="5">
                 <!-- Use Converter to force wrapping via MaxWidth https://stackoverflow.com/a/20326885/12347616 -->
                 <Grid MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, 
-                    Converter={converters:WidthConverter}, ConverterParameter='0.5'}">
+                    Converter={converters:WidthConverter}, ConverterParameter='1|0.5'}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -53,7 +53,8 @@
                     </Label>
                     <Image Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Source="{Binding SelectedTour.Image}" />
                 </Grid>
-                <Grid>
+                <Grid MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, 
+                    Converter={converters:WidthConverter}, ConverterParameter='2|0.4'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
