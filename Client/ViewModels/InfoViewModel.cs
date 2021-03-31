@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Input;
+using Client.Utils.Commands;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
 
@@ -22,7 +24,7 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
-        
+
         public InfoViewModel(Mediator mediator, ContentNavigation nav)
         {
             this.mediator = mediator;
