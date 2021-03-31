@@ -9,7 +9,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding InfoViewModel, Source={StaticResource Container}}">
-    <ScrollViewer Name="Area" HorizontalScrollBarVisibility="Disabled" >
+    <ScrollViewer Name="Area" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <WrapPanel Name="Panel" Margin="5">
                 <!-- Use Converter to force wrapping via MaxWidth https://stackoverflow.com/a/20326885/12347616 -->
                 <Grid MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, 
@@ -57,30 +57,41 @@
                     Converter={converters:WidthConverter}, ConverterParameter='2|0.4'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0"> 
+                    <Label Grid.Row="0" Grid.Column="0"> 
                         <TextBlock TextDecorations="Underline">Logs</TextBlock>
                         <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                     </Label>
                     <!-- Expander List See: https://stackoverflow.com/a/10486411/12347616 -->
-                    <ListView Grid.Row="1"
+                    <ListView Grid.Row="1" Grid.Column="0"
                               ItemsSource="{Binding SelectedTour.Logs}"
                               Background="Transparent" BorderThickness="0"
                               HorizontalContentAlignment="Stretch"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                              HorizontalAlignment="Stretch"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                        <!-- Fix problems with scrolling -->
+                        <!-- See: https://stackoverflow.com/a/11451793/12347616 -->
+                        <ListView.Template>
+                            <ControlTemplate>
+                                <ItemsPresenter></ItemsPresenter>
+                            </ControlTemplate>
+                        </ListView.Template>
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Expander Margin="10 0 0 0">
+                                <Expander Margin="10 0 0 0"
+                                    Width="{Binding ActualWidth, 
+                                    RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Grid}}">
                                     <Expander.Header>
                                         <!-- Set Header as string See: https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/issues/722#issuecomment-305220282 -->
                                         <!-- Date Format See: https://stackoverflow.com/a/1333067/12347616 -->
                                         <TextBlock Text="{Binding Date, StringFormat=yyyy-MM-dd}" />
                                     </Expander.Header>
-                                    <StackPanel>
+                                    <StackPanel Margin="0 0 20 0">
                                         <DataGrid ItemsSource="{Binding . , Converter={converters:ItemSourceConverter}}"
                                                   AutoGenerateColumns="False">
                                             <DataGrid.Columns>
