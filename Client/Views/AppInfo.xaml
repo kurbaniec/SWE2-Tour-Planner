@@ -9,6 +9,48 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding InfoViewModel, Source={StaticResource Container}}">
+    <Page.Resources>
+        <!-- Styles used by some elements -->
+        <Style x:Key="Edit" TargetType="TextBox">
+            <!-- Default Background See: https://stackoverflow.com/a/19360287/12347616 -->
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="IsReadOnly" Value="False"></Setter>
+        </Style>
+        <Style x:Key="NoEdit" TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="IsReadOnly" Value="True"></Setter>
+        </Style>
+        <!-- Global style -->
+        <!-- See: https://stackoverflow.com/a/4078275/12347616 -->
+        <Style TargetType="ScrollViewer">
+            <Style.Resources>
+                <Style TargetType="TextBox">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Edit}" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="IsReadOnly" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Edit}" Value="False">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="IsReadOnly" Value="True"></Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+                </Style>
+            </Style.Resources>
+            <!--
+            <Style.Resources>
+                <Style.Resources.Triggers>
+                    <DataTrigger Binding="{Binding Edit}" Value="False">
+                        <Style Property="Style" Value="{StaticResource NoEdit}"/>
+                    </DataTrigger>
+                </Style.Resources.Triggers>
+            </Style.Resources>-->
+        </Style>
+    </Page.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
                   PreviewMouseWheel="UIElement_OnPreviewMouseWheel">
             <WrapPanel Name="Panel" Margin="5">
@@ -28,19 +70,34 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold"
-                           Content="{Binding SelectedTour.Name}">
-                        <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->
-                        <!-- Use LayoutTransform instead of Render https://stackoverflow.com/a/5554823/12347616 -->
-                        <Label.LayoutTransform><ScaleTransform ScaleX="2" ScaleY="2"/></Label.LayoutTransform>
-                    </Label>
+                    <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                        <TextBox FontWeight="Bold" Style="{StaticResource NoEdit}" MaxLength="12"
+                               Text="{Binding SelectedTour.Name}">
+                            <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->
+                            <!-- Use LayoutTransform instead of Render https://stackoverflow.com/a/5554823/12347616 -->
+                            <TextBox.LayoutTransform><ScaleTransform ScaleX="2" ScaleY="2"/></TextBox.LayoutTransform>
+                        </TextBox>
+                        <Button Content=" ✏️ " Background="Transparent" BorderThickness="0" 
+                                Command="{Binding ChangeEditMode}">
+                            <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
+                        </Button>
+                    </StackPanel>
                     <Label Grid.Column="0" Grid.Row="1">
                         <TextBlock TextDecorations="Underline">Tour Distance</TextBlock>
                         <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
                     </Label>
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding SelectedTour.Distance}">
+                    <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" MaxLength="15"  MaxWidth="100"
+                                 Text="{Binding SelectedTour.Distance}"/>
+                        <TextBox Grid.Column="1" Style="{StaticResource NoEdit}" Text=" km"/>
+                    </Grid>
+                    <!--<TextBox Grid.Column="0" Grid.Row="2" Text="{Binding SelectedTour.Distance}">
                         <Run Text=" km"/>
-                    </TextBlock>
+                    </TextBox>-->
                     <Label Grid.Column="0" Grid.Row="3">
                         <TextBlock TextDecorations="Underline">Tour Description</TextBlock>
                         <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>

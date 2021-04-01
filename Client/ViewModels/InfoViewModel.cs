@@ -13,7 +13,6 @@ namespace Client.ViewModels
         private readonly ContentNavigation nav;
 
         private TourViewModel? selectedTour;
-
         public TourViewModel? SelectedTour
         {
             get => selectedTour;
@@ -24,6 +23,34 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        private bool edit;
+        public bool Edit
+        {
+            get => edit;
+            set
+            {
+                if (value == edit) return;
+                edit = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private ICommand? changeEditMode;
+        public ICommand ChangeEditMode
+        {
+            get
+            {
+                if (changeEditMode != null) return changeEditMode;
+                changeEditMode = new RelayCommand(
+                    p => true,
+                    p => Edit = !Edit
+                );
+                return changeEditMode;
+            }
+        }
+        
+        
 
         public InfoViewModel(Mediator mediator, ContentNavigation nav)
         {

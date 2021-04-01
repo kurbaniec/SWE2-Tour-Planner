@@ -81,6 +81,7 @@ namespace Client.ViewModels
             selectedTour = null;
             // Add Dummy Tours
             var tour = new TourViewModel(
+                "A", "B",
                 "TourA", 
                 22, 
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
@@ -111,6 +112,7 @@ namespace Client.ViewModels
                     )}
             );
             var tour2 = new TourViewModel(
+                "U6", "U4",
                 "TourB", 
                 202, 
                 "Better Tour Than A",

@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:Client.Views"
         xmlns:viewModel="clr-namespace:Client.ViewModels"
         mc:Ignorable="d"
-        Title="AppAddTour" Height="450" Width="800"
-        d:DataContext="{d:DesignInstance viewModel:TourListModelLegacy, IsDesignTimeCreatable=True}">
+        Title="AppAddTour" Height="450" Width="800">
 
     <!-- Creating a dialog in WPF https://www.wpf-tutorial.com/dialogs/creating-a-custom-input-dialog/ -->
     <Grid Margin="30" >

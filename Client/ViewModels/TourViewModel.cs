@@ -64,14 +64,14 @@ namespace Client.ViewModels
             }
         }
 
-        public TourViewModel(string name, int distance, string description, string image)
+        public TourViewModel(string from, string to, string name, int distance, string description, string image)
         {
-            tour = new Tour(name, distance, description, image);
+            tour = new Tour(from, to, name, distance, description, image);
         }
 
-        public TourViewModel(string name, int distance, string description, string image, List<TourLog> logs)
+        public TourViewModel(string from, string to, string name, int distance, string description, string image, List<TourLog> logs)
         {
-            tour = new Tour(name, distance, description, image, logs);
+            tour = new Tour(from, to, name, distance, description, image, logs);
         }
     }
 }
