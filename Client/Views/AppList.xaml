@@ -8,6 +8,28 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding ListViewModel, Source={StaticResource Container}}">
+    <UserControl.Resources>
+        <Style TargetType="Grid">
+            <Style.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="IsEnabled" Value="True"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Disabled}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="ListBox">
+                    <Setter Property="IsEnabled" Value="True"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Disabled}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Style.Resources>
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="5 5 0 5" MinWidth="85" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
         <Grid.RowDefinitions>

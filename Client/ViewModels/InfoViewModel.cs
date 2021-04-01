@@ -99,13 +99,15 @@ namespace Client.ViewModels
                     async (p) =>
                     {
                         WaitingForResponse = true;
+                        Edit = false;
+                        mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
                         await Task.Run(() =>
                         {
                             Thread.Sleep(5000);
                         });
                         selectedTour?.SaveChanges();
                         WaitingForResponse = false;
-                        Edit = false;
+                        mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }
                 );
                 return acceptEdit;
@@ -120,9 +122,11 @@ namespace Client.ViewModels
             // Register to changes
             mediator.Register(o =>
             {
+                selectedTour?.DiscardChanges();
+                if (Edit) 
+                    Edit = false;
                 var tour = (TourViewModel) o;
                 SelectedTour = tour;
-                Console.WriteLine("Baum");
             }, ViewModelMessages.SelectedTourChange);
         }
     }

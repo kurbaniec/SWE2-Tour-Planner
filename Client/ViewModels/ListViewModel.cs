@@ -70,6 +70,18 @@ namespace Client.ViewModels
             }
         }
 
+        private bool disabled;
+        public bool Disabled
+        {
+            get => disabled;
+            set
+            {
+                if (disabled == value) return;
+                disabled = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ListViewModel(Mediator mediator, ContentNavigation nav)
         {
             this.mediator = mediator;
@@ -131,6 +143,14 @@ namespace Client.ViewModels
                 var newFilter = (string) o;
                 Filter = newFilter;
             }, ViewModelMessages.FilterChange);
+            mediator.Register(o =>
+            {
+                Disabled = true;
+            }, ViewModelMessages.TransactionBegin);
+            mediator.Register(o =>
+            {
+                Disabled = false;
+            }, ViewModelMessages.TransactionEnd);
         }
     }
 }

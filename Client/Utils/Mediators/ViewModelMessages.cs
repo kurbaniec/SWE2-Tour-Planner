@@ -4,5 +4,7 @@
     {
         SelectedTourChange,
         FilterChange,
+        TransactionBegin,
+        TransactionEnd,
     };
 }

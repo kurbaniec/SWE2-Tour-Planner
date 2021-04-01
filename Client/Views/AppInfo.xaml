@@ -85,7 +85,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                    <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                         <TextBox FontWeight="Bold" MaxLength="12"
                                Text="{Binding SelectedTour.Name}">
                             <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->
@@ -262,6 +262,9 @@
                             <Style TargetType="Grid">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Edit}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding WaitingForResponse}" Value="True">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
