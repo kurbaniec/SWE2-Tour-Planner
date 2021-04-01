@@ -3,7 +3,6 @@
     public enum ViewModelMessages
     {
         SelectedTourChange,
-        GetSelectedTour,
         FilterChange,
     };
 }

@@ -71,17 +71,19 @@
                 <Grid MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, 
                     Converter={converters:WidthConverter}, ConverterParameter='1|0.5'}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
                         <TextBox FontWeight="Bold" MaxLength="12"
@@ -97,10 +99,22 @@
                     </StackPanel>
                     <TextBox Grid.Column="0" Grid.Row="1" 
                              TextDecorations="Underline" Style="{StaticResource NoEdit}">
+                        Origin
+                        <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
+                    </TextBox>
+                    <TextBox Grid.Column="0" Grid.Row="2" Text="{Binding SelectedTour.From}"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" 
+                             TextDecorations="Underline" Style="{StaticResource NoEdit}">
+                        Destination
+                        <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
+                    </TextBox>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding SelectedTour.To}"/>
+                    <TextBox Grid.Column="0" Grid.Row="3" 
+                             TextDecorations="Underline" Style="{StaticResource NoEdit}">
                         Tour Distance
                         <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
                     </TextBox>
-                    <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                    <Grid Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -110,12 +124,12 @@
                                  Text="{Binding SelectedTour.Distance}"/>
                         
                     </Grid>
-                    <TextBox Grid.Column="0" Grid.Row="3" 
+                    <TextBox Grid.Column="1" Grid.Row="3" 
                              TextDecorations="Underline" Style="{StaticResource NoEdit}">
                         Tour Description
                         <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
                     </TextBox>
-                    <TextBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
+                    <TextBox Grid.Column="1" Grid.Row="4"
                                AcceptsReturn="True" TextWrapping="Wrap"
                                Text="{Binding SelectedTour.Description}">
                     </TextBox>
@@ -130,7 +144,8 @@
                     Converter={converters:WidthConverter}, ConverterParameter='2|0.4'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition />
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -140,8 +155,9 @@
                         Logs
                         <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
                     </TextBox>
-                    <!-- Expander List See: https://stackoverflow.com/a/10486411/12347616 -->
-                    <ListView Grid.Row="1" Grid.Column="0"
+                    <!-- Expander List -->
+                    <!-- See: https://stackoverflow.com/a/10486411/12347616 -->
+                    <ListView Grid.Column="0" Grid.Row="1"
                               ItemsSource="{Binding SelectedTour.Logs}"
                               Background="Transparent" BorderThickness="0"
                               HorizontalContentAlignment="Stretch"
@@ -169,7 +185,7 @@
                                     <Expander.Header>
                                         <!-- Set Header as string See: https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/issues/722#issuecomment-305220282 -->
                                         <!-- Date Format See: https://stackoverflow.com/a/1333067/12347616 -->
-                                        <TextBlock Text="{Binding Date, StringFormat=yyyy-MM-dd}" />
+                                        <TextBox Text="{Binding Date, StringFormat=yyyy-MM-dd}" />
                                     </Expander.Header>
                                     <Grid Margin="0 0 20 0">
                                         <Grid.RowDefinitions>
@@ -233,8 +249,53 @@
                         </ListView.ItemContainerStyle>
                     </ListView>
                     
+                    <Grid Grid.Column="0" Grid.Row="2" Background="Black">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Edit}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                                <Style.Setters>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style.Setters>
+                            </Style>
+                        </Grid.Style>
+                        <local:Spinner Grid.Column="0" Margin="2 2 2 2">
+                            <local:Spinner.Style>
+                                <Style TargetType="local:Spinner">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding WaitingForResponse}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Style.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </Style.Setters>
+                                </Style>
+                            </local:Spinner.Style>
+                        </local:Spinner>
+                        <Button Grid.Column="1" Margin="2 2 2 2" 
+                            Command="{Binding AcceptEdit}">
+                            Save Changes
+                            <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
+                        </Button>
+                        <Button Grid.Column="2" Margin="2 2 2 2"
+                            Command="{Binding CancelEdit}">
+                            Cancel
+                            <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
+                        </Button>
+                    </Grid>
                 </Grid>
-                
             </WrapPanel>
         </ScrollViewer>
 </Page>

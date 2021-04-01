@@ -125,12 +125,6 @@ namespace Client.ViewModels
             toursView = CollectionViewSource.GetDefaultView(Tours);
             toursView.Filter = o => string.IsNullOrEmpty(Filter) || 
                                     ((TourViewModel) o).Name.ToLower().Contains(Filter.ToLower());
-            
-            mediator.Register(o =>
-            {
-                if (selectedTour != null)
-                    mediator.NotifyColleagues(ViewModelMessages.SelectedTourChange, selectedTour);
-            }, ViewModelMessages.GetSelectedTour);
 
             mediator.Register(o =>
             {

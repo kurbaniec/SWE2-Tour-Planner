@@ -31,6 +31,12 @@ namespace Client
             services.AddSingleton<InfoViewModel>(x =>
                 new InfoViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             serviceProvider = services.BuildServiceProvider();
+
+            // Instance all singletons
+            serviceProvider.GetService<MainViewModel>();
+            serviceProvider.GetService<MenuViewModel>();
+            serviceProvider.GetService<ListViewModel>();
+            serviceProvider.GetService<InfoViewModel>();
         }
 
         public MainViewModel MainViewModel
