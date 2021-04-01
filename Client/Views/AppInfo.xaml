@@ -16,40 +16,53 @@
             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="IsReadOnly" Value="False"></Setter>
+            <Setter Property="Margin" Value="0 2 0 5"></Setter>
         </Style>
         <Style x:Key="NoEdit" TargetType="TextBox">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="IsReadOnly" Value="True"></Setter>
+            <Setter Property="Margin" Value="0 2 0 5"/>
         </Style>
         <!-- Global style -->
         <!-- See: https://stackoverflow.com/a/4078275/12347616 -->
-        <Style TargetType="ScrollViewer">
+        <!-- Use Relative binding so that it can be used in ListView's ItemTemplate -->
+        <!-- See: https://stackoverflow.com/a/12486394/12347616 -->
+        <Style TargetType="Control" x:Key="InfoStyle">
             <Style.Resources>
                 <Style TargetType="TextBox">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Edit}" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                        <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="IsReadOnly" Value="False"></Setter>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Edit}" Value="False">
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="IsReadOnly" Value="True"></Setter>
-                    </DataTrigger>
-                </Style.Triggers>
+                    <Setter Property="Margin" Value="0 2 0 5"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page},
+                                Path=DataContext.Edit}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="IsReadOnly" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page},
+                                Path=DataContext.Edit}" Value="False">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="IsReadOnly" Value="True"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="DataGrid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page},
+                                Path=DataContext.Edit}" Value="True">
+                            <Setter Property="IsReadOnly" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page},
+                                Path=DataContext.Edit}" Value="False">
+                            <Setter Property="IsReadOnly" Value="True"/>
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </Style.Resources>
-            <!--
-            <Style.Resources>
-                <Style.Resources.Triggers>
-                    <DataTrigger Binding="{Binding Edit}" Value="False">
-                        <Style Property="Style" Value="{StaticResource NoEdit}"/>
-                    </DataTrigger>
-                </Style.Resources.Triggers>
-            </Style.Resources>-->
         </Style>
+        <!-- Set Global Style (no x:key) -->
+        <Style TargetType="ScrollViewer" BasedOn="{StaticResource InfoStyle}"/>
     </Page.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
                   PreviewMouseWheel="UIElement_OnPreviewMouseWheel">
@@ -71,7 +84,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
-                        <TextBox FontWeight="Bold" Style="{StaticResource NoEdit}" MaxLength="12"
+                        <TextBox FontWeight="Bold" MaxLength="12"
                                Text="{Binding SelectedTour.Name}">
                             <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->
                             <!-- Use LayoutTransform instead of Render https://stackoverflow.com/a/5554823/12347616 -->
@@ -82,33 +95,35 @@
                             <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
                         </Button>
                     </StackPanel>
-                    <Label Grid.Column="0" Grid.Row="1">
-                        <TextBlock TextDecorations="Underline">Tour Distance</TextBlock>
-                        <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
-                    </Label>
+                    <TextBox Grid.Column="0" Grid.Row="1" 
+                             TextDecorations="Underline" Style="{StaticResource NoEdit}">
+                        Tour Distance
+                        <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
+                    </TextBox>
                     <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" MaxLength="15"  MaxWidth="100"
-                                 Text="{Binding SelectedTour.Distance}"/>
                         <TextBox Grid.Column="1" Style="{StaticResource NoEdit}" Text=" km"/>
+                        <TextBox Grid.Column="0" MaxLength="8"
+                                 Text="{Binding SelectedTour.Distance}"/>
+                        
                     </Grid>
-                    <!--<TextBox Grid.Column="0" Grid.Row="2" Text="{Binding SelectedTour.Distance}">
-                        <Run Text=" km"/>
-                    </TextBox>-->
-                    <Label Grid.Column="0" Grid.Row="3">
-                        <TextBlock TextDecorations="Underline">Tour Description</TextBlock>
-                        <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
-                    </Label>
-                    <TextBlock Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
-                            TextWrapping="Wrap" Text="{Binding SelectedTour.Description}">
-                    </TextBlock>
-                    <Label Grid.Column="0" Grid.Row="5">
-                        <TextBlock TextDecorations="Underline">Route Information</TextBlock>
-                        <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
-                    </Label>
+                    <TextBox Grid.Column="0" Grid.Row="3" 
+                             TextDecorations="Underline" Style="{StaticResource NoEdit}">
+                        Tour Description
+                        <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
+                    </TextBox>
+                    <TextBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
+                               AcceptsReturn="True" TextWrapping="Wrap"
+                               Text="{Binding SelectedTour.Description}">
+                    </TextBox>
+                    <TextBox Grid.Column="0" Grid.Row="5" 
+                             TextDecorations="Underline" Style="{StaticResource NoEdit}">
+                        Route Information
+                        <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
+                    </TextBox>
                     <Image Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Source="{Binding SelectedTour.Image}" />
                 </Grid>
                 <Grid MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, 
@@ -120,10 +135,11 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0"> 
-                        <TextBlock TextDecorations="Underline">Logs</TextBlock>
-                        <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
-                    </Label>
+                    <TextBox Grid.Column="0" Grid.Row="0" 
+                             TextDecorations="Underline" Style="{StaticResource NoEdit}">
+                        Logs
+                        <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
+                    </TextBox>
                     <!-- Expander List See: https://stackoverflow.com/a/10486411/12347616 -->
                     <ListView Grid.Row="1" Grid.Column="0"
                               ItemsSource="{Binding SelectedTour.Logs}"
@@ -141,7 +157,13 @@
                         </ListView.Template>
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Expander Margin="10 0 0 0"
+                                <!-- Style used for the Expanders in ListView -->
+                                <!-- See: https://stackoverflow.com/a/22692969/12347616 -->
+                                <DataTemplate.Resources>
+                                    <Style TargetType="Expander" BasedOn="{StaticResource InfoStyle}"/>
+                                </DataTemplate.Resources>
+                                <Expander 
+                                    Margin="10 5 0 5"
                                     Width="{Binding ActualWidth, 
                                     RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Grid}}">
                                     <Expander.Header>
@@ -194,8 +216,20 @@
                         </ListView.ItemTemplate>
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment"  Value="Stretch"></Setter>
+                                <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+                                <!-- Disable Focus and Hover effect -->
+                                <!-- See: https://stackoverflow.com/a/16491211/12347616 -->
+                                <Setter Property="Focusable" Value="false"/>
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
+                            
                         </ListView.ItemContainerStyle>
                     </ListView>
                     
