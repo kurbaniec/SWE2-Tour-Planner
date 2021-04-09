@@ -36,8 +36,6 @@ namespace Client.ViewModels
             {
                 if (value == edit) return;
                 edit = value;
-                if (!edit)
-                    selectedTour?.DiscardChanges();
                 OnPropertyChanged();
             }
         }

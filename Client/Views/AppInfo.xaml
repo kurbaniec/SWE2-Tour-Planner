@@ -95,6 +95,19 @@
                         <Button Content=" ✏️ " Background="Transparent" BorderThickness="0" 
                                 Command="{Binding ChangeEditMode}">
                             <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
+                            <!-- Disable button after entering edit mode or waiting for responses -->
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Edit}" Value="true">
+                                            <Setter Property="IsEnabled" Value="false"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding WaitingForResponse}" Value="true">
+                                            <Setter Property="IsEnabled" Value="false"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                         </Button>
                     </StackPanel>
                     <TextBox Grid.Column="0" Grid.Row="1" 

@@ -45,7 +45,7 @@ namespace Client.ViewModels
             }
         }
 
-        public int distance;
+        private int distance;
         public int Distance
         {
             get => distance;
@@ -57,7 +57,7 @@ namespace Client.ViewModels
             }
         }
 
-        public string description;
+        private string description;
         public string Description
         {
             get => description;
@@ -69,7 +69,7 @@ namespace Client.ViewModels
             }
         }
 
-        public string image;
+        private string image;
         public string Image
         {
             get => image;
