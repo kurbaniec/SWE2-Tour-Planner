@@ -14,9 +14,9 @@ namespace Client.ViewModels
 
         private readonly ContentNavigation nav;
 
-        private TourViewModel? selectedTour;
+        private TourWrapper? selectedTour;
 
-        public TourViewModel? SelectedTour
+        public TourWrapper? SelectedTour
         {
             get => selectedTour;
             set
@@ -125,7 +125,7 @@ namespace Client.ViewModels
                 selectedTour?.DiscardChanges();
                 if (Edit) 
                     Edit = false;
-                var tour = (TourViewModel) o;
+                var tour = (TourWrapper) o;
                 SelectedTour = tour;
             }, ViewModelMessages.SelectedTourChange);
         }

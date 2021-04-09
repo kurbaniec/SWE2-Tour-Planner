@@ -34,7 +34,7 @@ namespace Client.ViewModels
 
             mediator.Register(o =>
             {
-                var model = (TourViewModel) o;
+                var model = (TourWrapper) o;
                 Console.WriteLine($"Selected {model.Name}");
             }, ViewModelMessages.SelectedTourChange);
         }

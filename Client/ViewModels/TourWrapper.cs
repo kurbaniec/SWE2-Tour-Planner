@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Model;
 
 namespace Client.ViewModels
 {
-    public class TourViewModel : BaseViewModel
+    public class TourWrapper : BaseViewModel
     {
         private readonly Tour tour;
 
         private string from;
+
         public string From
         {
             get => from;
@@ -22,6 +24,7 @@ namespace Client.ViewModels
         }
 
         private string to;
+
         public string To
         {
             get => to;
@@ -34,6 +37,7 @@ namespace Client.ViewModels
         }
 
         private string name;
+
         public string Name
         {
             get => name;
@@ -46,6 +50,7 @@ namespace Client.ViewModels
         }
 
         private int distance;
+
         public int Distance
         {
             get => distance;
@@ -58,6 +63,7 @@ namespace Client.ViewModels
         }
 
         private string description;
+
         public string Description
         {
             get => description;
@@ -70,6 +76,7 @@ namespace Client.ViewModels
         }
 
         private string image;
+
         public string Image
         {
             get => image;
@@ -81,19 +88,33 @@ namespace Client.ViewModels
             }
         }
 
-        // TODO reset logs?
-        public List<TourLog> Logs
+        private List<TourLogWrapper> logs;
+
+        public List<TourLogWrapper> Logs
         {
-            get => tour.Logs;
+            get => logs;
             set
             {
-                if (tour.Logs == value) return;
-                tour.Logs = value;
+                if (logs == value) return;
+                logs = value;
                 OnPropertyChanged();
             }
         }
 
-        public TourViewModel(string from, string to, string name, int distance, string description, string image)
+        public TourWrapper(Tour tour)
+        {
+            this.tour = tour;
+            this.from = tour.From;
+            this.to = tour.To;
+            this.name = tour.Name;
+            this.distance = tour.Distance;
+            this.description = tour.Description;
+            this.image = tour.Image;
+            // Functional programming with LINQ
+            this.logs = tour.Logs.Select(log => new TourLogWrapper(log)).ToList();
+        }
+
+        public TourWrapper(string from, string to, string name, int distance, string description, string image)
         {
             tour = new Tour(from, to, name, distance, description, image);
             this.from = tour.From;
@@ -102,9 +123,11 @@ namespace Client.ViewModels
             this.distance = tour.Distance;
             this.description = tour.Description;
             this.image = tour.Image;
+            this.logs = tour.Logs.Select(log => new TourLogWrapper(log)).ToList();
         }
 
-        public TourViewModel(string from, string to, string name, int distance, string description, string image, List<TourLog> logs)
+        public TourWrapper(string from, string to, string name, int distance, string description, string image,
+            List<TourLog> logs)
         {
             tour = new Tour(from, to, name, distance, description, image, logs);
             this.from = tour.From;
@@ -113,13 +136,15 @@ namespace Client.ViewModels
             this.distance = tour.Distance;
             this.description = tour.Description;
             this.image = tour.Image;
+            this.logs = tour.Logs.Select(log => new TourLogWrapper(log)).ToList();
         }
 
         public Tour GetRequestTour()
         {
-            return new Tour(from, to, name, distance, description, image, Logs);
+            return new Tour(from, to, name, distance, description, image,
+                Logs.Select(log => log.GetRequestTourLog()).ToList());
         }
-        
+
         public void SaveChanges()
         {
             tour.From = from;
@@ -128,6 +153,8 @@ namespace Client.ViewModels
             tour.Distance = distance;
             tour.Description = description;
             tour.Image = image;
+            // Save changes on tour logs
+            logs.ForEach(log => log.SaveChanges());
         }
 
         public void DiscardChanges()
@@ -138,6 +165,8 @@ namespace Client.ViewModels
             Distance = tour.Distance;
             Description = tour.Description;
             Image = tour.Image;
+            // Discard tour log changes
+            logs.ForEach(log => log.DiscardChanges());
         }
     }
 }

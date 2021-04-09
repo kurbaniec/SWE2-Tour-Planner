@@ -18,12 +18,12 @@ namespace Client.ViewModels
         
         private readonly ContentNavigation nav;
         
-        public ObservableCollection<TourViewModel> Tours { get; }
+        public ObservableCollection<TourWrapper> Tours { get; }
         private readonly ICollectionView toursView;
 
-        private TourViewModel? selectedTour;
+        private TourWrapper? selectedTour;
 
-        public TourViewModel? SelectedTour
+        public TourWrapper? SelectedTour
         {
             get => selectedTour;
             set
@@ -89,10 +89,10 @@ namespace Client.ViewModels
 
             filter = "";
             
-            Tours = new ObservableCollection<TourViewModel>();
+            Tours = new ObservableCollection<TourWrapper>();
             selectedTour = null;
             // Add Dummy Tours
-            var tour = new TourViewModel(
+            var tour = new TourWrapper(
                 "A", "B",
                 "TourA", 
                 22, 
@@ -123,7 +123,7 @@ namespace Client.ViewModels
                             2
                     )}
             );
-            var tour2 = new TourViewModel(
+            var tour2 = new TourWrapper(
                 "U6", "U4",
                 "TourB", 
                 202, 
@@ -136,7 +136,7 @@ namespace Client.ViewModels
             // See: https://markheath.net/post/list-filtering-in-wpf-with-m-v-vm
             toursView = CollectionViewSource.GetDefaultView(Tours);
             toursView.Filter = o => string.IsNullOrEmpty(Filter) || 
-                                    ((TourViewModel) o).Name.ToLower().Contains(Filter.ToLower());
+                                    ((TourWrapper) o).Name.ToLower().Contains(Filter.ToLower());
 
             mediator.Register(o =>
             {
