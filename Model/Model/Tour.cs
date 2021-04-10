@@ -5,6 +5,7 @@ namespace Model
 {
     public class Tour
     {
+        public int Id { get; set; }
         public string From { set; get; }
         public string To { set; get; }
         public string Name { set; get; }

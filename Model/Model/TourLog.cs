@@ -4,6 +4,7 @@ namespace Model
 {
     public class TourLog
     {
+        public int Id { set; get; }
         public DateTime Date { set; get; } 
         public Type Type { set; get; }
         public TimeSpan Duration { set; get; }
