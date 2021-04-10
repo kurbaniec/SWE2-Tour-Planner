@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Windows.Data;
 using System.Windows.Input;
 using Client.Utils.Commands;
@@ -84,6 +85,20 @@ namespace Client.ViewModels
 
         public ListViewModel(Mediator mediator, ContentNavigation nav)
         {
+            // TODO move to BL & DAl
+            try
+            {
+                var client = new HttpClient();
+                var response = client.GetAsync("http://localhost:8080/api/tours").Result;
+                var jsonString = response.Content.ReadAsStringAsync().Result;
+                var tours = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Tour>>(jsonString);
+                Console.WriteLine(jsonString);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
             this.mediator = mediator;
             this.nav = nav;
 
