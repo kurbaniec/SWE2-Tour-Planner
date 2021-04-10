@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace Model
 {
@@ -29,5 +30,22 @@ namespace Model
             HeightDifference = heightDifference;
             Stops = stops;
         }
+        
+        public TourLog(int id, DateTime date, Type type, TimeSpan duration, int distance, int rating, string report, double avgSpeed, double maxSpeed, double heightDifference, int stops)
+        {
+            Id = id;
+            Date = date;
+            Type = type;
+            Duration = duration;
+            Distance = distance;
+            Rating = rating;
+            Report = report;
+            AvgSpeed = avgSpeed;
+            MaxSpeed = maxSpeed;
+            HeightDifference = heightDifference;
+            Stops = stops;
+        }
+        
+        public TourLog() {}
     }
 }

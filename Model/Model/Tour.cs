@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Model
 {
@@ -36,5 +37,19 @@ namespace Model
             Image = image;
             Logs = new List<TourLog>();
         }
+        
+        public Tour(int id, string @from, string to, string name, int distance, string description, string image, List<TourLog> logs)
+        {
+            Id = id;
+            From = @from;
+            To = to;
+            Name = name;
+            Distance = distance;
+            Description = description;
+            Image = image;
+            Logs = logs;
+        }
+        
+        public Tour() {}
     }
 }
