@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Model\Model\Model.csproj" />
     <ProjectReference Include="..\..\WebServiceLib\WebService-Lib\WebService-Lib.csproj" />
   </ItemGroup>
 
