@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Model;
 
 namespace Client.ViewModels
@@ -88,9 +88,9 @@ namespace Client.ViewModels
             }
         }
 
-        private List<TourLogWrapper> logs;
+        private ObservableCollection<TourLogWrapper> logs;
 
-        public List<TourLogWrapper> Logs
+        public ObservableCollection<TourLogWrapper> Logs
         {
             get => logs;
             set
@@ -111,7 +111,8 @@ namespace Client.ViewModels
             this.description = tour.Description;
             this.image = tour.Image;
             // Functional programming with LINQ
-            this.logs = tour.Logs.Select(log => new TourLogWrapper(log)).ToList();
+            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
+                .ToList());
         }
 
         public TourWrapper(string from, string to, string name, int distance, string description, string image)
@@ -123,7 +124,8 @@ namespace Client.ViewModels
             this.distance = tour.Distance;
             this.description = tour.Description;
             this.image = tour.Image;
-            this.logs = tour.Logs.Select(log => new TourLogWrapper(log)).ToList();
+            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
+                .ToList());
         }
 
         public TourWrapper(string from, string to, string name, int distance, string description, string image,
@@ -136,7 +138,13 @@ namespace Client.ViewModels
             this.distance = tour.Distance;
             this.description = tour.Description;
             this.image = tour.Image;
-            this.logs = tour.Logs.Select(log => new TourLogWrapper(log)).ToList();
+            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
+                .ToList());
+        }
+
+        public void AddNewLog()
+        {
+            Logs.Add(new TourLogWrapper());
         }
 
         public Tour GetRequestTour()
@@ -155,6 +163,8 @@ namespace Client.ViewModels
             tour.Image = image;
             // Save changes on tour logs
             logs.ForEach(log => log.SaveChanges());
+            // Update tour logs in Model
+            tour.Logs = logs.Select(log => log.Model).ToList();
         }
 
         public void DiscardChanges()
@@ -166,7 +176,21 @@ namespace Client.ViewModels
             Description = tour.Description;
             Image = tour.Image;
             // Discard tour log changes
-            logs.ForEach(log => log.DiscardChanges());
+            Logs.ForEach(log => log.DiscardChanges());
+            // Update tour logs in wrapper
+            Logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
+                .ToList());
+        }
+    }
+
+    // Allow ForEach-LINQ expression on ObservableCollection.
+    // See: https://stackoverflow.com/a/2519433/12347616
+    public static class ObservableExtension
+    {
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action) {
+            foreach ( var cur in enumerable ) {
+                action(cur);
+            }
         }
     }
 }

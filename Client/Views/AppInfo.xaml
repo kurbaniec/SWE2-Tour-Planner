@@ -159,6 +159,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -208,38 +209,20 @@
                                         <DataGrid Grid.Row="0"
                                                   ItemsSource="{Binding . ,
                                                     Converter={converters:ItemSourceConverter}}"
-                                                  AutoGenerateColumns="False">
+                                                  AutoGenerateColumns="False" CanUserAddRows="False">
                                             <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
                                                 <DataGridTextColumn Header="Duration" Binding="{Binding Duration}"/>
+                                                <DataGridTextColumn Header="Distance" Binding="{Binding Distance}"/>
+                                                <DataGridTextColumn Header="Rating" Binding="{Binding Rating}"/>
+                                                <DataGridTextColumn Header="Average Speed" Binding="{Binding AvgSpeed}"/>
+                                                <DataGridTextColumn Header="Max Speed" Binding="{Binding MaxSpeed}"/>
+                                                <DataGridTextColumn Header="Height Difference" Binding="{Binding HeightDifference}"/>
+                                                <DataGridTextColumn Header="Stops" Binding="{Binding Stops}"/>
                                             </DataGrid.Columns>
                                         </DataGrid>
-                                        <TextBlock Grid.Row="1" TextWrapping="Wrap" Text="{Binding Report}"/>
+                                        <TextBox Grid.Row="1" TextWrapping="Wrap" Text="{Binding Report}"/>
                                     </Grid>
-                                    
-                                    <!--
-                                    <StackPanel> -->
-                                        <!-- See: ttps://stackoverflow.com/a/34621714/12347616 -->
-                                        <!-- And: https://stackoverflow.com/a/4209539/12347616 --> <!--
-                                        <Label Content="{Binding Type}"
-                                               ContentStringFormat="Type: {0}"/>
-                                        <Label Content="{Binding Duration}"
-                                               ContentStringFormat="Duration: {0}"/>
-                                        <Label Content="{Binding Distance}"
-                                               ContentStringFormat="Distance: {0}"/>
-                                        <Label Content="{Binding Rating}"
-                                               ContentStringFormat="Rating: {0}"/>
-                                        <Label Content="{Binding Report}"
-                                               ContentStringFormat="Report: {0}"/>
-                                        <Label Content="{Binding AvgSpeed}"
-                                               ContentStringFormat="Average Speed: {0}"/>
-                                        <Label Content="{Binding MaxSpeed}"
-                                               ContentStringFormat="Max Speed: {0}"/>
-                                        <Label Content="{Binding HeightDifference}"
-                                               ContentStringFormat="Height difference: {0}"/>
-                                        <Label Content="{Binding Stops}"
-                                               ContentStringFormat="Stops: {0}"/>
-                                    </StackPanel>-->
                                 </Expander>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -262,7 +245,12 @@
                         </ListView.ItemContainerStyle>
                     </ListView>
                     
-                    <Grid Grid.Column="0" Grid.Row="2" Background="Black">
+                    <Button Grid.Column="0" Grid.Row="2" Content="Add Log" Margin="10 0 0 0" 
+                            Command="{Binding AddLog}">
+                        <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
+                    </Button>
+                    
+                    <Grid Grid.Column="0" Grid.Row="3" Background="Black">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="*"/>

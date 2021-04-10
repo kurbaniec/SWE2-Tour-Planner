@@ -114,6 +114,26 @@ namespace Client.ViewModels
             }
         }
 
+        private ICommand? addLog;
+
+        public ICommand AddLog
+        {
+            get
+            {
+                if (addLog != null) return addLog;
+                addLog = new RelayCommand(
+                    p => !WaitingForResponse,
+                    async (p) =>
+                    {
+                        if (SelectedTour is null) return;
+                        Edit = true;
+                        SelectedTour.AddNewLog();
+                    }
+                );
+                return addLog;
+            }
+        }
+
 
         public InfoViewModel(Mediator mediator, ContentNavigation nav)
         {

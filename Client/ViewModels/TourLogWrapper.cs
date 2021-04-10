@@ -154,6 +154,16 @@ namespace Client.ViewModels
             stops = log.Stops;
         }
 
+        public TourLogWrapper() : this(
+            new TourLog(
+                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10, 10,
+                "Report goes here...", 10.0,
+                20.0, 100, 0
+            )
+        )
+        {
+        }
+
         public TourLog GetRequestTourLog()
         {
             return new TourLog(date, type, duration, distance, rating, report, avgSpeed, maxSpeed, heightDifference,
