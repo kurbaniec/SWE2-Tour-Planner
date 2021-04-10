@@ -127,7 +127,7 @@ namespace Client_Test.Unit
         }
 
         [Test, TestCase(TestName = "Check get request model method", Description =
-             "Method is used to create a contract with the server for the updated TourLog"
+             "Method is used to create a contract with the server for the updated TourLog."
          )]
         public void GetRequestModel()
         {
