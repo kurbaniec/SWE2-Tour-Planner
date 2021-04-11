@@ -15,7 +15,7 @@ namespace Server.Controllers
     public class TourController
     {
         [Autowired]
-        private TourPlanner tp = null!;
+        private TourPlannerServer tp = null!;
         
         [Get("/api/tours")]
         public Response GetTours()

@@ -63,7 +63,7 @@ namespace Server.DAL
             return tours;
         }
 
-        public bool AddTour(Tour tour)
+        public (Tour?, string) AddTour(Tour tour)
         {
             var id = tours.OrderByDescending(t => t.Id).Take(1).First().Id + 1;
             tour.Id = id;
@@ -76,10 +76,10 @@ namespace Server.DAL
             });
                 
             tours.Add(tour);
-            return true;
+            return (tour, string.Empty);
         }
 
-        public bool UpdateTour(Tour tour)
+        public (Tour?, string) UpdateTour(Tour tour)
         {
             tours.ForEach(t =>
             {
@@ -100,13 +100,13 @@ namespace Server.DAL
                     if (l.Id == 0) l.Id = logId++;
                 });
             });
-            return true;
+            return (tour, string.Empty);
         }
 
-        public bool DeleteTour(int id)
+        public (bool, string) DeleteTour(int id)
         {
             tours = tours.Where(tour => tour.Id != id).ToList();
-            return true;
+            return (true, string.Empty);
         }
 
         // TODO delete this?

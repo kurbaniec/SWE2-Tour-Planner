@@ -1,4 +1,6 @@
-﻿using Client.Utils.Mediators;
+﻿using Client.Logic.BL;
+using Client.Logic.DAL;
+using Client.Utils.Mediators;
 using Client.Utils.Navigation;
 using Client.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,17 +24,23 @@ namespace Client
             services.AddSingleton<ContentNavigation>();
             // Provide dependencies
             // See: https://stackoverflow.com/a/53884452/12347616
+            services.AddSingleton<ITourApi>(x => new TourApi());
+            services.AddSingleton<TourPlannerClient>(x =>
+                new TourPlannerClient(x.GetService<ITourApi>()!));
             services.AddSingleton<MainViewModel>(x =>
                 new MainViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<MenuViewModel>(x =>
                 new MenuViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<ListViewModel>(x =>
-                new ListViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
+                new ListViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
+                    x.GetService<ContentNavigation>()!));
             services.AddSingleton<InfoViewModel>(x =>
                 new InfoViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             serviceProvider = services.BuildServiceProvider();
 
             // Instance all singletons
+            serviceProvider.GetService<ITourApi>();
+            serviceProvider.GetService<TourPlannerClient>();
             serviceProvider.GetService<MainViewModel>();
             serviceProvider.GetService<MenuViewModel>();
             serviceProvider.GetService<ListViewModel>();
@@ -41,7 +49,7 @@ namespace Client
 
         public MainViewModel MainViewModel
             => serviceProvider.GetService<MainViewModel>()!;
-        
+
         public MenuViewModel MenuViewModel
             => serviceProvider.GetService<MenuViewModel>()!;
 

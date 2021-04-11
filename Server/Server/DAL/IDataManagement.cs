@@ -7,10 +7,10 @@ namespace Server.DAL
     {
         List<Tour> GetTours();
 
-        bool AddTour(Tour tour);
+        (Tour?, string) AddTour(Tour tour);
 
-        bool UpdateTour(Tour tour);
+        (Tour?, string) UpdateTour(Tour tour);
 
-        bool DeleteTour(int id);
+        (bool, string) DeleteTour(int id);
     }
 }

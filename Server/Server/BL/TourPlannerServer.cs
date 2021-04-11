@@ -6,7 +6,7 @@ using WebService_Lib.Attributes;
 namespace Server.BL
 {
     [Component]
-    public class TourPlanner
+    public class TourPlannerServer
     {
         [Autowired]
         private IDataManagement db = null!;
@@ -14,9 +14,9 @@ namespace Server.BL
         [Autowired]
         private IMapApi map = null!;
 
-        public TourPlanner() {}
+        public TourPlannerServer() {}
         
-        public TourPlanner(IDataManagement db, IMapApi map)
+        public TourPlannerServer(IDataManagement db, IMapApi map)
         {
             this.db = db;
             this.map = map;
@@ -27,17 +27,17 @@ namespace Server.BL
             return db.GetTours();
         }
 
-        public bool AddTour(Tour tour)
+        public (Tour?, string) AddTour(Tour tour)
         {
             return db.AddTour(tour);
         }
         
-        public bool UpdateTour(Tour tour)
+        public (Tour?, string) UpdateTour(Tour tour)
         {
             return db.UpdateTour(tour);
         }
 
-        public bool DeleteTour(int id)
+        public (bool, string) DeleteTour(int id)
         {
             return db.DeleteTour(id);
         }
