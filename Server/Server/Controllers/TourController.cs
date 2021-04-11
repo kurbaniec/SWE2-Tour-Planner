@@ -38,5 +38,27 @@ namespace Server.Controllers
 
             return Response.Json(jsonString);
         }
+
+        [Post("/api/test")]
+        public Response Test([JsonString] string json)
+        {
+            Console.WriteLine(json);
+            return Response.Status(Status.Ok);
+        }
+        
+        [Post("/api/test2")]
+        public Response Test2(Dictionary<string, object>? json)
+        {
+            Console.WriteLine(json);
+            return Response.Status(Status.Ok);
+        }
+        
+        [Post("/api/test3")]
+        public Response Test2([JsonString] string jsonString, Dictionary<string, object>? json)
+        {
+            Console.WriteLine(jsonString);
+            Console.WriteLine(json);
+            return Response.Status(Status.Ok);
+        }
     }
 }
