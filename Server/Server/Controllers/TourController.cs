@@ -39,6 +39,23 @@ namespace Server.Controllers
             return Response.Json(jsonString);
         }
 
+        [Get("/api/route")]
+        public Response GetRouteImage(PathVariable<int> id)
+        {
+            if (id.Ok)
+            {
+                var imagePath = tp.GetRouteImage(id.Value!);
+                if (imagePath is { } path)
+                {
+                    var response = Response.File(path);
+                    if (response is { }) return response;
+                }
+            }
+
+            return Response.Status(Status.NotFound);
+        }
+        
+
         [Post("/api/test")]
         public Response Test([JsonString] string json)
         {

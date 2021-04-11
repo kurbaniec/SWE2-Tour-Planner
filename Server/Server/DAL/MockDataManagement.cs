@@ -17,11 +17,12 @@ namespace Server.DAL
         {
             tours = new List<Tour>();
             var tour = new Tour(
+                1000,
                 "A", "B",
                 "TourA", 
                 22, 
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/A_large_blank_world_map_with_oceans_marked_in_blue.svg/4500px-A_large_blank_world_map_with_oceans_marked_in_blue.svg.png",
+                "http://localhost:8080/api/route/1000",
                 new List<TourLog>() {
                         new TourLog(
                             DateTime.Now, 
@@ -48,11 +49,13 @@ namespace Server.DAL
                     )}
             );
             var tour2 = new Tour(
+                1001,
                 "U6", "U4",
                 "TourB", 
                 202, 
                 "Better Tour Than A",
-                "https://homepage.univie.ac.at/horst.prillinger/ubahn/m/largemap-s-wien.png"
+                "http://localhost:8080/api/route/1001",
+                new List<TourLog>()
             );
             tours.Add(tour);
             tours.Add(tour2);

@@ -63,7 +63,7 @@ namespace Server.BL
             return map.SaveRouteImage(from, to, id);
         }
 
-        public string? GetRouteImage(string id)
+        public string? GetRouteImage(int id)
         {
             return map.GetRouteImagePath(id);
         }

@@ -8,6 +8,6 @@ namespace Server.DAL
         
         bool SaveRouteImage(string from, string to, string id);
 
-        string? GetRouteImagePath(string id);
+        string? GetRouteImagePath(int id);
     }
 }
