@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Server_Test</RootNamespace>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RootNamespace>Client_Test</RootNamespace>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -15,7 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Server\Server.csproj" />
+    <ProjectReference Include="..\..\Model\Model\Model.csproj" />
+    <ProjectReference Include="..\Client\Client.csproj" />
   </ItemGroup>
 
 </Project>
