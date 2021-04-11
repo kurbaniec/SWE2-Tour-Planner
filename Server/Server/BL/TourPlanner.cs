@@ -27,7 +27,7 @@ namespace Server.BL
             return db.GetTours();
         }
 
-        public int? AddTour(Tour tour)
+        public bool AddTour(Tour tour)
         {
             return db.AddTour(tour);
         }
@@ -42,6 +42,7 @@ namespace Server.BL
             return db.DeleteTour(id);
         }
 
+        /*
         int? AddTourLog(int tourId, TourLog log)
         {
             return db.AddTourLog(tourId, log);
@@ -55,7 +56,7 @@ namespace Server.BL
         bool DeleteTourLog(int tourId, TourLog log)
         {
             return db.DeleteTourLog(tourId, log);
-        }
+        }*/
 
         public bool SaveRouteImage(string from, string to, string id)
         {

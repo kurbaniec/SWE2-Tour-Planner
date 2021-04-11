@@ -63,11 +63,20 @@ namespace Server.DAL
             return tours;
         }
 
-        public int? AddTour(Tour tour)
+        public bool AddTour(Tour tour)
         {
             var id = tours.OrderByDescending(t => t.Id).Take(1).First().Id + 1;
             tour.Id = id;
-            return id;
+            
+            var logHighest = tour.Logs.OrderByDescending(l => l.Id).Take(1).FirstOrDefault();
+            var logId = logHighest?.Id ?? 1000;
+            tour.Logs.ForEach(l =>
+            {
+                if (l.Id == 0) l.Id = logId++;
+            });
+                
+            tours.Add(tour);
+            return true;
         }
 
         public bool UpdateTour(Tour tour)
@@ -82,6 +91,14 @@ namespace Server.DAL
                 t.Image = tour.Image;
                 t.Logs = tour.Logs;
                 t.Name = tour.Name;
+                t.Logs = tour.Logs;
+                // Index new logs with id
+                var logHighest = tour.Logs.OrderByDescending(l => l.Id).Take(1).FirstOrDefault();
+                var logId = logHighest?.Id ?? 1000;
+                t.Logs.ForEach(l =>
+                {
+                    if (l.Id == 0) l.Id = logId++;
+                });
             });
             return true;
         }
@@ -92,6 +109,8 @@ namespace Server.DAL
             return true;
         }
 
+        // TODO delete this?
+        
         public int? AddTourLog(int tourId, TourLog log)
         {
             var tour = tours.SingleOrDefault(t => t.Id == tourId);
