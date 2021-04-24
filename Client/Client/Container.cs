@@ -20,10 +20,10 @@ namespace Client
         {
             var services = new ServiceCollection();
 
-            services.AddSingleton<Mediator>();
-            services.AddSingleton<ContentNavigation>();
             // Provide dependencies
             // See: https://stackoverflow.com/a/53884452/12347616
+            services.AddSingleton<Mediator>();
+            services.AddSingleton<ContentNavigation>();
             services.AddSingleton<ITourApi>(x => new TourApi());
             services.AddSingleton<TourPlannerClient>(x =>
                 new TourPlannerClient(x.GetService<ITourApi>()!));

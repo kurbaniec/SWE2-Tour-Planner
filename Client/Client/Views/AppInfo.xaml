@@ -152,20 +152,18 @@
                         Route Information
                         <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
                     </TextBox>
+                    <!-- TOOD remove 
                     <Image Grid.Column="0" Grid.Row="6" Width="100">
                         <Image.Source>
                             <BitmapImage UriSource="/Assets/loading.png"/>
                         </Image.Source>
-                    </Image>
-                    <Image x:Name="Image" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Source="{Binding SelectedTour.Image, IsAsync=True}"
-                           Visibility="Visible">
-                        <!-- not really working 
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Loaded">
-                                <i:ChangePropertyAction TargetObject="{Binding ElementName=Image}"
-                                    PropertyName="Visibility" Value="Visible"/> 
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers> -->
+                    </Image> -->
+                    <!-- Cache image https://stackoverflow.com/a/24600904/12347616 -->
+                    <Image Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2">
+                        <Image.Source>
+                            <BitmapImage UriCachePolicy="Revalidate"
+                                UriSource="{Binding SelectedTour.Image}"/>
+                        </Image.Source>
                     </Image>
                 </Grid>
                 <Grid MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, 

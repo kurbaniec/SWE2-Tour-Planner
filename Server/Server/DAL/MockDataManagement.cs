@@ -111,52 +111,6 @@ namespace Server.DAL
             tours = tours.Where(tour => tour.Id != id).ToList();
             return (true, string.Empty);
         }
-
-        // TODO delete this?
         
-        public int? AddTourLog(int tourId, TourLog log)
-        {
-            var tour = tours.SingleOrDefault(t => t.Id == tourId);
-            
-            if (tour is null) return null;
-            
-            var id = tour.Logs.OrderByDescending(t => t.Id).Take(1).First().Id + 1;
-            log.Id = id;
-            tour.Logs.Add(log);
-            return id;
-        }
-
-        public bool UpdateTourLog(int tourId, TourLog log)
-        {
-            var tour = tours.SingleOrDefault(t => t.Id == tourId);
-            
-            if (tour is null) return false;
-            
-            tour.Logs.ForEach(t =>
-            {
-                if (t.Id != tour.Id) return;
-                t.Date = log.Date;
-                t.Distance = log.Distance;
-                t.Duration = log.Duration;
-                t.Rating = log.Rating;
-                t.Report = log.Report;
-                t.Stops = log.Stops;
-                t.Type = log.Type;
-                t.AvgSpeed = log.AvgSpeed;
-                t.HeightDifference = log.HeightDifference;
-                t.MaxSpeed = log.MaxSpeed;
-            });
-            return true;
-        }
-
-        public bool DeleteTourLog(int tourId, TourLog log)
-        {
-            var tour = tours.SingleOrDefault(t => t.Id == tourId);
-
-            if (tour is null) return false;
-            
-            tour.Logs = tour.Logs.Where(l => l.Id != log.Id).ToList();
-            return true;
-        }
     }
 }

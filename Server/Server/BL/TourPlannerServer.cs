@@ -42,22 +42,6 @@ namespace Server.BL
             return db.DeleteTour(id);
         }
 
-        /*
-        int? AddTourLog(int tourId, TourLog log)
-        {
-            return db.AddTourLog(tourId, log);
-        }
-
-        bool UpdateTourLog(int tourId, TourLog log)
-        {
-            return db.UpdateTourLog(tourId, log);
-        }
-
-        bool DeleteTourLog(int tourId, TourLog log)
-        {
-            return db.DeleteTourLog(tourId, log);
-        }*/
-
         public bool SaveRouteImage(string from, string to, string id)
         {
             return map.SaveRouteImage(from, to, id);
