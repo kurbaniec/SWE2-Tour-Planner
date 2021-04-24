@@ -1,0 +1,14 @@
+{
+    "client": {
+        "base-url": "http://localhost:8080/"
+    },
+    "server": {
+        "port": 8080,
+        "db": {
+            "user": "postgres",
+            "password": "postgres",
+            "ip": "localhost",
+            "port": 5432
+        }
+    }
+}

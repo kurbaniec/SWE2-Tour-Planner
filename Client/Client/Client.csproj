@@ -27,4 +27,11 @@
     </Resource>
   </ItemGroup>
 
+  <!-- See: https://stackoverflow.com/a/51544654/12347616-->
+  <ItemGroup>
+    <Content Include="..\..\config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

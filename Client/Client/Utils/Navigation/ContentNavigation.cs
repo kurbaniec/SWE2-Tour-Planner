@@ -5,6 +5,7 @@ using Client.Views;
 
 namespace Client.Utils.Navigation
 {
+    // Inspired by https://paulstovell.com/wpf-navigation/
     public class ContentNavigation
     {
         // Bind navigation service
