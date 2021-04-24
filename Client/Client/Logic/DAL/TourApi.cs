@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Client.Logic.Setup;
 using Model;
 
 namespace Client.Logic.DAL
 {
     public class TourApi : ITourApi
     {
-        // TODO read base_url from config
-        private readonly string baseUrl = "http://localhost:8080";
+        private readonly Configuration cfg;
+        private readonly string baseUrl;
         private readonly HttpClient client = new();
+
+        public TourApi(Configuration cfg)
+        {
+            this.cfg = cfg;
+            this.baseUrl = (string) cfg.Config["client"]!["base-url"]!;
+        }
         
         public async Task<(List<Tour>?, string)> GetTours()
         {

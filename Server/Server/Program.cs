@@ -7,7 +7,9 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            var service = new SimpleWebService(port: 8080);
+            // Port is set through config file 
+            // with the help of `Setup/Configuration.cs`
+            var service = new SimpleWebService();
             service.Start();
         }
     }

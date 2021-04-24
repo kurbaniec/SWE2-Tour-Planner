@@ -1,5 +1,6 @@
 ﻿using Client.Logic.BL;
 using Client.Logic.DAL;
+using Client.Logic.Setup;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
 using Client.ViewModels;
@@ -22,9 +23,11 @@ namespace Client
 
             // Provide dependencies
             // See: https://stackoverflow.com/a/53884452/12347616
+            services.AddSingleton<Configuration>();
             services.AddSingleton<Mediator>();
             services.AddSingleton<ContentNavigation>();
-            services.AddSingleton<ITourApi>(x => new TourApi());
+            services.AddSingleton<ITourApi>(x => 
+                new TourApi(x.GetService<Configuration>()!));
             services.AddSingleton<TourPlannerClient>(x =>
                 new TourPlannerClient(x.GetService<ITourApi>()!));
             services.AddSingleton<MainViewModel>(x =>
