@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Input;
+using Client.Utils.Commands;
 using Model;
 using Type = Model.Type;
 
@@ -9,9 +13,9 @@ namespace Client.ViewModels
         private readonly TourLog log;
         public TourLog Model => log;
 
-        private DateTime date;
+        private DateTime? date;
 
-        public DateTime Date
+        public DateTime? Date
         {
             get => date;
             set
@@ -35,9 +39,9 @@ namespace Client.ViewModels
             }
         }
 
-        private TimeSpan duration;
+        private TimeSpan? duration;
 
-        public TimeSpan Duration
+        public TimeSpan? Duration
         {
             get => duration;
             set
@@ -48,9 +52,9 @@ namespace Client.ViewModels
             }
         }
 
-        private int distance;
+        private int? distance;
 
-        public int Distance
+        public int? Distance
         {
             get => distance;
             set
@@ -61,9 +65,9 @@ namespace Client.ViewModels
             }
         }
 
-        private int rating;
+        private int? rating;
 
-        public int Rating
+        public int? Rating
         {
             get => rating;
             set
@@ -87,40 +91,43 @@ namespace Client.ViewModels
             }
         }
 
-        private double avgSpeed;
+        private double? avgSpeed;
 
-        public double AvgSpeed
+        public double? AvgSpeed
         {
             get => avgSpeed;
             set
             {
-                if (Math.Abs(avgSpeed - value) < 0.001) return;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (avgSpeed == value) return;
                 avgSpeed = value;
                 OnPropertyChanged();
             }
         }
 
-        private double maxSpeed;
+        private double? maxSpeed;
 
-        public double MaxSpeed
+        public double? MaxSpeed
         {
             get => maxSpeed;
             set
             {
-                if (Math.Abs(maxSpeed - value) < 0.001) return;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (maxSpeed == value) return;
                 maxSpeed = value;
                 OnPropertyChanged();
             }
         }
 
-        private double heightDifference;
+        private double? heightDifference;
 
-        public double HeightDifference
+        public double? HeightDifference
         {
             get => heightDifference;
             set
             {
-                if (Math.Abs(heightDifference - value) < 0.001) return;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (heightDifference == value) return;
                 heightDifference = value;
                 OnPropertyChanged();
             }
@@ -138,6 +145,66 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        private bool isValid = true;
+        public bool IsValid
+        {
+            get => isValid;
+            set
+            {
+                if (isValid == value) return;
+                // Why negation?
+                // HasValidationErrors = false => IsValid = true
+                isValid = !value;
+                OnPropertyChanged();
+            }
+        }
+
+        /**
+        private readonly Dictionary<string, string> error = new();
+        public string Error => string.Join("; ", error.Values);
+        public bool IsValid => string.IsNullOrEmpty(Error);
+
+        public string this[string propertyName]
+        {
+            get
+            {
+                string errorMsg = string.Empty;
+                switch (propertyName)
+                {
+                    case "Date":
+                        break;
+                    case "Type":
+                        break;
+                    case "Duration":
+                        if (duration == null)
+                            errorMsg = "To cannot be empty";
+                        break;
+                    case "Distance":
+                        if (Distance == null)
+                            errorMsg = "Distance cannot be empty";
+                        break;
+                    case "Rating":
+                        break;
+                    case "AvgSpeed":
+                        break;
+                    case "MaxSpeed":
+                        break;
+                    case "HeightDifference":
+                        break;
+                }
+
+                // Update property with all errors
+                if (string.IsNullOrEmpty(errorMsg))
+                    error.Remove(propertyName);
+                else
+                    error[propertyName] = errorMsg;
+                OnPropertyChanged($"Error");
+                OnPropertyChanged($"Valid");
+                // Return error message
+                return errorMsg;
+            }
+        }*/
 
         public TourLogWrapper(TourLog log)
         {
@@ -166,21 +233,22 @@ namespace Client.ViewModels
 
         public TourLog GetRequestTourLog()
         {
-            return new TourLog(date, type, duration, distance, rating, report, avgSpeed, maxSpeed, heightDifference,
+            return new((DateTime) date!, type, (TimeSpan) duration!, (int) distance!, (int) rating!, report,
+                (double) avgSpeed!, (double) maxSpeed!, (double) heightDifference!,
                 stops);
         }
 
         public void SaveChanges()
         {
-            log.Date = date;
+            log.Date = (DateTime) date!;
             log.Type = type;
-            log.Duration = duration;
-            log.Distance = distance;
-            log.Rating = rating;
+            log.Duration = (TimeSpan) duration!;
+            log.Distance = (int) distance!;
+            log.Rating = (int) rating!;
             log.Report = report;
-            log.AvgSpeed = avgSpeed;
-            log.MaxSpeed = maxSpeed;
-            log.HeightDifference = heightDifference;
+            log.AvgSpeed = (double) avgSpeed!;
+            log.MaxSpeed = (double) maxSpeed!;
+            log.HeightDifference = (double) heightDifference!;
             log.Stops = stops;
         }
 

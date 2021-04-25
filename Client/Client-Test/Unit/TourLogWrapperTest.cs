@@ -18,7 +18,7 @@ namespace Client_Test.Unit
         public void DefaultConstructor()
         {
             var wrapper = new TourLogWrapper();
-            Assert.AreEqual(DateTime.Today.Day, wrapper.Date.Day);
+            Assert.AreEqual(DateTime.Today.Day, wrapper.Date!.Value.Day);
             Assert.AreEqual(Type.Car, wrapper.Type);
             Assert.AreEqual(TimeSpan.FromHours(1), wrapper.Duration);
             Assert.AreEqual(10, wrapper.Distance);

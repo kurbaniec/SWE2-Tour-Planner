@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Windows.Documents;
 using Model;
 
 namespace Client.ViewModels
@@ -96,7 +94,7 @@ namespace Client.ViewModels
         public ObservableCollection<TourLogWrapper> Logs
         {
             get => logs;
-            set
+            private set
             {
                 if (logs == value) return;
                 logs = value;
@@ -107,7 +105,7 @@ namespace Client.ViewModels
         // Data Validation
         // Based on https://andydunkel.net/2019/10/16/data-validation-in-wpf/
         // And: https://stackoverflow.com/a/13607710/12347616
-        private Dictionary<string, string> error = new();
+        private readonly Dictionary<string, string> error = new();
         public string Error => string.Join("; ", error.Values);
         public bool IsValid => string.IsNullOrEmpty(Error);
 
@@ -137,7 +135,12 @@ namespace Client.ViewModels
                     case "Description":
                         break;
                     case "Logs":
-                        // TODO iterate over logs
+                        foreach (var log in logs)
+                        {
+                            if (log.IsValid) continue;
+                            errorMsg = "Empty or malformed log entries found";
+                            break;
+                        }
                         break;
 
                 }

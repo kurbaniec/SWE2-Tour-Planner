@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Client.Views
@@ -21,6 +22,12 @@ namespace Client.Views
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
+        }
+
+        private void Validation_OnError(object? sender, ValidationErrorEventArgs e)
+        {
+            Console.WriteLine("Baum");
+            string w = String.Empty;
         }
     }
 }
