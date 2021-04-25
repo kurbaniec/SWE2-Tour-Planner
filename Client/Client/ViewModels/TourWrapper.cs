@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Model;
@@ -156,6 +157,24 @@ namespace Client.ViewModels
             }
         }
 
+        List<EventHandler<PropertyChangedEventArgs>> changedHandlers =
+            new List<EventHandler<PropertyChangedEventArgs>>();
+        
+        
+        // Used to Invoke Child Validation
+        // Based on https://stackoverflow.com/a/6651479/12347616
+        // TODO refactor a bit...
+        private void ChildChanged(object? sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "IsValid")
+            {
+                Console.WriteLine(sender);
+                Console.WriteLine("h");
+                // ReSharper disable once ExplicitCallerInfoArgument
+                OnPropertyChanged("Logs");
+            }
+        }
+        
         public TourWrapper(Tour tour, string baseUrl)
         {
             this.tour = tour;
@@ -166,7 +185,14 @@ namespace Client.ViewModels
             this.description = tour.Description;
             this.image = $"{baseUrl}/api/route/{this.tour.Id}";
             // Functional programming with LINQ
-            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
+            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log =>
+                {
+                    var wrapper = new TourLogWrapper(log);
+                    //EventHandler<PropertyChangedEventArgs> eh =
+                    //    new EventHandler<PropertyChangedEventArgs>(ChildChanged);
+                    wrapper.PropertyChanged += ((sender, args) => ChildChanged(sender, args));
+                    return wrapper;
+                })
                 .ToList());
         }
 

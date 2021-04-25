@@ -244,7 +244,7 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <DataGrid Grid.Row="0" RowHeight="25" Validation.Error="Validation_OnError"
+                                        <DataGrid Grid.Row="0" RowHeight="25"
                                                   ItemsSource="{Binding . ,
                                             Converter={converters:ItemSourceConverter}}"
                                           AutoGenerateColumns="False" CanUserAddRows="False">

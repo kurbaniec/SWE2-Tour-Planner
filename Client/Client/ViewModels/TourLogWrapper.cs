@@ -152,7 +152,6 @@ namespace Client.ViewModels
             get => isValid;
             set
             {
-                if (isValid == value) return;
                 // Why negation?
                 // HasValidationErrors = false => IsValid = true
                 isValid = !value;
