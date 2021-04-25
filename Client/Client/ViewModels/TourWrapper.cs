@@ -108,59 +108,49 @@ namespace Client.ViewModels
         // Based on https://andydunkel.net/2019/10/16/data-validation-in-wpf/
         // And: https://stackoverflow.com/a/13607710/12347616
         private Dictionary<string, string> error = new();
-        public string Error
-        {
-            get => string.Join("; ", error.Values);
-            /**private set
-            {
-                if (value != string.Empty) return;
-                var properties = new List<string>() {"From", "To", "Name", "Distance", "Description", "Logs"};
-                var allErrors = new StringBuilder();
-                foreach (var prop in properties)
-                {
-                    allErrors.AppendLine(this[prop]);
-                }
-                error = allErrors.ToString();
-                OnPropertyChanged();
-                // Also update validation status
-                IsValid = string.IsNullOrEmpty(error);
-            }*/
-        }
-        public string this[string propertyName] => GetErrorForProperty(propertyName);
+        public string Error => string.Join("; ", error.Values);
         public bool IsValid => string.IsNullOrEmpty(Error);
 
-        private string GetErrorForProperty(string propertyName)
+        public string this[string propertyName]
         {
-            string errorMsg = string.Empty;
-            switch (propertyName)
+            get
             {
-                case "From":
-                    if (string.IsNullOrEmpty(from))
-                    {
-                        errorMsg = "From cannot be empty";
-                    }
-                    break;
-                case "To":
-                    break;
-                case "Name":
-                    break;
-                case "Distance":
-                    break;
-                case "Description":
-                    break;
-                case "Logs":
-                    break;
-                
+                string errorMsg = string.Empty;
+                switch (propertyName)
+                {
+                    case "From":
+                        if (string.IsNullOrEmpty(from))
+                            errorMsg = "From cannot be empty";
+                        break;
+                    case "To":
+                        if (string.IsNullOrEmpty(to))
+                            errorMsg = "To cannot be empty";
+                        break;
+                    case "Name":
+                        if (string.IsNullOrEmpty(name))
+                            errorMsg = "To cannot be empty";
+                        break;
+                    case "Distance":
+                        if (string.IsNullOrEmpty(to))
+                            errorMsg = "Distance cannot be empty";
+                        break;
+                    case "Description":
+                        break;
+                    case "Logs":
+                        // TODO iterate over logs
+                        break;
+
+                }
+                // Update property with all errors
+                if (string.IsNullOrEmpty(errorMsg))
+                    error.Remove(propertyName);
+                else
+                    error[propertyName] = errorMsg;
+                OnPropertyChanged($"Error");
+                OnPropertyChanged($"Valid");
+                // Return error message
+                return errorMsg;
             }
-            // Update property with all errors
-            if (string.IsNullOrEmpty(errorMsg))
-                error.Remove(propertyName);
-            else
-                error[propertyName] = errorMsg;
-            OnPropertyChanged($"Error");
-            OnPropertyChanged($"Valid");
-            // Return error message
-            return errorMsg;
         }
 
         public TourWrapper(Tour tour, string baseUrl)
