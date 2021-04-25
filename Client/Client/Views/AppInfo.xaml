@@ -219,12 +219,27 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <DataGrid Grid.Row="0"
-                                                  ItemsSource="{Binding . ,
-                                                    Converter={converters:ItemSourceConverter}}"
-                                                  AutoGenerateColumns="False" CanUserAddRows="False">
+                                        <DataGrid Grid.Row="0" RowHeight="25"
+                                          ItemsSource="{Binding . ,
+                                            Converter={converters:ItemSourceConverter}}"
+                                          AutoGenerateColumns="False" CanUserAddRows="False">
                                             <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
+                                                <!-- Combobox Selection https://www.c-sharpcorner.com/uploadfile/dpatra/combobox-in-datagrid-in-wpf/ -->
+                                                <DataGridTemplateColumn Header="Type">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Type}"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox
+                                                              ItemsSource="{Binding Type, 
+                                                              Converter={converters:EnumListConverter}}"
+                                                              SelectedItem="{Binding Type}"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                                </DataGridTemplateColumn>
                                                 <DataGridTextColumn Header="Duration" Binding="{Binding Duration}"/>
                                                 <DataGridTextColumn Header="Distance" Binding="{Binding Distance}"/>
                                                 <DataGridTextColumn Header="Rating" Binding="{Binding Rating}"/>

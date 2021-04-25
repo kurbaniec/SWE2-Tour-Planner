@@ -103,7 +103,7 @@ namespace Client.ViewModels
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
                         await Task.Run(() =>
                         {
-                            Thread.Sleep(5000);
+                            Thread.Sleep(50);
                         });
                         selectedTour?.SaveChanges();
                         WaitingForResponse = false;

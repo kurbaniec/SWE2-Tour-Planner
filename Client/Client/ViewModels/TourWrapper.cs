@@ -115,34 +115,6 @@ namespace Client.ViewModels
                 .ToList());
         }
 
-        /**
-        public TourWrapper(string from, string to, string name, int distance, string description, string image)
-        {
-            tour = new Tour(from, to, name, distance, description, image);
-            this.from = tour.From;
-            this.to = tour.To;
-            this.name = tour.Name;
-            this.distance = tour.Distance;
-            this.description = tour.Description;
-            this.image = tour.Image;
-            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
-                .ToList());
-        }
-
-        public TourWrapper(string from, string to, string name, int distance, string description, string image,
-            List<TourLog> logs)
-        {
-            tour = new Tour(from, to, name, distance, description, image, logs);
-            this.from = tour.From;
-            this.to = tour.To;
-            this.name = tour.Name;
-            this.distance = tour.Distance;
-            this.description = tour.Description;
-            this.image = tour.Image;
-            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
-                .ToList());
-        }*/
-
         public void AddNewLog()
         {
             Logs.Add(new TourLogWrapper());
