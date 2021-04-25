@@ -22,7 +22,6 @@ namespace Server.DAL
                 "TourA", 
                 22, 
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-                "http://localhost:8080/api/route/1000",
                 new List<TourLog>() {
                         new TourLog(
                             DateTime.Now, 
@@ -54,7 +53,6 @@ namespace Server.DAL
                 "TourB", 
                 202, 
                 "Better Tour Than A",
-                "http://localhost:8080/api/route/1001",
                 new List<TourLog>()
             );
             tours.Add(tour);
@@ -91,7 +89,6 @@ namespace Server.DAL
                 t.Distance = tour.Distance;
                 t.From = tour.From;
                 t.To = tour.To;
-                t.Image = tour.Image;
                 t.Logs = tour.Logs;
                 t.Name = tour.Name;
                 t.Logs = tour.Logs;

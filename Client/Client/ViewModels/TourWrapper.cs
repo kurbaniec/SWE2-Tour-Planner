@@ -101,7 +101,7 @@ namespace Client.ViewModels
             }
         }
 
-        public TourWrapper(Tour tour)
+        public TourWrapper(Tour tour, string baseUrl)
         {
             this.tour = tour;
             this.from = tour.From;
@@ -109,12 +109,13 @@ namespace Client.ViewModels
             this.name = tour.Name;
             this.distance = tour.Distance;
             this.description = tour.Description;
-            this.image = tour.Image;
+            this.image = $"{baseUrl}/api/route/{this.tour.Id}";
             // Functional programming with LINQ
             this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
                 .ToList());
         }
 
+        /**
         public TourWrapper(string from, string to, string name, int distance, string description, string image)
         {
             tour = new Tour(from, to, name, distance, description, image);
@@ -140,7 +141,7 @@ namespace Client.ViewModels
             this.image = tour.Image;
             this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
                 .ToList());
-        }
+        }*/
 
         public void AddNewLog()
         {
@@ -149,7 +150,7 @@ namespace Client.ViewModels
 
         public Tour GetRequestTour()
         {
-            return new Tour(from, to, name, distance, description, image,
+            return new Tour(tour.Id, from, to, name, distance, description,
                 Logs.Select(log => log.GetRequestTourLog()).ToList());
         }
 
@@ -160,7 +161,6 @@ namespace Client.ViewModels
             tour.Name = name;
             tour.Distance = distance;
             tour.Description = description;
-            tour.Image = image;
             // Save changes on tour logs
             logs.ForEach(log => log.SaveChanges());
             // Update tour logs in Model
@@ -174,7 +174,6 @@ namespace Client.ViewModels
             Name = tour.Name;
             Distance = tour.Distance;
             Description = tour.Description;
-            Image = tour.Image;
             // Discard tour log changes
             Logs.ForEach(log => log.DiscardChanges());
             // Update tour logs in wrapper

@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Windows.Data;
 using System.Windows.Input;
 using Client.Logic.BL;
+using Client.Logic.Setup;
 using Client.Utils.Commands;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
@@ -18,10 +19,9 @@ namespace Client.ViewModels
     public class ListViewModel : BaseViewModel
     {
         private readonly TourPlannerClient tp;
-        
         private readonly Mediator mediator;
-        
         private readonly ContentNavigation nav;
+        private readonly string baseUrl;
         
         public ObservableCollection<TourWrapper> Tours { get; }
         private readonly ICollectionView toursView;
@@ -102,7 +102,7 @@ namespace Client.ViewModels
                         var response = await tp.GetTours();
                         if (response.Item1 is { } tours)
                         {
-                            tours.ForEach(t => Tours.Add(new TourWrapper(t)));
+                            tours.ForEach(t => Tours.Add(new TourWrapper(t, baseUrl)));
                         }
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     });
@@ -110,11 +110,13 @@ namespace Client.ViewModels
             }
         }
 
-        public ListViewModel(TourPlannerClient tp, Mediator mediator, ContentNavigation nav)
+        public ListViewModel(
+            TourPlannerClient tp, Mediator mediator, ContentNavigation nav, Configuration cfg)
         {
             this.tp = tp;
             this.mediator = mediator;
             this.nav = nav;
+            this.baseUrl = cfg.BaseUrl;
 
             filter = "";
             Tours = new ObservableCollection<TourWrapper>();

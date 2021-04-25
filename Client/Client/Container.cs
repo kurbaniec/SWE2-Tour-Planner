@@ -36,13 +36,12 @@ namespace Client
                 new MenuViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<ListViewModel>(x =>
                 new ListViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
-                    x.GetService<ContentNavigation>()!));
+                    x.GetService<ContentNavigation>()!, x.GetService<Configuration>()!));
             services.AddSingleton<InfoViewModel>(x =>
                 new InfoViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             serviceProvider = services.BuildServiceProvider();
 
-            // Instance all singletons
-            serviceProvider.GetService<ITourApi>();
+            // Instance Logic & ViewModels
             serviceProvider.GetService<TourPlannerClient>();
             serviceProvider.GetService<MainViewModel>();
             serviceProvider.GetService<MenuViewModel>();

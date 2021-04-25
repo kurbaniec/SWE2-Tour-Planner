@@ -17,7 +17,7 @@ namespace Client.Logic.DAL
         public TourApi(Configuration cfg)
         {
             this.cfg = cfg;
-            this.baseUrl = (string) cfg.Config["client"]!["base-url"]!;
+            this.baseUrl = cfg.BaseUrl;
         }
         
         public async Task<(List<Tour>?, string)> GetTours()

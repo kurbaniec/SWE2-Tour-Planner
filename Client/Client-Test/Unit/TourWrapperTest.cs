@@ -6,6 +6,8 @@ namespace Client_Test.Unit
 {
     public class TourWrapperTest
     {
+        private string baseUrl = "http://localhost:8000";
+        
         [OneTimeSetUp]
         public void Setup()
         {
@@ -16,21 +18,19 @@ namespace Client_Test.Unit
          )]
         public void SaveChangesToModel()
         {
-            var model = new Tour("A", "B", "AB", 10, "Cool!", "img");
-            var wrapper = new TourWrapper(model);
+            var model = new Tour("A", "B", "AB", 10, "Cool!");
+            var wrapper = new TourWrapper(model, baseUrl);
             var newFrom = "C";
             var newTo = "D";
             var newName = "CD";
             var newDistance = 20;
             var newDescription = "Super!";
-            var newImage = ":/";
 
             wrapper.From = newFrom;
             wrapper.To = newTo;
             wrapper.Name = newName;
             wrapper.Distance = newDistance;
             wrapper.Description = newDescription;
-            wrapper.Image = newImage;
             wrapper.SaveChanges();
             
             Assert.AreEqual(newFrom, model.From);
@@ -38,7 +38,6 @@ namespace Client_Test.Unit
             Assert.AreEqual(newName, model.Name);
             Assert.AreEqual(newDistance, model.Distance);
             Assert.AreEqual(newDescription, model.Description);
-            Assert.AreEqual(newImage, model.Image);
         }
         
         [Test, TestCase(TestName = "Check save changes method", Description =
@@ -47,21 +46,19 @@ namespace Client_Test.Unit
          )]
         public void SaveChangesToModelWithLogs()
         {
-            var model = new Tour("A", "B", "AB", 10, "Cool!", "img");
-            var wrapper = new TourWrapper(model);
+            var model = new Tour("A", "B", "AB", 10, "Cool!");
+            var wrapper = new TourWrapper(model, baseUrl);
             var newFrom = "C";
             var newTo = "D";
             var newName = "CD";
             var newDistance = 20;
             var newDescription = "Super!";
-            var newImage = ":/";
 
             wrapper.From = newFrom;
             wrapper.To = newTo;
             wrapper.Name = newName;
             wrapper.Distance = newDistance;
             wrapper.Description = newDescription;
-            wrapper.Image = newImage;
             wrapper.AddNewLog();
             wrapper.SaveChanges();
             
@@ -70,7 +67,6 @@ namespace Client_Test.Unit
             Assert.AreEqual(newName, model.Name);
             Assert.AreEqual(newDistance, model.Distance);
             Assert.AreEqual(newDescription, model.Description);
-            Assert.AreEqual(newImage, model.Image);
             Assert.AreEqual(1, model.Logs.Count);
         }
         
@@ -80,21 +76,19 @@ namespace Client_Test.Unit
          )]
         public void DiscardChangesToModel()
         {
-            var model = new Tour("A", "B", "AB", 10, "Cool!", "img");
-            var wrapper = new TourWrapper(model);
+            var model = new Tour("A", "B", "AB", 10, "Cool!");
+            var wrapper = new TourWrapper(model, baseUrl);
             var newFrom = "C";
             var newTo = "D";
             var newName = "CD";
             var newDistance = 20;
             var newDescription = "Super!";
-            var newImage = ":/";
 
             wrapper.From = newFrom;
             wrapper.To = newTo;
             wrapper.Name = newName;
             wrapper.Distance = newDistance;
             wrapper.Description = newDescription;
-            wrapper.Image = newImage;
             wrapper.DiscardChanges();
             
             Assert.AreNotEqual(newFrom, wrapper.From);
@@ -102,14 +96,12 @@ namespace Client_Test.Unit
             Assert.AreNotEqual(newName, wrapper.Name);
             Assert.AreNotEqual(newDistance, wrapper.Distance);
             Assert.AreNotEqual(newDescription, wrapper.Description);
-            Assert.AreNotEqual(newImage, wrapper.Image);
 
             Assert.AreNotEqual(newFrom, model.From);
             Assert.AreNotEqual(newTo, model.To);
             Assert.AreNotEqual(newName, model.Name);
             Assert.AreNotEqual(newDistance, model.Distance);
             Assert.AreNotEqual(newDescription, model.Description);
-            Assert.AreNotEqual(newImage, model.Image);
         }
 
         [Test, TestCase(TestName = "Check discard changes method", Description =
@@ -118,21 +110,19 @@ namespace Client_Test.Unit
          )]
         public void DiscardChangesToModelWithLogs()
         {
-            var model = new Tour("A", "B", "AB", 10, "Cool!", "img");
-            var wrapper = new TourWrapper(model);
+            var model = new Tour("A", "B", "AB", 10, "Cool!");
+            var wrapper = new TourWrapper(model, baseUrl);
             var newFrom = "C";
             var newTo = "D";
             var newName = "CD";
             var newDistance = 20;
             var newDescription = "Super!";
-            var newImage = ":/";
 
             wrapper.From = newFrom;
             wrapper.To = newTo;
             wrapper.Name = newName;
             wrapper.Distance = newDistance;
             wrapper.Description = newDescription;
-            wrapper.Image = newImage;
             wrapper.AddNewLog();
             wrapper.DiscardChanges();
             
@@ -141,7 +131,6 @@ namespace Client_Test.Unit
             Assert.AreNotEqual(newName, wrapper.Name);
             Assert.AreNotEqual(newDistance, wrapper.Distance);
             Assert.AreNotEqual(newDescription, wrapper.Description);
-            Assert.AreNotEqual(newImage, wrapper.Image);
             Assert.AreEqual(0, wrapper.Logs.Count);
             
             Assert.AreNotEqual(newFrom, model.From);
@@ -149,7 +138,6 @@ namespace Client_Test.Unit
             Assert.AreNotEqual(newName, model.Name);
             Assert.AreNotEqual(newDistance, model.Distance);
             Assert.AreNotEqual(newDescription, model.Description);
-            Assert.AreNotEqual(newImage, model.Image);
             Assert.AreEqual(0, model.Logs.Count);
         }
         
@@ -158,8 +146,8 @@ namespace Client_Test.Unit
          )]
         public void GetRequestModel()
         {
-            var model = new Tour("A", "B", "AB", 10, "Cool!", "img");
-            var wrapper = new TourWrapper(model);
+            var model = new Tour("A", "B", "AB", 10, "Cool!");
+            var wrapper = new TourWrapper(model, baseUrl);
 
             var requestModel = wrapper.GetRequestTour();
             
@@ -168,7 +156,6 @@ namespace Client_Test.Unit
             Assert.AreEqual("AB", requestModel.Name);
             Assert.AreEqual(10, requestModel.Distance);
             Assert.AreEqual("Cool!", requestModel.Description);
-            Assert.AreEqual("img", requestModel.Image);
             Assert.AreEqual(0, requestModel.Logs.Count);
         }
         
@@ -178,8 +165,8 @@ namespace Client_Test.Unit
          )]
         public void GetRequestModelWithLogs()
         {
-            var model = new Tour("A", "B", "AB", 10, "Cool!", "img");
-            var wrapper = new TourWrapper(model);
+            var model = new Tour("A", "B", "AB", 10, "Cool!");
+            var wrapper = new TourWrapper(model, baseUrl);
             wrapper.AddNewLog();
             wrapper.SaveChanges();
 
@@ -190,7 +177,6 @@ namespace Client_Test.Unit
             Assert.AreEqual("AB", requestModel.Name);
             Assert.AreEqual(10, requestModel.Distance);
             Assert.AreEqual("Cool!", requestModel.Description);
-            Assert.AreEqual("img", requestModel.Image);
             Assert.AreEqual(1, requestModel.Logs.Count);
         }
 

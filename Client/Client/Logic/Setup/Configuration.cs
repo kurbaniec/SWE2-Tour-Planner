@@ -10,6 +10,8 @@ namespace Client.Logic.Setup
     public class Configuration
     {
         public JObject Config { get; }
+        
+        public string BaseUrl { get; }
 
         public Configuration()
         {
@@ -33,8 +35,11 @@ namespace Client.Logic.Setup
                     throw new FileNotFoundException("Could not find config file");
                 }
             }
+            // Parse config
             var configStr = File.ReadAllText(configPath);
             Config = JObject.Parse(configStr);
+            // Set often used config values as properties
+            BaseUrl = (string) Config["client"]!["base-url"]!;
         }
     }
 }
