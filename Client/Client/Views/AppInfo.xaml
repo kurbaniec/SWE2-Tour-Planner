@@ -135,7 +135,9 @@
                         Origin
                         <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
                     </TextBox>
-                    <TextBox Grid.Column="0" Grid.Row="2" Text="{Binding SelectedTour.From}"/>
+                    <TextBox Grid.Column="0" Grid.Row="2" 
+                        Text="{Binding SelectedTour.From, 
+                            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                     <TextBox Grid.Column="1" Grid.Row="1" 
                              TextDecorations="Underline" Style="{StaticResource NoEdit}">
                         Destination

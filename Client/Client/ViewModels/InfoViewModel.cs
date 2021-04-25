@@ -95,7 +95,8 @@ namespace Client.ViewModels
             {
                 if (acceptEdit != null) return acceptEdit;
                 acceptEdit = new RelayCommand(
-                    p => !WaitingForResponse,
+                    p => !WaitingForResponse && 
+                         (SelectedTour == null || SelectedTour.IsValid),
                     async (p) =>
                     {
                         WaitingForResponse = true;
