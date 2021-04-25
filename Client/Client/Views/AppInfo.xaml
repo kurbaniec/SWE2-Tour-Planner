@@ -48,6 +48,25 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
+                <Style TargetType="DatePicker">
+                    <!-- Remove greyed out text in disables state 
+                        https://social.msdn.microsoft.com/Forums/sqlserver/en-US/c48ae352-673b-478c-84c8-fc1374d06a47/how-to-set-a-dark-foreground-text-color-to-a-disabled-datepicker?forum=wpf -->
+                    <Style.Resources>
+                        <Style TargetType="Rectangle">
+                            <Setter Property="Opacity" Value="0"/>
+                        </Style>
+                    </Style.Resources>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page},
+                                    Path=DataContext.Edit}" Value="True">
+                            <Setter Property="IsEnabled" Value="True"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page},
+                                    Path=DataContext.Edit}" Value="False">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
                 <Style TargetType="DataGrid">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page},
@@ -212,7 +231,8 @@
                                     <Expander.Header>
                                         <!-- Set Header as string See: https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/issues/722#issuecomment-305220282 -->
                                         <!-- Date Format See: https://stackoverflow.com/a/1333067/12347616 -->
-                                        <TextBox Text="{Binding Date, StringFormat=yyyy-MM-dd}" />
+                                        <!-- <TextBox Text="{Binding Date, StringFormat=yyyy-MM-dd}" />-->
+                                        <DatePicker SelectedDate="{Binding Date}"/>
                                     </Expander.Header>
                                     <Grid Margin="0 0 20 0">
                                         <Grid.RowDefinitions>
