@@ -176,12 +176,6 @@
                         Route Information
                         <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
                     </TextBox>
-                    <!-- TOOD remove 
-                    <Image Grid.Column="0" Grid.Row="6" Width="100">
-                        <Image.Source>
-                            <BitmapImage UriSource="/Assets/loading.png"/>
-                        </Image.Source>
-                    </Image> -->
                     <!-- Cache image https://stackoverflow.com/a/24600904/12347616 -->
                     <Image Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2">
                         <Image.Source>
@@ -309,8 +303,9 @@
                         </ListView.ItemContainerStyle>
                     </ListView>
                     
-                    <Button Grid.Column="0" Grid.Row="2" Content="Add Log" Margin="10 0 0 0" 
-                            Command="{Binding AddLog}">
+                    <Button Grid.Column="0" Grid.Row="2" Content="Add Log" 
+                        HorizontalAlignment="Left" Margin="10 0 0 0" Width="55"
+                        Command="{Binding AddLog}">
                         <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
                     </Button>
                     

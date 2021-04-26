@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Model;
 
 namespace Client.ViewModels
 {
+    [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
     public class TourWrapper : BaseViewModel, IDataErrorInfo
     {
         private readonly Tour tour;
@@ -109,7 +110,6 @@ namespace Client.ViewModels
         private readonly Dictionary<string, string> error = new();
         public string Error => string.Join("; ", error.Values);
         public bool IsValid => string.IsNullOrEmpty(Error);
-
         public string this[string propertyName]
         {
             get
@@ -143,36 +143,27 @@ namespace Client.ViewModels
                             break;
                         }
                         break;
-
                 }
                 // Update property with all errors
                 if (string.IsNullOrEmpty(errorMsg))
                     error.Remove(propertyName);
                 else
                     error[propertyName] = errorMsg;
-                OnPropertyChanged($"Error");
-                OnPropertyChanged($"Valid");
+                OnPropertyChanged("Error");
+                OnPropertyChanged("Valid");
                 // Return error message
                 return errorMsg;
             }
         }
 
-        List<EventHandler<PropertyChangedEventArgs>> changedHandlers =
-            new List<EventHandler<PropertyChangedEventArgs>>();
-        
-        
         // Used to Invoke Child Validation
-        // Based on https://stackoverflow.com/a/6651479/12347616
-        // TODO refactor a bit...
-        private void ChildChanged(object? sender, PropertyChangedEventArgs args)
+        // Based on https://stackoverflow.com/a/6650060/12347616
+        private void ValidationChanged(object? sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == "IsValid")
-            {
-                Console.WriteLine(sender);
-                Console.WriteLine("h");
-                // ReSharper disable once ExplicitCallerInfoArgument
-                OnPropertyChanged("Logs");
-            }
+            if (args.PropertyName != "IsValid") return;
+            // Force Validation through property change event
+            // Will call `this[string propertyName]` getter
+            OnPropertyChanged("Logs");
         }
         
         public TourWrapper(Tour tour, string baseUrl)
@@ -185,15 +176,7 @@ namespace Client.ViewModels
             this.description = tour.Description;
             this.image = $"{baseUrl}/api/route/{this.tour.Id}";
             // Functional programming with LINQ
-            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log =>
-                {
-                    var wrapper = new TourLogWrapper(log);
-                    //EventHandler<PropertyChangedEventArgs> eh =
-                    //    new EventHandler<PropertyChangedEventArgs>(ChildChanged);
-                    wrapper.PropertyChanged += ((sender, args) => ChildChanged(sender, args));
-                    return wrapper;
-                })
-                .ToList());
+            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(WrapTourLog).ToList());
         }
 
         public void AddNewLog()
@@ -230,11 +213,18 @@ namespace Client.ViewModels
             // Discard tour log changes
             Logs.ForEach(log => log.DiscardChanges());
             // Update tour logs in wrapper
-            Logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(log => new TourLogWrapper(log))
-                .ToList());
+            Logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(WrapTourLog).ToList());
+        }
+        
+        // Wrap TourLog and assign Property changed event
+        private TourLogWrapper WrapTourLog(TourLog log) {
+            // TourLogWrapper (children) should invoke Data Validation in TourWrapper (parent)
+            var wrapper = new TourLogWrapper(log);
+            wrapper.PropertyChanged += ValidationChanged;
+            return wrapper;
         }
     }
-
+    
     // Allow ForEach-LINQ expression on ObservableCollection.
     // See: https://stackoverflow.com/a/2519433/12347616
     public static class ObservableExtension
