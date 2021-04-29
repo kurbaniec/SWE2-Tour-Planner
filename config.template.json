@@ -1,6 +1,7 @@
 {
     "client": {
-        "base-url": "http://localhost:8080"
+        "base-url": "http://localhost:8080",
+        "logger-config": "log4net.config"
     },
     "server": {
         "port": 8080,
@@ -9,6 +10,7 @@
             "password": "postgres",
             "ip": "localhost",
             "port": 5432
-        }
+        },
+        "logger-config": "log4net.config"
     }
 }

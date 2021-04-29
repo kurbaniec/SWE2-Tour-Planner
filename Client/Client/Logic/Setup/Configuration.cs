@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using Client.Utils.Logging;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 namespace Client.Logic.Setup
@@ -12,6 +15,8 @@ namespace Client.Logic.Setup
         public JObject Config { get; }
         
         public string BaseUrl { get; }
+        
+        private readonly ILogger logger = ApplicationLogging.CreateLogger<Configuration>();
 
         public Configuration()
         {
@@ -40,6 +45,11 @@ namespace Client.Logic.Setup
             Config = JObject.Parse(configStr);
             // Set often used config values as properties
             BaseUrl = (string) Config["client"]!["base-url"]!;
+            // Set Logging
+            // See: https://github.com/huorswords/Microsoft.Extensions.Logging.Log4Net.AspNetCore
+            var loggingConfig = (string) Config["client"]!["logger-config"]!;
+            ApplicationLogging.LoggerFactory.AddLog4Net(loggingConfig);
+            logger.Log(LogLevel.Information, "Configuration found, read and initialized");
         }
     }
 }
