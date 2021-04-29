@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WebService_Lib;
 using WebService_Lib.Attributes;
+using WebService_Lib.Logging;
 
 namespace Server.Setup
 {
@@ -15,6 +17,7 @@ namespace Server.Setup
     public class Configuration
     {
         public JObject Config { get; }
+        private readonly ILogger logger = WebServiceLogging.CreateLogger<Configuration>();
 
         public Configuration()
         {
@@ -43,6 +46,10 @@ namespace Server.Setup
             
             // Set Port 
             SimpleWebService.Port = (uint) Config["server"]!["port"]!;
+            // Set Logging
+            var loggingConfig = (string) Config["server"]!["logger-config"]!;
+            WebServiceLogging.LoggerFactory.AddLog4Net(loggingConfig);
+            logger.Log(LogLevel.Information, "Configuration found, read and initialized");
         }
     }
 }
