@@ -45,7 +45,14 @@ namespace Model
             Description = description;
             Logs = logs;
         }
-        
-        public Tour() {}
+
+        public Tour()
+        {
+            From = string.Empty;
+            To = string.Empty;
+            Name = string.Empty;
+            Description = string.Empty;
+            Logs = new List<TourLog>();
+        }
     }
 }

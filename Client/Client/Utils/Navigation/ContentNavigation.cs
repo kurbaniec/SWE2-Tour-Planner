@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Navigation;
+using Client.Utils.Logging;
 using Client.Views;
+using Microsoft.Extensions.Logging;
 
 namespace Client.Utils.Navigation
 {
@@ -11,20 +13,23 @@ namespace Client.Utils.Navigation
         // Bind navigation service
         // See: https://stackoverflow.com/a/52459022/12347616
         // Frame is the name of the `Frame`-Element
-        private static NavigationService navigation 
+        private static readonly NavigationService Navigation 
             = ((Application.Current.MainWindow as MainWindow)!).Frame.NavigationService;
+
+        private readonly ILogger logger = ApplicationLogging.CreateLogger<ContentNavigation>();
 
         public void Navigate(ContentPage page)
         {
+            logger.Log(LogLevel.Information, $"Navigating to {page}");
             var url = $"Views/{page.ToString()}.xaml";
-            navigation.Navigate(new Uri(url, UriKind.Relative));
-            Console.WriteLine(navigation.Content);
+            Navigation.Navigate(new Uri(url, UriKind.Relative));
+            logger.Log(LogLevel.Information, $"Current page: {Navigation.Content}");
         }
     }
 
     public enum ContentPage
     {
-        AppWelcome,
+        AppAdd,
         AppInfo,
     }
 }

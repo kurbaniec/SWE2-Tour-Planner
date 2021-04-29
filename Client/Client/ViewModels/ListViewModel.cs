@@ -69,7 +69,7 @@ namespace Client.ViewModels
                         //addDialog = new AppAddTour {DataContext = this};
                         //addDialog.ShowDialog();
                         // TODO
-                        Trace.WriteLine("Adding tour...");
+                        nav.Navigate(ContentPage.AppAdd);
                     });
                 return openAddTour;
             }

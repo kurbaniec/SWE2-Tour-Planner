@@ -1,4 +1,5 @@
-﻿using Client.Logic.BL;
+﻿using System;
+using Client.Logic.BL;
 using Client.Logic.DAL;
 using Client.Logic.Setup;
 using Client.Utils.Mediators;
@@ -26,7 +27,7 @@ namespace Client
             services.AddSingleton<Configuration>();
             services.AddSingleton<Mediator>();
             services.AddSingleton<ContentNavigation>();
-            services.AddSingleton<ITourApi>(x => 
+            services.AddSingleton<ITourApi>(x =>
                 new TourApi(x.GetService<Configuration>()!));
             services.AddSingleton<TourPlannerClient>(x =>
                 new TourPlannerClient(x.GetService<ITourApi>()!));
@@ -39,6 +40,8 @@ namespace Client
                     x.GetService<ContentNavigation>()!, x.GetService<Configuration>()!));
             services.AddSingleton<InfoViewModel>(x =>
                 new InfoViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
+            services.AddSingleton<AddViewModel>(x =>
+                new AddViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             serviceProvider = services.BuildServiceProvider();
 
             // Instance Logic & ViewModels
@@ -47,6 +50,8 @@ namespace Client
             serviceProvider.GetService<MenuViewModel>();
             serviceProvider.GetService<ListViewModel>();
             serviceProvider.GetService<InfoViewModel>();
+            var kek = serviceProvider.GetService<AddViewModel>();
+            Console.WriteLine("");
         }
 
         public MainViewModel MainViewModel
@@ -60,5 +65,8 @@ namespace Client
 
         public InfoViewModel InfoViewModel
             => serviceProvider.GetService<InfoViewModel>()!;
+
+        public AddViewModel AddViewModel
+            => serviceProvider.GetService<AddViewModel>()!;
     }
 }
