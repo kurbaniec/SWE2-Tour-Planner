@@ -102,13 +102,19 @@ namespace Client.ViewModels
                         WaitingForResponse = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
-                        var result = await tp.AddTour(tour.GetRequestTour());
-                        if (result.Item1 is { } newTour)
+                        var (responseTour, errorMessage) = await tp.AddTour(tour.GetRequestTour());
+                        if (responseTour is { } newTour)
                         {
-                            // TODO add new tour to list
-                            // TODO navigate to new entry
+                            tour = new TourWrapper(new Tour(), string.Empty);
+                            mediator.NotifyColleagues(ViewModelMessages.TourAddition, newTour);
                         }
-                        // TODO show error dialog
+                        else
+                        {
+                            nav.ShowErrorDialog(
+                                $"Encountered error while adding tour: \n{errorMessage}",
+                                "Tour Planner - Add Tour");
+                        }
+
                         WaitingForResponse = false;
                         Edit = true;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);

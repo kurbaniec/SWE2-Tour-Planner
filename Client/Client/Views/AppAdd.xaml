@@ -103,7 +103,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBox  Grid.Column="0" Grid.Row="0"
-                FontWeight="Bold" MaxWidth="550" MaxLength="30" HorizontalAlignment="Left"
+                FontWeight="Bold" MinWidth="30" MaxWidth="550" MaxLength="30" HorizontalAlignment="Left"
                 Text="{Binding Tour.Name,
                     UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
                 <TextBox.LayoutTransform><ScaleTransform ScaleX="2" ScaleY="2"/></TextBox.LayoutTransform>

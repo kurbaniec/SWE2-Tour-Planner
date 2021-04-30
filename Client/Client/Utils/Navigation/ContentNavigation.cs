@@ -25,6 +25,16 @@ namespace Client.Utils.Navigation
             Navigation.Navigate(new Uri(url, UriKind.Relative));
             logger.Log(LogLevel.Information, $"Current page: {Navigation.Content}");
         }
+
+        public void ShowInfoDialog(string body, string header = "")
+        {
+            MessageBox.Show(body, header, MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        
+        public void ShowErrorDialog(string body, string header = "")
+        {
+            MessageBox.Show(body, header, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     public enum ContentPage

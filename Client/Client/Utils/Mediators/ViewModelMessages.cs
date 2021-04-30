@@ -2,6 +2,7 @@
 {
     public enum ViewModelMessages
     {
+        TourAddition,
         SelectedTourChange,
         FilterChange,
         TransactionBegin,

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Client.Utils.Extensions;
 using Model;
 
 namespace Client.ViewModels
@@ -12,6 +12,7 @@ namespace Client.ViewModels
     public class TourWrapper : BaseViewModel, IDataErrorInfo
     {
         private readonly Tour tour;
+        public Tour Model => tour;
 
         private string from;
 
@@ -222,17 +223,6 @@ namespace Client.ViewModels
             var wrapper = new TourLogWrapper(log);
             wrapper.PropertyChanged += ValidationChanged;
             return wrapper;
-        }
-    }
-    
-    // Allow ForEach-LINQ expression on ObservableCollection.
-    // See: https://stackoverflow.com/a/2519433/12347616
-    public static class ObservableExtension
-    {
-        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action) {
-            foreach ( var cur in enumerable ) {
-                action(cur);
-            }
         }
     }
 }

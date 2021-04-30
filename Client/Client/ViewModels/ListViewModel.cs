@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Windows.Data;
 using System.Windows.Input;
 using Client.Logic.BL;
 using Client.Logic.Setup;
 using Client.Utils.Commands;
+using Client.Utils.Extensions;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
 using Model;
@@ -23,7 +25,7 @@ namespace Client.ViewModels
         private readonly ContentNavigation nav;
         private readonly string baseUrl;
         
-        public ObservableCollection<TourWrapper> Tours { get; }
+        public ObservableCollection<TourWrapper> Tours { get; private set; }
         private readonly ICollectionView toursView;
 
         private TourWrapper? selectedTour;
@@ -141,6 +143,19 @@ namespace Client.ViewModels
             {
                 Disabled = false;
             }, ViewModelMessages.TransactionEnd);
+            mediator.Register(o =>
+            {
+                // Create new Wrapper
+                var newTour = new TourWrapper((Tour) o, baseUrl);
+                // Update Tour List
+                // Why Remove + Add? Reference to toursView should not change
+                if (Tours.FirstOrDefault(t => t.Model.Id == newTour.Model.Id) is { } existingTour)
+                    Tours.Remove(existingTour);
+                Tours.Add(newTour);
+                // Navigate to new tour info page
+                SelectedTour = newTour;
+                nav.Navigate(ContentPage.AppInfo);
+            }, ViewModelMessages.TourAddition);
         }
     }
 }
