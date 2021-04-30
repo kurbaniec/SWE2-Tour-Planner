@@ -137,7 +137,7 @@
                         Origin
                         <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
                     </TextBox>
-                    <TextBox Grid.Column="0" Grid.Row="2" 
+                    <TextBox Grid.Column="0" Grid.Row="2" MaxLength="100"
                         Text="{Binding SelectedTour.From, 
                             UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                     <TextBox Grid.Column="1" Grid.Row="1" 
@@ -145,8 +145,9 @@
                         Destination
                         <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
                     </TextBox>
-                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding SelectedTour.To,
-                        UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" MaxLength="100"
+                        Text="{Binding SelectedTour.To,
+                            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                     <TextBox Grid.Column="0" Grid.Row="3" 
                              TextDecorations="Underline" Style="{StaticResource NoEdit}">
                         Tour Distance

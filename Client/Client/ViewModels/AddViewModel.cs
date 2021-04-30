@@ -28,7 +28,7 @@ namespace Client.ViewModels
             }
         }
 
-        private bool edit;
+        private bool edit = true;
 
         public bool Edit
         {
@@ -142,6 +142,7 @@ namespace Client.ViewModels
             this.mediator = mediator;
             this.nav = nav;
             // Register to changes
+            /*
             mediator.Register(o =>
             {
                 this.tour?.DiscardChanges();
@@ -149,7 +150,7 @@ namespace Client.ViewModels
                     Edit = false;
                 var tour = (TourWrapper) o;
                 Tour = tour;
-            }, ViewModelMessages.SelectedTourChange);
+            }, ViewModelMessages.SelectedTourChange);*/
         }
     }
 }
