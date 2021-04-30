@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Client.Logic.BL;
 using Client.Utils.Commands;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
@@ -11,13 +12,12 @@ namespace Client.ViewModels
 {
     public class AddViewModel : BaseViewModel
     {
+        private readonly TourPlannerClient tp;
         private readonly Mediator mediator;
-
         private readonly ContentNavigation nav;
+        private TourWrapper tour = new TourWrapper(new Tour(), string.Empty);
 
-        private TourWrapper? tour = new TourWrapper(new Tour(), string.Empty);
-
-        public TourWrapper? Tour
+        public TourWrapper Tour
         {
             get => tour;
             set
@@ -49,7 +49,7 @@ namespace Client.ViewModels
             {
                 if (changeEditMode != null) return changeEditMode;
                 changeEditMode = new RelayCommand(
-                    p => true,
+                    _ => true,
                     p => Edit = !Edit
                 );
                 return changeEditMode;
@@ -96,18 +96,19 @@ namespace Client.ViewModels
             {
                 if (addTour != null) return addTour;
                 addTour = new RelayCommand(
-                    p => !WaitingForResponse && 
-                         (Tour == null || Tour.IsValid),
-                    async (p) =>
+                    _ => !WaitingForResponse && Tour.IsValid,
+                    async _ =>
                     {
                         WaitingForResponse = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
-                        await Task.Run(() =>
+                        var result = await tp.AddTour(tour.GetRequestTour());
+                        if (result.Item1 is { } newTour)
                         {
-                            Thread.Sleep(5000);
-                        });
-                        tour?.SaveChanges();
+                            // TODO add new tour to list
+                            // TODO navigate to new entry
+                        }
+                        // TODO show error dialog
                         WaitingForResponse = false;
                         Edit = true;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
@@ -117,29 +118,10 @@ namespace Client.ViewModels
             }
         }
 
-        private ICommand? addLog;
 
-        public ICommand AddLog
+        public AddViewModel(TourPlannerClient tp, Mediator mediator, ContentNavigation nav)
         {
-            get
-            {
-                if (addLog != null) return addLog;
-                addLog = new RelayCommand(
-                    p => !WaitingForResponse,
-                    async (p) =>
-                    {
-                        if (Tour is null) return;
-                        Edit = true;
-                        Tour.AddNewLog();
-                    }
-                );
-                return addLog;
-            }
-        }
-
-
-        public AddViewModel(Mediator mediator, ContentNavigation nav)
-        {
+            this.tp = tp;
             this.mediator = mediator;
             this.nav = nav;
             // Register to changes

@@ -41,7 +41,8 @@ namespace Client
             services.AddSingleton<InfoViewModel>(x =>
                 new InfoViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<AddViewModel>(x =>
-                new AddViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
+                new AddViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
+                    x.GetService<ContentNavigation>()!));
             serviceProvider = services.BuildServiceProvider();
 
             // Instance Logic & ViewModels

@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Model;
 using Newtonsoft.Json;
 using Server.BL;
 using WebService_Lib.Attributes;
 using WebService_Lib.Attributes.Rest;
+using WebService_Lib.Logging;
 using WebService_Lib.Server;
 
 namespace Server.Controllers
@@ -16,6 +19,8 @@ namespace Server.Controllers
     {
         [Autowired]
         private TourPlannerServer tp = null!;
+
+        private ILogger logger = WebServiceLogging.CreateLogger<TourController>();
         
         [Get("/api/tours")]
         public Response GetTours()
@@ -33,7 +38,9 @@ namespace Server.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                logger.Log(LogLevel.Error, $"Encountered exception in {MethodBase.GetCurrentMethod()}:");
+                logger.Log(LogLevel.Error, ex.StackTrace);
+                return Response.Status(Status.BadRequest);
             }
 
             return Response.Json(jsonString);
@@ -53,6 +60,38 @@ namespace Server.Controllers
             }
 
             return Response.Status(Status.NotFound);
+        }
+
+        [Post("/api/tour")]
+        public Response AddTour([JsonString] string json)
+        {
+            try
+            {
+                // Parse received tour
+                Tour tour;
+                var parsedTour = JsonConvert.DeserializeObject<Tour>(json);
+                if (parsedTour is { } actualTour)
+                    tour = actualTour;
+                else
+                {
+                    return Response.PlainText("Invalid payload", Status.BadRequest);
+                }
+                // Add tour
+                var result = tp.AddTour(tour);
+                // Check result
+                if (result.Item1 is { } newTour)
+                {
+                    var jsonString = JsonConvert.SerializeObject(newTour);
+                    return Response.Json(jsonString);
+                }
+                return Response.PlainText(result.Item2, Status.BadRequest);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, $"Encountered exception in {MethodBase.GetCurrentMethod()}:");
+                logger.Log(LogLevel.Error, ex.StackTrace);
+                return Response.PlainText("Invalid payload", Status.BadRequest);
+            }
         }
         
 
