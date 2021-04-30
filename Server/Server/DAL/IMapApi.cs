@@ -6,7 +6,9 @@ namespace Server.DAL
     {
         string RoutePath { get; }
         
-        (int?, string) SaveRouteImageAndReturnDistance(string from, string to, string id);
+        (MapApiResponse?, string) GetRouteInfo(string from, string to);
+
+        (bool, string) SaveRouteImage(string id, string boundingBox, string sessionId);
 
         string? GetRouteImagePath(int id);
     }

@@ -29,7 +29,16 @@ namespace Server.BL
 
         public (Tour?, string) AddTour(Tour tour)
         {
-            return db.AddTour(tour);
+            if (string.IsNullOrEmpty(tour.To) || string.IsNullOrEmpty(tour.From))
+                return (null, "To and From cannot be empty");
+            var (result, errorMsg) = map.GetRouteInfo(tour.From, tour.To);
+            if (result is { } mapApiResponse)
+            {
+                var kek = map.GetRouteInfo(tour.From, tour.To);
+                return db.AddTour(tour);
+            }
+
+            return (null, errorMsg);
         }
         
         public (Tour?, string) UpdateTour(Tour tour)
@@ -40,11 +49,6 @@ namespace Server.BL
         public (bool, string) DeleteTour(int id)
         {
             return db.DeleteTour(id);
-        }
-
-        public (int?, string) SaveRouteImageAndReturnDistance(string from, string to, string id)
-        {
-            return map.SaveRouteImageAndReturnDistance(from, to, id);
         }
 
         public string? GetRouteImage(int id)

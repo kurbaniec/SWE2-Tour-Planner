@@ -9,10 +9,14 @@ namespace Server.DAL
     {
         private readonly string path;
         public string RoutePath => path;
-
-        public (int?, string) SaveRouteImageAndReturnDistance(string @from, string to, string id)
+        public (MapApiResponse?, string) GetRouteInfo(string@from, string to)
         {
-            return (1, string.Empty);
+            return (new MapApiResponse(1, "", ""), string.Empty);
+        }
+
+        public (bool, string) SaveRouteImage(string id, string boundingBox, string sessionId)
+        {
+            return (true, "");
         }
 
         public string? GetRouteImagePath(int id)
