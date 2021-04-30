@@ -107,7 +107,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                        <TextBox FontWeight="Bold" MaxLength="12"
+                        <TextBox FontWeight="Bold" MaxLength="30"
                                Text="{Binding SelectedTour.Name,
                                 UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
                             <!-- Scale Text https://stackoverflow.com/a/33651602/12347616 -->

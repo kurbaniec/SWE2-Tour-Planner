@@ -88,14 +88,14 @@ namespace Client.ViewModels
             }
         }
 
-        private ICommand? acceptEdit;
+        private ICommand? addTour;
 
-        public ICommand AcceptEdit
+        public ICommand AddTour
         {
             get
             {
-                if (acceptEdit != null) return acceptEdit;
-                acceptEdit = new RelayCommand(
+                if (addTour != null) return addTour;
+                addTour = new RelayCommand(
                     p => !WaitingForResponse && 
                          (Tour == null || Tour.IsValid),
                     async (p) =>
@@ -105,14 +105,15 @@ namespace Client.ViewModels
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
                         await Task.Run(() =>
                         {
-                            Thread.Sleep(50);
+                            Thread.Sleep(5000);
                         });
                         tour?.SaveChanges();
                         WaitingForResponse = false;
+                        Edit = true;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }
                 );
-                return acceptEdit;
+                return addTour;
             }
         }
 

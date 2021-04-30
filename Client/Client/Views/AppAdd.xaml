@@ -103,7 +103,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBox  Grid.Column="0" Grid.Row="0"
-                FontWeight="Bold" MaxLength="12"
+                FontWeight="Bold" MaxWidth="550" MaxLength="30" HorizontalAlignment="Left"
                 Text="{Binding Tour.Name,
                     UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
                 <TextBox.LayoutTransform><ScaleTransform ScaleX="2" ScaleY="2"/></TextBox.LayoutTransform>
@@ -136,6 +136,29 @@
                 AcceptsReturn="True" TextWrapping="Wrap"
                 Text="{Binding Tour.Description}">
             </TextBox>
+            <StackPanel Grid.Column="0" Grid.Row="7" 
+                Margin="0 20 0 0"
+                Orientation="Horizontal" HorizontalAlignment="Right">
+                <local:Spinner Margin="2 2 2 2">
+                    <local:Spinner.Style>
+                        <Style TargetType="local:Spinner">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding WaitingForResponse}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                            <Style.Setters>
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Style.Setters>
+                        </Style>
+                    </local:Spinner.Style>
+                </local:Spinner>
+                <Button Margin="2 2 2 2" Width="100"
+                    Command="{Binding AddTour}">
+                    Add Tour
+                    <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
+                </Button>
+            </StackPanel>
         </Grid>
     </ScrollViewer>
 </Page>
