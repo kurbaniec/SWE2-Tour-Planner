@@ -16,14 +16,18 @@ namespace Server.Setup
     [Component]
     public class Configuration
     {
+        // ReSharper disable once MemberCanBePrivate.Global
         public JObject Config { get; }
+        public string MapApiKey { get; }
+        public string RoutePath { get; }
+        
         private readonly ILogger logger = WebServiceLogging.CreateLogger<Configuration>();
 
         public Configuration()
         {
             // Check for config in directory where executable is located
             string runningPath = AppDomain.CurrentDomain.BaseDirectory!;
-            string configPath = $"{runningPath}{Path.DirectorySeparatorChar}config.json";
+            string configPath = $"{runningPath}config.json";
             if (!File.Exists(configPath))
             {
                 // Check for config in project structure
@@ -43,13 +47,23 @@ namespace Server.Setup
             }
             var configStr = File.ReadAllText(configPath);
             Config = JObject.Parse(configStr);
-            
-            // Set Port 
-            SimpleWebService.Port = (uint) Config["server"]!["port"]!;
             // Set Logging
             var loggingConfig = (string) Config["server"]!["logger-config"]!;
             WebServiceLogging.LoggerFactory.AddLog4Net(loggingConfig);
-            logger.Log(LogLevel.Information, "Configuration found, read and initialized");
+            logger.Log(LogLevel.Debug, "Configuration found");
+            // Set Port 
+            SimpleWebService.Port = (uint) Config["server"]!["port"]!;
+            // Set often used config values as properties
+            // API Key
+            MapApiKey = (string) Config["server"]!["mapquest-api-key"]!;
+            // Directory where to store route information images
+            var routePath = (string) Config["server"]!["routes-path"]!;
+            if (!Path.IsPathRooted(routePath))
+                routePath = $"{runningPath}{routePath}";
+            if (!Directory.Exists(routePath))
+                Directory.CreateDirectory(routePath);
+            RoutePath = routePath;
+            logger.Log(LogLevel.Debug, "Configuration read and initialized");
         }
     }
 }

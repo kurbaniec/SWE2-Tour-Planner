@@ -12,8 +12,8 @@ namespace Client.Logic.Setup
     /// </summary>
     public class Configuration
     {
+        // ReSharper disable once MemberCanBePrivate.Global
         public JObject Config { get; }
-        
         public string BaseUrl { get; }
         
         private readonly ILogger logger = ApplicationLogging.CreateLogger<Configuration>();

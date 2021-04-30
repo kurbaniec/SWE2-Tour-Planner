@@ -1,7 +1,7 @@
 {
     "client": {
         "base-url": "http://localhost:8080",
-        "logger-config": "log4net.config"
+        "logger-config": "logger.client.config"
     },
     "server": {
         "port": 8080,
@@ -11,6 +11,8 @@
             "ip": "localhost",
             "port": 5432
         },
-        "logger-config": "log4net.config"
+        "logger-config": "logger.server.config",
+        "mapquest-api-key": "<insert key here>",
+        "routes-path": "maps"
     }
 }

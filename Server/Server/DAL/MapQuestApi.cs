@@ -1,12 +1,16 @@
 ﻿using System;
 using System.IO;
+using Server.Setup;
 using WebService_Lib.Attributes;
 
 namespace Server.DAL
 {
     // TODO remove later
-    public class MockMapApi : IMapApi
+    [Component]
+    public class MapQuestApi : IMapApi
     {
+        [Autowired]
+        private readonly Configuration cfg = null!;
         private readonly string path;
         public string RoutePath => path;
 
@@ -20,7 +24,7 @@ namespace Server.DAL
             return path + Path.DirectorySeparatorChar + "map.png";
         }
 
-        public MockMapApi()
+        public MapQuestApi()
         {
             // Get project directory
             string runningPath = AppDomain.CurrentDomain.BaseDirectory!;

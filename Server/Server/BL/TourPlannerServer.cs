@@ -42,9 +42,9 @@ namespace Server.BL
             return db.DeleteTour(id);
         }
 
-        public bool SaveRouteImage(string from, string to, string id)
+        public (int?, string) SaveRouteImageAndReturnDistance(string from, string to, string id)
         {
-            return map.SaveRouteImage(from, to, id);
+            return map.SaveRouteImageAndReturnDistance(from, to, id);
         }
 
         public string? GetRouteImage(int id)

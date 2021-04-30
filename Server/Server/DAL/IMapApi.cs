@@ -6,7 +6,7 @@ namespace Server.DAL
     {
         string RoutePath { get; }
         
-        bool SaveRouteImage(string from, string to, string id);
+        (int?, string) SaveRouteImageAndReturnDistance(string from, string to, string id);
 
         string? GetRouteImagePath(int id);
     }
