@@ -52,6 +52,34 @@ namespace Server.BL
 
         public (Tour?, string) UpdateTour(Tour tour)
         {
+            if (string.IsNullOrEmpty(tour.To) || string.IsNullOrEmpty(tour.From))
+                return (null, "To and From cannot be empty");
+            if (tour.Id == 0)
+                return (null, "Id cannot be 0");
+            var oldTour = db.GetTour(tour.Id);
+            if (oldTour is null)
+                return (null, "Invalid tour id given");
+            if (tour.From != oldTour.From || tour.To != oldTour.To)
+            {
+                // Update Distance & Route information when changed
+                var (mapApiResponse, mapError) = map.GetRouteInfo(tour.From, tour.To);
+                if (mapApiResponse is { })
+                {
+                    tour.Distance = mapApiResponse.Distance;
+                    var (updatedTour, dbError) = db.UpdateTour(tour);
+                    if (updatedTour is { })
+                    {
+                        var (routeApiResponse, routeError)
+                            = map.SaveRouteImage(updatedTour.Id, mapApiResponse.BoundingBox, mapApiResponse.SessionId);
+                        return routeApiResponse ? (newTour: updatedTour, string.Empty) : (null, routeError);
+                    }
+
+                    return (null, dbError);
+                }
+
+                return (null, mapError);
+            }
+            
             return db.UpdateTour(tour);
         }
 

@@ -77,14 +77,40 @@ namespace Server.Controllers
                     return Response.PlainText("Invalid payload", Status.BadRequest);
                 }
                 // Add tour
-                var result = tp.AddTour(tour);
+                var (newTour, errorMsg) = tp.AddTour(tour);
                 // Check result
-                if (result.Item1 is { } newTour)
+                if (newTour is null) return Response.PlainText(errorMsg, Status.BadRequest);
+                var jsonString = JsonConvert.SerializeObject(newTour);
+                return Response.Json(jsonString);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, $"Encountered exception in {MethodBase.GetCurrentMethod()}:");
+                logger.Log(LogLevel.Error, ex.StackTrace);
+                return Response.PlainText("Invalid payload", Status.BadRequest);
+            }
+        }
+
+        [Put("/api/tour")]
+        public Response UpdateTour([JsonString] string json)
+        {
+            try
+            {
+                // Parse received tour
+                Tour tour;
+                var parsedTour = JsonConvert.DeserializeObject<Tour>(json);
+                if (parsedTour is { } actualTour)
+                    tour = actualTour;
+                else
                 {
-                    var jsonString = JsonConvert.SerializeObject(newTour);
-                    return Response.Json(jsonString);
+                    return Response.PlainText("Invalid payload", Status.BadRequest);
                 }
-                return Response.PlainText(result.Item2, Status.BadRequest);
+                // Update tour
+                var (updatedTour, errorMsg) = tp.UpdateTour(tour);
+                // Check result
+                if (updatedTour is null) return Response.PlainText(errorMsg, Status.BadRequest);
+                var jsonString = JsonConvert.SerializeObject(updatedTour);
+                return Response.Json(jsonString);
             }
             catch (Exception ex)
             {

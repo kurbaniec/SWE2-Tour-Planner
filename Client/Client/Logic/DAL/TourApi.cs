@@ -91,7 +91,35 @@ namespace Client.Logic.DAL
 
         public async Task<(Tour?, string)> UpdateTour(Tour tour)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var response = await client.PutAsync($"{baseUrl}/api/tour",
+                    new StringContent(
+                        JsonConvert.SerializeObject(tour),
+                        Encoding.Default,
+                        "application/json"
+                    ));
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonString = await response.Content.ReadAsStringAsync();
+                    var newTour = JsonConvert.DeserializeObject<Tour>(jsonString);
+                    logger.Log(LogLevel.Information, $"Tour with id {tour.Id} updated successfully");
+                    return (newTour, string.Empty);
+                }
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                logger.Log(LogLevel.Error, errorMsg);
+                return (null, errorMsg);
+            }
+            catch (JsonException jsonEx)
+            {
+                logger.Log(LogLevel.Error, jsonEx.StackTrace);
+                return (null, jsonEx.Message);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                logger.Log(LogLevel.Error, httpEx.StackTrace);
+                return (null, httpEx.Message);
+            }
         }
 
         public async Task<(bool, string)> DeleteTour(int id)

@@ -64,6 +64,11 @@ namespace Server.DAL
             return tours;
         }
 
+        public Tour? GetTour(int id)
+        {
+            return tours.FirstOrDefault(t => t.Id == id);
+        }
+
         public (Tour?, string) AddTour(Tour tour)
         {
             var id = tours.OrderByDescending(t => t.Id).Take(1).First().Id + 1;

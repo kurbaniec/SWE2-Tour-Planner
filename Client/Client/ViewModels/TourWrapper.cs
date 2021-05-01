@@ -210,7 +210,7 @@ namespace Client.ViewModels
 
         public Tour GetRequestTour()
         {
-            return new Tour(tour.Id, from, to, name, distance, description,
+            return new(tour.Id, from, to, name, distance, description,
                 Logs.Select(log => log.GetRequestTourLog()).ToList());
         }
 

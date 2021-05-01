@@ -1,21 +1,23 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Client.Logic.BL;
 using Client.Utils.Commands;
+using Client.Utils.Logging;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
+using Microsoft.Extensions.Logging;
 
 namespace Client.ViewModels
 {
     public class InfoViewModel : BaseViewModel
     {
+        private readonly TourPlannerClient tp;
         private readonly Mediator mediator;
-
         private readonly ContentNavigation nav;
+        private readonly ILogger logger = ApplicationLogging.CreateLogger<InfoViewModel>();
 
         private TourWrapper? selectedTour;
-
         public TourWrapper? SelectedTour
         {
             get => selectedTour;
@@ -28,7 +30,6 @@ namespace Client.ViewModels
         }
 
         private bool edit;
-
         public bool Edit
         {
             get => edit;
@@ -41,22 +42,20 @@ namespace Client.ViewModels
         }
 
         private ICommand? changeEditMode;
-
         public ICommand ChangeEditMode
         {
             get
             {
                 if (changeEditMode != null) return changeEditMode;
                 changeEditMode = new RelayCommand(
-                    p => true,
-                    p => Edit = !Edit
+                    _ => true,
+                    _ => Edit = !Edit
                 );
                 return changeEditMode;
             }
         }
 
         private bool waitingForResponse;
-
         public bool WaitingForResponse
         {
             get => waitingForResponse;
@@ -69,15 +68,14 @@ namespace Client.ViewModels
         }
 
         private ICommand? cancelEdit;
-
         public ICommand CancelEdit
         {
             get
             {
                 if (cancelEdit != null) return cancelEdit;
                 cancelEdit = new RelayCommand(
-                    p => !WaitingForResponse,
-                    p =>
+                    _ => !WaitingForResponse,
+                    _ =>
                     {
                         selectedTour?.DiscardChanges();
                         Edit = false;
@@ -88,24 +86,30 @@ namespace Client.ViewModels
         }
 
         private ICommand? acceptEdit;
-
         public ICommand AcceptEdit
         {
             get
             {
                 if (acceptEdit != null) return acceptEdit;
                 acceptEdit = new RelayCommand(
-                    p => !WaitingForResponse && 
+                    _ => !WaitingForResponse &&
                          (SelectedTour == null || SelectedTour.IsValid),
-                    async (p) =>
+                    async _ =>
                     {
                         WaitingForResponse = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
-                        await Task.Run(() =>
+
+                        if (selectedTour is { })
                         {
-                            Thread.Sleep(50);
-                        });
+                            // TODO
+                            var (updatedTour, errorMsg) = await tp.UpdateTour(selectedTour.GetRequestTour());
+                            if (updatedTour is {})
+                                mediator.NotifyColleagues(ViewModelMessages.TourAddition, updatedTour);
+                        }
+                        //await Task.Run(() => { Thread.Sleep(50); });
+                        
+                        
                         selectedTour?.SaveChanges();
                         WaitingForResponse = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
@@ -116,15 +120,13 @@ namespace Client.ViewModels
         }
 
         private ICommand? addLog;
-
         public ICommand AddLog
         {
             get
             {
                 if (addLog != null) return addLog;
                 addLog = new RelayCommand(
-                    p => !WaitingForResponse,
-                    async (p) =>
+                    _ => !WaitingForResponse, _ =>
                     {
                         if (SelectedTour is null) return;
                         Edit = true;
@@ -136,15 +138,16 @@ namespace Client.ViewModels
         }
 
 
-        public InfoViewModel(Mediator mediator, ContentNavigation nav)
+        public InfoViewModel(TourPlannerClient tp, Mediator mediator, ContentNavigation nav)
         {
+            this.tp = tp;
             this.mediator = mediator;
             this.nav = nav;
             // Register to changes
             mediator.Register(o =>
             {
                 selectedTour?.DiscardChanges();
-                if (Edit) 
+                if (Edit)
                     Edit = false;
                 var tour = (TourWrapper) o;
                 SelectedTour = tour;

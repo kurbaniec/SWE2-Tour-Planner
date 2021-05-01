@@ -232,7 +232,7 @@ namespace Client.ViewModels
 
         public TourLog GetRequestTourLog()
         {
-            return new((DateTime) date!, type, (TimeSpan) duration!, (int) distance!, (int) rating!, report,
+            return new(log.Id, (DateTime) date!, type, (TimeSpan) duration!, (int) distance!, (int) rating!, report,
                 (double) avgSpeed!, (double) maxSpeed!, (double) heightDifference!,
                 stops);
         }

@@ -7,6 +7,8 @@ namespace Server.DAL
     {
         List<Tour> GetTours();
 
+        Tour? GetTour(int id);
+
         (Tour?, string) AddTour(Tour tour);
 
         (Tour?, string) UpdateTour(Tour tour);

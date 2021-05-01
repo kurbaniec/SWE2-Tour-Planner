@@ -39,7 +39,8 @@ namespace Client
                 new ListViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
                     x.GetService<ContentNavigation>()!, x.GetService<Configuration>()!));
             services.AddSingleton<InfoViewModel>(x =>
-                new InfoViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
+                new InfoViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
+                    x.GetService<ContentNavigation>()!));
             services.AddSingleton<AddViewModel>(x =>
                 new AddViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
                     x.GetService<ContentNavigation>()!));
