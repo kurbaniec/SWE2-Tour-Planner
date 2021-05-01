@@ -82,7 +82,7 @@ namespace Server.DAL
             var content = new FormUrlEncodedContent(new Dictionary<string?, string?>()
             {
                 {"key", ApiKey}, {"session", sessionId}, {"boundingBox", boundingBox},
-                {"size", "1920,1920"}, {"format", "png"}
+                {"size", "1920,1440"}, {"format", "png"}
             });
             string query = content.ReadAsStringAsync().Result;
             try
@@ -124,7 +124,8 @@ namespace Server.DAL
 
         public string? GetRouteImagePath(int id)
         {
-            return RoutePath + Path.DirectorySeparatorChar + "map.png";
+            var path = $"{RoutePath}{Path.DirectorySeparatorChar}{id}.png";
+            return File.Exists(path) ? path : null;
         }
     }
 }

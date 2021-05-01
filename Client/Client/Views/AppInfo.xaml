@@ -180,7 +180,7 @@
                     <!-- Cache image https://stackoverflow.com/a/24600904/12347616 -->
                     <Image Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2">
                         <Image.Source>
-                            <BitmapImage UriCachePolicy="Revalidate"
+                            <BitmapImage
                                 UriSource="{Binding SelectedTour.Image}"/>
                         </Image.Source>
                     </Image>
