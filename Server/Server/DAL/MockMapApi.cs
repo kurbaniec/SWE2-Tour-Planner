@@ -14,7 +14,7 @@ namespace Server.DAL
             return (new MapApiResponse(1, "", ""), string.Empty);
         }
 
-        public (bool, string) SaveRouteImage(string id, string boundingBox, string sessionId)
+        public (bool, string) SaveRouteImage(int id, string boundingBox, string sessionId)
         {
             return (true, "");
         }

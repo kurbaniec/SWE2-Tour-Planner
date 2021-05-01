@@ -8,20 +8,20 @@ namespace Server.BL
     [Component]
     public class TourPlannerServer
     {
-        [Autowired]
-        private IDataManagement db = null!;
+        [Autowired] private IDataManagement db = null!;
 
-        [Autowired]
-        private IMapApi map = null!;
+        [Autowired] private IMapApi map = null!;
 
-        public TourPlannerServer() {}
-        
+        public TourPlannerServer()
+        {
+        }
+
         public TourPlannerServer(IDataManagement db, IMapApi map)
         {
             this.db = db;
             this.map = map;
         }
-        
+
         public List<Tour> GetTours()
         {
             return db.GetTours();
@@ -31,16 +31,25 @@ namespace Server.BL
         {
             if (string.IsNullOrEmpty(tour.To) || string.IsNullOrEmpty(tour.From))
                 return (null, "To and From cannot be empty");
-            var (result, errorMsg) = map.GetRouteInfo(tour.From, tour.To);
-            if (result is { } mapApiResponse)
+
+            var (mapApiResponse, mapError) = map.GetRouteInfo(tour.From, tour.To);
+            if (mapApiResponse is { })
             {
-                var kek = map.GetRouteInfo(tour.From, tour.To);
-                return db.AddTour(tour);
+                tour.Distance = mapApiResponse.Distance;
+                var (newTour, dbError) = db.AddTour(tour);
+                if (newTour is { })
+                {
+                    var (routeApiResponse, routeError)
+                        = map.SaveRouteImage(newTour.Id, mapApiResponse.BoundingBox, mapApiResponse.SessionId);
+                    return routeApiResponse ? (newTour, string.Empty) : (null, routeError);
+                }
+
+                return (null, dbError);
             }
 
-            return (null, errorMsg);
+            return (null, mapError);
         }
-        
+
         public (Tour?, string) UpdateTour(Tour tour)
         {
             return db.UpdateTour(tour);

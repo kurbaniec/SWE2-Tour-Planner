@@ -8,7 +8,7 @@ namespace Server.DAL
         
         (MapApiResponse?, string) GetRouteInfo(string from, string to);
 
-        (bool, string) SaveRouteImage(string id, string boundingBox, string sessionId);
+        (bool, string) SaveRouteImage(int id, string boundingBox, string sessionId);
 
         string? GetRouteImagePath(int id);
     }
