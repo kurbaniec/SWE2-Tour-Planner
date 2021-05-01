@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Client.Logic.BL;
 using Client.Logic.Setup;
 using Client.Utils.Commands;
-using Client.Utils.Extensions;
+using Client.Utils.Logging;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
+using Microsoft.Extensions.Logging;
 using Model;
-using Type = Model.Type;
 
 namespace Client.ViewModels
 {
@@ -24,7 +20,7 @@ namespace Client.ViewModels
         private readonly TourPlannerClient tp;
         private readonly Mediator mediator;
         private readonly ContentNavigation nav;
-        private readonly string baseUrl;
+        private readonly ILogger logger = ApplicationLogging.CreateLogger<ListViewModel>();
 
         public ObservableCollection<TourWrapper> Tours { get; private set; }
         private readonly ICollectionView toursView;
@@ -48,6 +44,8 @@ namespace Client.ViewModels
                         if (SelectedTour != null)
                         {
                             var id = SelectedTour.Model.Id;
+                            logger.Log(LogLevel.Information, 
+                                $"Requesting route information image for Tour with id {id}");
                             var (routeImg, _) 
                                 = await tp.GetRouteImage(id);
                             
@@ -55,6 +53,18 @@ namespace Client.ViewModels
                             {
                                 selectedTour.ImageLoaded = true;
                                 selectedTour.Image = routeImg;
+                                logger.Log(LogLevel.Information, 
+                                    "Route information successfully loaded");
+                            }
+                            else
+                            {
+                                logger.Log(LogLevel.Warning, "Route information not successfully loaded");
+                                logger.Log(LogLevel.Warning, 
+                                    $"Is Route Image null: {routeImg == null}");
+                                logger.Log(LogLevel.Warning, 
+                                    $"Is Selected Tour null: {selectedTour == null}");
+                                logger.Log(LogLevel.Warning, 
+                                    $"Is id mismatch: {selectedTour != null && id == selectedTour.Model.Id}");
                             }
                         }
                     });
@@ -115,23 +125,34 @@ namespace Client.ViewModels
             {
                 if (loadData != null) return loadData;
                 loadData = new RelayCommand(
-                    p => true,
-                    async p =>
+                    _ => true,
+                    async _ =>
                     {
+                        logger.Log(LogLevel.Information, "Trying to request all Tour data");
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
-                        var response = await tp.GetTours();
-                        if (response.Item1 is { } tours)
+                        var success = false;
+                        while (!success)
                         {
-                            tours.ForEach(async t =>
+                            var (tourValues, errorMsg) = await tp.GetTours();
+                            if (tourValues is { } tours)
                             {
-                                var (routeImg, dummyImg) = await tp.GetRouteImage(t.Id);
-                                TourWrapper tour = routeImg is { }
-                                    ? new TourWrapper(t, routeImg)
-                                    : new TourWrapper(t, dummyImg!, imageLoaded: false);
-                                Tours.Add(tour);
-                            });
+                                tours.ForEach(async t =>
+                                {
+                                    var (routeImg, dummyImg) = await tp.GetRouteImage(t.Id);
+                                    TourWrapper tour = routeImg is { }
+                                        ? new TourWrapper(t, routeImg)
+                                        : new TourWrapper(t, dummyImg!, imageLoaded: false);
+                                    Tours.Add(tour);
+                                });
+                                success = true;
+                                logger.Log(LogLevel.Information, "Tour data successfully fetched");
+                            }
+                            else
+                            {
+                                logger.Log(LogLevel.Warning, "Could not fetch Tour data");
+                                nav.ShowErrorDialog(errorMsg, "Tour Planner");
+                            }
                         }
-
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     });
                 return loadData;
@@ -144,7 +165,6 @@ namespace Client.ViewModels
             this.tp = tp;
             this.mediator = mediator;
             this.nav = nav;
-            this.baseUrl = cfg.BaseUrl;
 
             filter = "";
             Tours = new ObservableCollection<TourWrapper>();
@@ -161,8 +181,8 @@ namespace Client.ViewModels
                 var newFilter = (string) o;
                 Filter = newFilter;
             }, ViewModelMessages.FilterChange);
-            mediator.Register(o => { Disabled = true; }, ViewModelMessages.TransactionBegin);
-            mediator.Register(o => { Disabled = false; }, ViewModelMessages.TransactionEnd);
+            mediator.Register(_ => { Disabled = true; }, ViewModelMessages.TransactionBegin);
+            mediator.Register(_ => { Disabled = false; }, ViewModelMessages.TransactionEnd);
             mediator.Register(async o =>
             {
                 // Create new Wrapper
@@ -177,6 +197,7 @@ namespace Client.ViewModels
                 if (Tours.FirstOrDefault(t => t.Model.Id == newTour.Model.Id) is { } existingTour)
                     Tours.Remove(existingTour);
                 Tours.Add(newTour);
+                logger.Log(LogLevel.Information, $"Successfully added or updated Tour with id {newTour.Model.Id}");
                 // Navigate to new tour info page
                 SelectedTour = newTour;
                 nav.Navigate(ContentPage.AppInfo);

@@ -119,7 +119,8 @@ namespace Client.Logic.DAL
                     routeImage.StreamSource = stream;
                     routeImage.EndInit();
                     routeImage.Freeze();
-                    logger.Log(LogLevel.Information, "Received Route Information Image successfully");
+                    logger.Log(LogLevel.Information, 
+                        $"Received Route Information Image for Tour with id {id} successfully");
                     return (routeImage, null);
                 }
             }
@@ -127,7 +128,8 @@ namespace Client.Logic.DAL
             {
                 logger.Log(LogLevel.Error, ex.StackTrace);
             }
-            logger.Log(LogLevel.Warning, "Route Information Image not received successfully");
+            logger.Log(LogLevel.Warning, 
+                $"Route Information Image for Tour with id {id} not received successfully");
             // Create Dummy Route Image
             // ---
             // Draw rectangle

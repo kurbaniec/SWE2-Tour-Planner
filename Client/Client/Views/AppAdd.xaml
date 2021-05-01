@@ -137,7 +137,7 @@
                 Text="{Binding Tour.Description}">
             </TextBox>
             <StackPanel Grid.Column="0" Grid.Row="7" 
-                Margin="0 20 0 0"
+                Margin="0 20 0 0" Background="Salmon"
                 Orientation="Horizontal" HorizontalAlignment="Right">
                 <local:Spinner Margin="2 2 2 2">
                     <local:Spinner.Style>

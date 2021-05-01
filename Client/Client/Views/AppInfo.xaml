@@ -305,7 +305,50 @@
                         Command="{Binding AddLog}">
                         <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
                     </Button>
-                    
+                    <StackPanel Grid.Column="0" Grid.Row="3" 
+                                Margin="0 20 0 0"
+                                Orientation="Horizontal" HorizontalAlignment="Right">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Edit}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding WaitingForResponse}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                                <Style.Setters>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style.Setters>
+                            </Style>
+                        </StackPanel.Style>
+                        <local:Spinner Margin="2 2 2 2">
+                            <local:Spinner.Style>
+                                <Style TargetType="local:Spinner">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding WaitingForResponse}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Style.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </Style.Setters>
+                                </Style>
+                            </local:Spinner.Style>
+                        </local:Spinner>
+                        <Button Margin="2 2 2 2" Width="100"
+                                Command="{Binding AcceptEdit}">
+                            Save Changes
+                            <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
+                        </Button>
+                        <Button Margin="2 2 2 2" Width="100"
+                                Command="{Binding CancelEdit}">
+                            Cancel
+                            <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
+                        </Button>
+                    </StackPanel>
+                    <!--
                     <Grid Grid.Column="0" Grid.Row="3" Background="Black">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*"/>
@@ -354,7 +397,7 @@
                             Cancel
                             <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
                         </Button>
-                    </Grid>
+                    </Grid>-->
                 </Grid>
             </WrapPanel>
         </ScrollViewer>
