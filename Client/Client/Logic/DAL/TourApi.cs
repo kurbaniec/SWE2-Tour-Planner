@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Client.Logic.Setup;
 using Client.Utils.Logging;
 using Microsoft.Extensions.Logging;
@@ -94,6 +97,62 @@ namespace Client.Logic.DAL
         public async Task<(bool, string)> DeleteTour(int id)
         {
             throw new System.NotImplementedException();
+        }
+
+        public async Task<(BitmapImage?, BitmapImage?)> GetRouteImage(int id)
+        {
+            try
+            {
+                // Get route image from server
+                using var response = await client.GetAsync($"{baseUrl}/api/route/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    // Get BitmapImage
+                    // See: https://stackoverflow.com/a/46709476/12347616
+                    await using var stream = new MemoryStream();
+                    await response.Content.CopyToAsync(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    var routeImage = new BitmapImage();
+                    routeImage.BeginInit();
+                    routeImage.CacheOption = BitmapCacheOption.OnLoad;
+                    routeImage.StreamSource = stream;
+                    routeImage.EndInit();
+                    routeImage.Freeze();
+                    logger.Log(LogLevel.Information, "Received Route Information Image successfully");
+                    return (routeImage, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex.StackTrace);
+            }
+            logger.Log(LogLevel.Warning, "Route Information Image not received successfully");
+            // Create Dummy Route Image
+            // ---
+            // Draw rectangle
+            // See: https://stackoverflow.com/a/1720261/12347616
+            var bitmap = new Bitmap(1920, 1440);
+            using Graphics gfx = Graphics.FromImage(bitmap);
+            gfx.FillRectangle(
+                new SolidBrush(Color.Salmon), 0, 0, 1920, 1440);
+            gfx.DrawString(
+                "Could not load image.\nPlease try again later.", 
+                new Font("Arial", 24), 
+                new SolidBrush(Color.Black), 120, 120);
+            // Convert to BitMapImage
+            // See: https://stackoverflow.com/a/23831231/12347616
+            await using var memory = new MemoryStream();
+            bitmap.Save(memory, ImageFormat.Png);
+            memory.Position = 0;
+            var dummyRouteImage = new BitmapImage();
+            dummyRouteImage.BeginInit();
+            dummyRouteImage.StreamSource = memory;
+            dummyRouteImage.CacheOption = BitmapCacheOption.OnLoad;
+            dummyRouteImage.EndInit();
+            dummyRouteImage.Freeze();
+            logger.Log(LogLevel.Warning, "Dummy Route Image will be used");
+            return (null, dummyRouteImage);
         }
     }
 }

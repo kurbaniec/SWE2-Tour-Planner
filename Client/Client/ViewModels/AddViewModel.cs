@@ -15,7 +15,7 @@ namespace Client.ViewModels
         private readonly TourPlannerClient tp;
         private readonly Mediator mediator;
         private readonly ContentNavigation nav;
-        private TourWrapper tour = new TourWrapper(new Tour(), string.Empty);
+        private TourWrapper tour = new TourWrapper(new Tour(), null!);
 
         public TourWrapper Tour
         {
@@ -105,7 +105,7 @@ namespace Client.ViewModels
                         var (responseTour, errorMessage) = await tp.AddTour(tour.GetRequestTour());
                         if (responseTour is { } newTour)
                         {
-                            tour = new TourWrapper(new Tour(), string.Empty);
+                            tour = new TourWrapper(new Tour(), null!);
                             mediator.NotifyColleagues(ViewModelMessages.TourAddition, newTour);
                         }
                         else

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -9,12 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Client.Utils.Extensions;
 using Model;
-using SystemFonts = System.Windows.SystemFonts;
 
 namespace Client.ViewModels
 {
@@ -89,75 +85,14 @@ namespace Client.ViewModels
             }
         }
 
-        private string imageUrl;
-        private bool loaded = false;
-        private bool dummyLoaded = false;
+        public bool ImageLoaded;
         private BitmapImage? image;
-
+        
         public BitmapImage? Image
         {
-            get
-            {
-                // Based on https://stackoverflow.com/a/6613751/12347616
-                // And: https://stackoverflow.com/a/23443359/12347616
-                // And: https://stackoverflow.com/a/46709476/12347616
-                if (loaded) return image;
-                var httpClient = new HttpClient();
-                Application.Current.Dispatcher.InvokeAsync(async () =>
-                {
-                    using var response = await httpClient.GetAsync(imageUrl);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        await using var stream = new MemoryStream();
-                        await response.Content.CopyToAsync(stream);
-                        stream.Seek(0, SeekOrigin.Begin);
-
-                        var tmp = new BitmapImage();
-                        tmp.BeginInit();
-                        tmp.CacheOption = BitmapCacheOption.OnLoad;
-                        tmp.StreamSource = stream;
-                        tmp.EndInit();
-                        tmp.Freeze();
-                        loaded = true;
-                        Image = tmp;
-                    }
-                    else if (!dummyLoaded)
-                    {
-                        // Draw rectangle
-                        // See: https://stackoverflow.com/a/1720261/12347616
-                        var bitmap = new Bitmap(1920, 1440);
-                        using Graphics gfx = Graphics.FromImage(bitmap);
-                        //using SolidBrush brush = new(Color.Salmon);
-                        gfx.FillRectangle(
-                            new SolidBrush(Color.Salmon), 0, 0, 1920, 1440);
-                        gfx.DrawString(
-                            "Could not load image.\nPlease try again later.", 
-                            new Font("Arial", 24), 
-                            new SolidBrush(Color.Black), 120, 120);
-                        /*IntPtr hBitmap = bitmap.GetHbitmap();
-                        var tmp = (BitmapImage)Imaging.CreateBitmapSourceFromHBitmap(
-                            hBitmap,
-                            IntPtr.Zero,
-                            Int32Rect.Empty,
-                            BitmapSizeOptions.FromEmptyOptions());*/
-                        // Convert to BitMapImage
-                        // See: https://stackoverflow.com/a/23831231/12347616
-                        await using var memory = new MemoryStream();
-                        bitmap.Save(memory, ImageFormat.Png);
-                        memory.Position = 0;
-                        var tmp = new BitmapImage();
-                        tmp.BeginInit();
-                        tmp.StreamSource = memory;
-                        tmp.CacheOption = BitmapCacheOption.OnLoad;
-                        tmp.EndInit();
-                        tmp.Freeze();
-                        dummyLoaded = true;
-                        Image = tmp;
-                    }
-                });
-                return image;
-            }
-            private set
+            get => image;
+        
+            set
             {
                 if (image == value) return;
                 image = value;
@@ -243,7 +178,7 @@ namespace Client.ViewModels
             OnPropertyChanged("Logs");
         }
 
-        public TourWrapper(Tour tour, string baseUrl)
+        public TourWrapper(Tour tour)
         {
             this.tour = tour;
             this.from = tour.From;
@@ -251,8 +186,20 @@ namespace Client.ViewModels
             this.name = tour.Name;
             this.distance = tour.Distance;
             this.description = tour.Description;
-            this.imageUrl = $"{baseUrl}/api/route/{this.tour.Id}";
             // Functional programming with LINQ
+            this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(WrapTourLog).ToList());
+        }
+        
+        public TourWrapper(Tour tour, BitmapImage image, bool imageLoaded = true)
+        {
+            this.tour = tour;
+            this.from = tour.From;
+            this.to = tour.To;
+            this.name = tour.Name;
+            this.distance = tour.Distance;
+            this.description = tour.Description;
+            this.image = image;
+            this.ImageLoaded = imageLoaded;
             this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(WrapTourLog).ToList());
         }
 

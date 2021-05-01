@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Client.Logic.DAL;
 using Model;
 
@@ -32,6 +33,11 @@ namespace Client.Logic.BL
         public async Task<(bool, string)> DeleteTour(int id)
         {
             return await api.DeleteTour(id);
+        }
+
+        public async Task<(BitmapImage?, BitmapImage?)> GetRouteImage(int id)
+        {
+            return await api.GetRouteImage(id);
         }
     }
 }

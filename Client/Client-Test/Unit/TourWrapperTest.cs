@@ -6,8 +6,6 @@ namespace Client_Test.Unit
 {
     public class TourWrapperTest
     {
-        private string baseUrl = "http://localhost:8000";
-        
         [OneTimeSetUp]
         public void Setup()
         {
@@ -19,7 +17,7 @@ namespace Client_Test.Unit
         public void SaveChangesToModel()
         {
             var model = new Tour("A", "B", "AB", 10, "Cool!");
-            var wrapper = new TourWrapper(model, baseUrl);
+            var wrapper = new TourWrapper(model, null!);
             var newFrom = "C";
             var newTo = "D";
             var newName = "CD";
@@ -47,7 +45,7 @@ namespace Client_Test.Unit
         public void SaveChangesToModelWithLogs()
         {
             var model = new Tour("A", "B", "AB", 10, "Cool!");
-            var wrapper = new TourWrapper(model, baseUrl);
+            var wrapper = new TourWrapper(model, null!);
             var newFrom = "C";
             var newTo = "D";
             var newName = "CD";
@@ -77,7 +75,7 @@ namespace Client_Test.Unit
         public void DiscardChangesToModel()
         {
             var model = new Tour("A", "B", "AB", 10, "Cool!");
-            var wrapper = new TourWrapper(model, baseUrl);
+            var wrapper = new TourWrapper(model, null!);
             var newFrom = "C";
             var newTo = "D";
             var newName = "CD";
@@ -111,7 +109,7 @@ namespace Client_Test.Unit
         public void DiscardChangesToModelWithLogs()
         {
             var model = new Tour("A", "B", "AB", 10, "Cool!");
-            var wrapper = new TourWrapper(model, baseUrl);
+            var wrapper = new TourWrapper(model, null!);
             var newFrom = "C";
             var newTo = "D";
             var newName = "CD";
@@ -147,7 +145,7 @@ namespace Client_Test.Unit
         public void GetRequestModel()
         {
             var model = new Tour("A", "B", "AB", 10, "Cool!");
-            var wrapper = new TourWrapper(model, baseUrl);
+            var wrapper = new TourWrapper(model, null!);
 
             var requestModel = wrapper.GetRequestTour();
             
@@ -166,7 +164,7 @@ namespace Client_Test.Unit
         public void GetRequestModelWithLogs()
         {
             var model = new Tour("A", "B", "AB", 10, "Cool!");
-            var wrapper = new TourWrapper(model, baseUrl);
+            var wrapper = new TourWrapper(model, null!);
             wrapper.AddNewLog();
             wrapper.SaveChanges();
 
