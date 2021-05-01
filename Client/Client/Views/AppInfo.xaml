@@ -178,12 +178,8 @@
                         <TextBox.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></TextBox.LayoutTransform>
                     </TextBox>
                     <!-- Cache image https://stackoverflow.com/a/24600904/12347616 -->
-                    <Image Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2">
-                        <Image.Source>
-                            <BitmapImage
-                                UriSource="{Binding SelectedTour.Image}"/>
-                        </Image.Source>
-                    </Image>
+                    <Image Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" 
+                           Source="{Binding SelectedTour.Image}"/>
                 </Grid>
                 <Grid MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, 
                     Converter={converters:WidthConverter}, ConverterParameter='2|0.4'}">
