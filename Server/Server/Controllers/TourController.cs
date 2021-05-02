@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Model;
@@ -17,20 +15,18 @@ namespace Server.Controllers
     [Controller]
     public class TourController
     {
-        [Autowired]
-        private TourPlannerServer tp = null!;
+        [Autowired] private readonly TourPlannerServer tp = null!;
+        private readonly ILogger logger = WebServiceLogging.CreateLogger<TourController>();
 
-        private ILogger logger = WebServiceLogging.CreateLogger<TourController>();
-        
         [Get("/api/tours")]
         public Response GetTours()
         {
-            var jsonString = "";
+            string jsonString;
             try
             {
                 var tours = tp.GetTours();
                 jsonString = JsonConvert.SerializeObject(tours);
-                
+
                 // TOOD use later to convert dictionary
                 //var json = JsonConvert.DeserializeObject<Dictionary<string, Object>>(jsonString);
                 //var jsonString2 = JsonConvert.SerializeObject(json);
@@ -76,6 +72,7 @@ namespace Server.Controllers
                 {
                     return Response.PlainText("Invalid payload", Status.BadRequest);
                 }
+
                 // Add tour
                 var (newTour, errorMsg) = tp.AddTour(tour);
                 // Check result
@@ -105,6 +102,7 @@ namespace Server.Controllers
                 {
                     return Response.PlainText("Invalid payload", Status.BadRequest);
                 }
+
                 // Update tour
                 var (updatedTour, errorMsg) = tp.UpdateTour(tour);
                 // Check result
@@ -119,7 +117,7 @@ namespace Server.Controllers
                 return Response.PlainText("Invalid payload", Status.BadRequest);
             }
         }
-        
+
 
         [Post("/api/test")]
         public Response Test([JsonString] string json)
@@ -127,14 +125,14 @@ namespace Server.Controllers
             Console.WriteLine(json);
             return Response.Status(Status.Ok);
         }
-        
+
         [Post("/api/test2")]
         public Response Test2(Dictionary<string, object>? json)
         {
             Console.WriteLine(json);
             return Response.Status(Status.Ok);
         }
-        
+
         [Post("/api/test3")]
         public Response Test2([JsonString] string jsonString, Dictionary<string, object>? json)
         {

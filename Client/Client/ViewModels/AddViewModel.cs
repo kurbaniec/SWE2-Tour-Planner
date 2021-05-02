@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Client.Logic.BL;
 using Client.Utils.Commands;
 using Client.Utils.Mediators;
@@ -15,12 +12,12 @@ namespace Client.ViewModels
         private readonly TourPlannerClient tp;
         private readonly Mediator mediator;
         private readonly ContentNavigation nav;
-        private TourWrapper tour = new TourWrapper(new Tour(), null!);
+        private TourWrapper tour = new(new Tour(), null!);
 
         public TourWrapper Tour
         {
             get => tour;
-            set
+            private set
             {
                 if (value == tour) return;
                 tour = value;
@@ -29,7 +26,6 @@ namespace Client.ViewModels
         }
 
         private bool edit = true;
-
         public bool Edit
         {
             get => edit;
@@ -41,23 +37,7 @@ namespace Client.ViewModels
             }
         }
 
-        private ICommand? changeEditMode;
-
-        public ICommand ChangeEditMode
-        {
-            get
-            {
-                if (changeEditMode != null) return changeEditMode;
-                changeEditMode = new RelayCommand(
-                    _ => true,
-                    p => Edit = !Edit
-                );
-                return changeEditMode;
-            }
-        }
-
         private bool waitingForResponse;
-
         public bool WaitingForResponse
         {
             get => waitingForResponse;
@@ -69,27 +49,7 @@ namespace Client.ViewModels
             }
         }
 
-        private ICommand? cancelEdit;
-
-        public ICommand CancelEdit
-        {
-            get
-            {
-                if (cancelEdit != null) return cancelEdit;
-                cancelEdit = new RelayCommand(
-                    p => !WaitingForResponse,
-                    p =>
-                    {
-                        tour?.DiscardChanges();
-                        Edit = false;
-                    }
-                );
-                return cancelEdit;
-            }
-        }
-
         private ICommand? addTour;
-
         public ICommand AddTour
         {
             get
@@ -105,13 +65,16 @@ namespace Client.ViewModels
                         var (responseTour, errorMessage) = await tp.AddTour(tour.GetRequestTour());
                         if (responseTour is { } newTour)
                         {
-                            tour = new TourWrapper(new Tour(), null!);
+                            Tour = new TourWrapper(new Tour(), null!);
                             mediator.NotifyColleagues(ViewModelMessages.TourAddition, newTour);
+                            nav.ShowInfoDialog(
+                                "Tour Addition was successful",
+                                "Tour Planner - Add Tour");
                         }
                         else
                         {
                             nav.ShowErrorDialog(
-                                $"Encountered error while adding tour: \n{errorMessage}",
+                                $"Encountered error while adding Tour: \n{errorMessage}",
                                 "Tour Planner - Add Tour");
                         }
 
@@ -123,23 +86,12 @@ namespace Client.ViewModels
                 return addTour;
             }
         }
-
-
+        
         public AddViewModel(TourPlannerClient tp, Mediator mediator, ContentNavigation nav)
         {
             this.tp = tp;
             this.mediator = mediator;
             this.nav = nav;
-            // Register to changes
-            /*
-            mediator.Register(o =>
-            {
-                this.tour?.DiscardChanges();
-                if (Edit) 
-                    Edit = false;
-                var tour = (TourWrapper) o;
-                Tour = tour;
-            }, ViewModelMessages.SelectedTourChange);*/
         }
     }
 }

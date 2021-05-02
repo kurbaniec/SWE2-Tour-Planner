@@ -99,18 +99,27 @@ namespace Client.ViewModels
                         WaitingForResponse = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
-
                         if (selectedTour is { })
                         {
-                            // TODO
+                            logger.Log(LogLevel.Information, 
+                                $"Trying to update Tour with id {selectedTour.Model.Id}");
                             var (updatedTour, errorMsg) = await tp.UpdateTour(selectedTour.GetRequestTour());
-                            if (updatedTour is {})
+                            if (updatedTour is { })
+                            {
+                                logger.Log(LogLevel.Information,
+                                    $"Update for Tour with id {selectedTour.Model.Id} was successful");
                                 mediator.NotifyColleagues(ViewModelMessages.TourAddition, updatedTour);
+                                nav.ShowInfoDialog("Update was successful", "Tour Planer - Update Tour");
+                            }
+                            else
+                            {
+                                logger.Log(LogLevel.Warning,
+                                    $"Update for Tour with id {selectedTour.Model.Id} was not successful");
+                                nav.ShowErrorDialog(
+                                    $"Encountered error while updating Tour: \n{errorMsg}", 
+                                    "Tour Planner - Update Tour");
+                            }
                         }
-                        //await Task.Run(() => { Thread.Sleep(50); });
-                        
-                        
-                        selectedTour?.SaveChanges();
                         WaitingForResponse = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }

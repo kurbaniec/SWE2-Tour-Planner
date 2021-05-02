@@ -22,7 +22,7 @@ namespace Client.ViewModels
         private readonly ContentNavigation nav;
         private readonly ILogger logger = ApplicationLogging.CreateLogger<ListViewModel>();
 
-        public ObservableCollection<TourWrapper> Tours { get; private set; }
+        public ObservableCollection<TourWrapper> Tours { get; }
         private readonly ICollectionView toursView;
 
         private TourWrapper? selectedTour;
@@ -44,31 +44,32 @@ namespace Client.ViewModels
                         if (SelectedTour != null)
                         {
                             var id = SelectedTour.Model.Id;
-                            logger.Log(LogLevel.Information, 
+                            logger.Log(LogLevel.Information,
                                 $"Requesting route information image for Tour with id {id}");
-                            var (routeImg, _) 
+                            var (routeImg, _)
                                 = await tp.GetRouteImage(id);
-                            
-                            if (routeImg is { } && selectedTour is {} && selectedTour.Model.Id == id)
+
+                            if (routeImg is { } && selectedTour is { } && selectedTour.Model.Id == id)
                             {
                                 selectedTour.ImageLoaded = true;
                                 selectedTour.Image = routeImg;
-                                logger.Log(LogLevel.Information, 
+                                logger.Log(LogLevel.Information,
                                     "Route information successfully loaded");
                             }
                             else
                             {
                                 logger.Log(LogLevel.Warning, "Route information not successfully loaded");
-                                logger.Log(LogLevel.Warning, 
+                                logger.Log(LogLevel.Warning,
                                     $"Is Route Image null: {routeImg == null}");
-                                logger.Log(LogLevel.Warning, 
+                                logger.Log(LogLevel.Warning,
                                     $"Is Selected Tour null: {selectedTour == null}");
-                                logger.Log(LogLevel.Warning, 
+                                logger.Log(LogLevel.Warning,
                                     $"Is id mismatch: {selectedTour != null && id == selectedTour.Model.Id}");
                             }
                         }
                     });
                 }
+
                 OnPropertyChanged();
                 mediator.NotifyColleagues(ViewModelMessages.SelectedTourChange, selectedTour);
                 nav.Navigate(ContentPage.AppInfo);
@@ -76,8 +77,7 @@ namespace Client.ViewModels
         }
 
         private string filter;
-
-        public string Filter
+        private string Filter
         {
             get => filter;
             set
@@ -90,7 +90,6 @@ namespace Client.ViewModels
         }
 
         private ICommand? openAddTour;
-
         public ICommand? OpenAddTour
         {
             get
@@ -105,7 +104,6 @@ namespace Client.ViewModels
         }
 
         private bool disabled;
-
         public bool Disabled
         {
             get => disabled;
@@ -118,7 +116,6 @@ namespace Client.ViewModels
         }
 
         private ICommand? loadData;
-
         public ICommand LoadData
         {
             get
@@ -153,6 +150,7 @@ namespace Client.ViewModels
                                 nav.ShowErrorDialog(errorMsg, "Tour Planner");
                             }
                         }
+
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     });
                 return loadData;

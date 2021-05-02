@@ -1,21 +1,25 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Model;
 using Server.DAL;
 using WebService_Lib.Attributes;
+using WebService_Lib.Logging;
 
 namespace Server.BL
 {
     [Component]
     public class TourPlannerServer
     {
-        [Autowired] private IDataManagement db = null!;
+        [Autowired] private readonly IDataManagement db = null!;
+        [Autowired] private readonly IMapApi map = null!;
+        private readonly ILogger logger = WebServiceLogging.CreateLogger<TourPlannerServer>();
 
-        [Autowired] private IMapApi map = null!;
-
+        // ReSharper disable once UnusedMember.Global
         public TourPlannerServer()
         {
         }
 
+        // ReSharper disable once UnusedMember.Global
         public TourPlannerServer(IDataManagement db, IMapApi map)
         {
             this.db = db;
@@ -24,14 +28,19 @@ namespace Server.BL
 
         public List<Tour> GetTours()
         {
+            logger.Log(LogLevel.Information, "Returning all Tours");
             return db.GetTours();
         }
 
         public (Tour?, string) AddTour(Tour tour)
         {
+            logger.Log(LogLevel.Information, "Trying to add new Tour");
             if (string.IsNullOrEmpty(tour.To) || string.IsNullOrEmpty(tour.From))
+            {
+                logger.Log(LogLevel.Error, "Received unsupported Tour data");
+                logger.Log(LogLevel.Error, "To and From cannot be empty");
                 return (null, "To and From cannot be empty");
-
+            }
             var (mapApiResponse, mapError) = map.GetRouteInfo(tour.From, tour.To);
             if (mapApiResponse is { })
             {
@@ -52,13 +61,28 @@ namespace Server.BL
 
         public (Tour?, string) UpdateTour(Tour tour)
         {
+            logger.Log(LogLevel.Information, $"Trying to update Tour with id {tour.Id}");
             if (string.IsNullOrEmpty(tour.To) || string.IsNullOrEmpty(tour.From))
+            {
+                logger.Log(LogLevel.Error, "Received unsupported Tour data");
+                logger.Log(LogLevel.Error, "To and From cannot be empty");
                 return (null, "To and From cannot be empty");
+            }
+
             if (tour.Id == 0)
+            {
+                logger.Log(LogLevel.Error, "Received unsupported Tour data");
+                logger.Log(LogLevel.Error, "Id cannot be 0");
                 return (null, "Id cannot be 0");
+            }
+
             var oldTour = db.GetTour(tour.Id);
             if (oldTour is null)
+            {
+                logger.Log(LogLevel.Error, "Invalid tour id given");
                 return (null, "Invalid tour id given");
+            }
+
             if (tour.From != oldTour.From || tour.To != oldTour.To)
             {
                 // Update Distance & Route information when changed
@@ -79,17 +103,20 @@ namespace Server.BL
 
                 return (null, mapError);
             }
-            
+
             return db.UpdateTour(tour);
         }
 
         public (bool, string) DeleteTour(int id)
         {
+            logger.Log(LogLevel.Information, $"Trying to delete Tour with id {id}");
             return db.DeleteTour(id);
         }
 
         public string? GetRouteImage(int id)
         {
+            logger.Log(LogLevel.Information, 
+                $"Trying to request route information image for Tour with id {id}");
             return map.GetRouteImagePath(id);
         }
     }
