@@ -182,8 +182,9 @@
                     <Image Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" 
                            Source="{Binding SelectedTour.Image}"/>
                 </Grid>
-                <Grid MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, 
-                    Converter={converters:WidthConverter}, ConverterParameter='2|0.4'}">
+                <Grid Width="{Binding Path=ActualWidth, ElementName=Panel, 
+                    Converter={converters:WidthConverter}, ConverterParameter='2|0.4'}"
+                    HorizontalAlignment="Right">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>

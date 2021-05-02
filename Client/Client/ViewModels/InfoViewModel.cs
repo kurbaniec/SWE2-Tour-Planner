@@ -138,7 +138,7 @@ namespace Client.ViewModels
                         if (selectedTour is null) return;
                         logger.Log(LogLevel.Information, 
                             $"Asking Users if Tour with id {selectedTour.Model.Id} should be really deleted");
-                        var ok = nav.ShowErrorDialogWithQuestion(
+                        var ok = nav.ShowInfoDialogWithQuestion(
                             "Do you really want to delete this Tour?\nThis process is not reversible.",
                             "Tour Planner - Delete Tour");
                         if (!ok) return;

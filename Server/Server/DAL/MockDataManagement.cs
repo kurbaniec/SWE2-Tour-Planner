@@ -71,9 +71,16 @@ namespace Server.DAL
 
         public (Tour?, string) AddTour(Tour tour)
         {
-            var id = tours.OrderByDescending(t => t.Id).Take(1).First().Id + 1;
-            tour.Id = id;
-            
+            if (tours.Count > 0)
+            {
+                var id = tours.OrderByDescending(t => t.Id).Take(1).First().Id + 1;
+                tour.Id = id;
+            }
+            else
+            {
+                tour.Id = 1000;
+            }
+
             var logHighest = tour.Logs.OrderByDescending(l => l.Id).Take(1).FirstOrDefault();
             var logId = logHighest?.Id ?? 1000;
             tour.Logs.ForEach(l =>

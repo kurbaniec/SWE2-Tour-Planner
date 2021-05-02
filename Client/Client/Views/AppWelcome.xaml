@@ -9,7 +9,7 @@
       Title="Welcome">
     <Grid>
         <Label Grid.Column="0" Grid.Row="0" >
-            Please Select a Tour!
+            Add a new Tour or select an existing one!
             <Label.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Label.LayoutTransform>
         </Label>
     </Grid>

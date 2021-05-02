@@ -202,7 +202,10 @@ namespace Client.ViewModels
             }, ViewModelMessages.TourAddition);
             mediator.Register(o =>
             {
-                // TODO remove tour from list
+                // Remove Tour
+                var id = (int) o;
+                if (Tours.FirstOrDefault(t => t.Model.Id == id) is { } deleteTour)
+                    Tours.Remove(deleteTour);
             }, ViewModelMessages.TourDeletion);
         }
     }
