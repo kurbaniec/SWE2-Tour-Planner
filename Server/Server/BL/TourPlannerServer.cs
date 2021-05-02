@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Model;
 using Server.DAL;
@@ -57,6 +58,21 @@ namespace Server.BL
             }
 
             return (null, mapError);
+        }
+
+        public (List<Tour>?, string) AddTours(List<Tour> tours)
+        {
+            var newTours = new List<Tour>();
+            foreach (var tour in tours)
+            {
+                var (newTour, errorMsg) = AddTour(tour);
+                if (newTour is { })
+                    newTours.Add(newTour);
+                else
+                    return (null, errorMsg);
+            }
+
+            return (newTours, string.Empty);
         }
 
         public (Tour?, string) UpdateTour(Tour tour)

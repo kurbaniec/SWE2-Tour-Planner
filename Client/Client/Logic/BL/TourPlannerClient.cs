@@ -27,6 +27,11 @@ namespace Client.Logic.BL
             return await api.AddTour(tour);
         }
         
+        public async Task<(List<Tour>?, string)> AddTours(List<Tour> tours)
+        {
+            return await api.AddTours(tours);
+        }
+        
         public async Task<(Tour?, string)> UpdateTour(Tour tour)
         {
             return await api.UpdateTour(tour);

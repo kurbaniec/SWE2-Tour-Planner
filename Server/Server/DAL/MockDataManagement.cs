@@ -16,6 +16,7 @@ namespace Server.DAL
         public MockDataManagement()
         {
             tours = new List<Tour>();
+            /*
             var tour = new Tour(
                 1000,
                 "A", "B",
@@ -56,7 +57,7 @@ namespace Server.DAL
                 new List<TourLog>()
             );
             tours.Add(tour);
-            tours.Add(tour2);
+            tours.Add(tour2);*/
         }
         
         public List<Tour> GetTours()
@@ -91,6 +92,20 @@ namespace Server.DAL
             tours.Add(tour);
             return (tour, string.Empty);
         }
+
+        /*
+        public (List<Tour>?, string) AddTours(List<Tour> rawTours)
+        {
+            var newTours = new List<Tour>();
+            foreach (var t in rawTours)
+            {
+                var (newTour, errorMsg) = AddTour(t);
+                if (newTour is { }) newTours.Add(newTour);
+                else return (null, errorMsg);
+            }
+
+            return (newTours, string.Empty);
+        }*/
 
         public (Tour?, string) UpdateTour(Tour tour)
         {

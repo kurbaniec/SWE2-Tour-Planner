@@ -10,6 +10,8 @@ namespace Client.Logic.DAL
         Task<(List<Tour>?, string)> GetTours();
         
         Task<(Tour?, string)> AddTour(Tour tour);
+        
+        Task<(List<Tour>?, string)> AddTours(List<Tour> tour);
 
         Task<(Tour?, string)> UpdateTour(Tour tour);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -177,10 +178,8 @@ namespace Client.ViewModels
             Filter = newFilter;
         }
 
-        private async void TourAddition(object o)
+        private async Task<TourWrapper> TourAdditionProcess(Tour tour)
         {
-            // Create new Wrapper
-            var tour = (Tour) o;
             // Fetch Route Information
             var (routeImg, dummyImg) = await tp.GetRouteImage(tour.Id);
             TourWrapper newTour = routeImg is { }
@@ -192,6 +191,14 @@ namespace Client.ViewModels
                 Tours.Remove(existingTour);
             Tours.Add(newTour);
             logger.Log(LogLevel.Information, $"Successfully added or updated Tour with id {newTour.Model.Id}");
+            return newTour;
+        }
+        
+        private async void TourAddition(object o)
+        {
+            // Create new Wrapper
+            var tour = (Tour) o;
+            var newTour = await TourAdditionProcess(tour);
             // Navigate to new tour info page
             SelectedTour = newTour;
             nav.Navigate(ContentPage.AppInfo);
@@ -208,15 +215,20 @@ namespace Client.ViewModels
         private async void Import(object o)
         {
             var path = (string) o;
-            var (newTours, errorMsg) = await tp.ImportTours(path);
-            if (newTours is { })
+            var (toursToImport, importError) = await tp.ImportTours(path);
+            if (toursToImport is { })
             {
-                // TODO send to server 
+                var (newTours, apiError) = await tp.AddTours(toursToImport);
+                if (newTours is { })
+                {
+                    newTours.ForEach(async t => await TourAdditionProcess(t));
+                    nav.ShowInfoDialog("Tour(s) successfully imported", "Tour Planner - Import");
+                }
+                else 
+                    nav.ShowErrorDialog($"Encountered error while importing Tours: \n{apiError}", "Tour Planner - Import");
             }
-            else
-            {
-                nav.ShowErrorDialog($"Encountered error while importing Tours: \n{errorMsg}");
-            }
+            else nav.ShowErrorDialog(
+                $"Encountered error while importing Tours: \n{importError}", "Tour Planner - Import");
         }
 
         private async void ExportThis(object o)

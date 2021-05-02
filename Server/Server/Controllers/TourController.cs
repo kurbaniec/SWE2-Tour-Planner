@@ -86,6 +86,36 @@ namespace Server.Controllers
                 return Response.PlainText("Invalid payload", Status.BadRequest);
             }
         }
+        
+        [Post("/api/tours")]
+        public Response AddTours([JsonString] string json)
+        {
+            try
+            {
+                // Parse received tour
+                List<Tour> tours;
+                var parsedTours = JsonConvert.DeserializeObject<List<Tour>>(json);
+                if (parsedTours is { } actualTours)
+                    tours = actualTours;
+                else
+                {
+                    return Response.PlainText("Invalid payload", Status.BadRequest);
+                }
+
+                // Add tours
+                var (newTour, errorMsg) = tp.AddTours(tours);
+                // Check result
+                if (newTour is null) return Response.PlainText(errorMsg, Status.BadRequest);
+                var jsonString = JsonConvert.SerializeObject(newTour);
+                return Response.Json(jsonString);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, $"Encountered exception in {MethodBase.GetCurrentMethod()}:");
+                logger.Log(LogLevel.Error, ex.StackTrace);
+                return Response.PlainText("Invalid payload", Status.BadRequest);
+            }
+        }
 
         [Put("/api/tour")]
         public Response UpdateTour([JsonString] string json)

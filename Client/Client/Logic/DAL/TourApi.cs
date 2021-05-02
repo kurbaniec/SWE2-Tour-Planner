@@ -89,6 +89,39 @@ namespace Client.Logic.DAL
             }
         }
 
+        public async Task<(List<Tour>?, string)> AddTours(List<Tour> tour)
+        {
+            try
+            {
+                var response = await client.PostAsync($"{baseUrl}/api/tours",
+                    new StringContent(
+                        JsonConvert.SerializeObject(tour),
+                        Encoding.Default,
+                        "application/json"
+                    ));
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonString = await response.Content.ReadAsStringAsync();
+                    var newTours = JsonConvert.DeserializeObject<List<Tour>>(jsonString);
+                    logger.Log(LogLevel.Information, "Received new tours successfully");
+                    return (newTours, string.Empty);
+                }
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                logger.Log(LogLevel.Error, errorMsg);
+                return (null, errorMsg);
+            }
+            catch (JsonException jsonEx)
+            {
+                logger.Log(LogLevel.Error, jsonEx.StackTrace);
+                return (null, jsonEx.Message);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                logger.Log(LogLevel.Error, httpEx.StackTrace);
+                return (null, httpEx.Message);
+            }
+        }
+
         public async Task<(Tour?, string)> UpdateTour(Tour tour)
         {
             try
