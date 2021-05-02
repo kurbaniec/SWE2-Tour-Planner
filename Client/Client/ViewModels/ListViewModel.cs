@@ -26,7 +26,6 @@ namespace Client.ViewModels
         private readonly ICollectionView toursView;
 
         private TourWrapper? selectedTour;
-
         public TourWrapper? SelectedTour
         {
             get => selectedTour;
@@ -156,6 +155,52 @@ namespace Client.ViewModels
                 return loadData;
             }
         }
+        
+        // Mediator Events
+
+        private void TransactionBegin(object o)
+        {
+            Disabled = true;
+        }
+
+        private void TransactionEnd(object o)
+        {
+            Disabled = false;
+        }
+
+        private void FilterChange(object o)
+        {
+            var newFilter = (string) o;
+            Filter = newFilter;
+        }
+
+        private async void TourAddition(object o)
+        {
+            // Create new Wrapper
+            var tour = (Tour) o;
+            // Fetch Route Information
+            var (routeImg, dummyImg) = await tp.GetRouteImage(tour.Id);
+            TourWrapper newTour = routeImg is { }
+                ? new TourWrapper(tour, routeImg)
+                : new TourWrapper(tour, dummyImg!, imageLoaded: false);
+            // Update Tour List
+            // Why Remove + Add? Reference to toursView should not change
+            if (Tours.FirstOrDefault(t => t.Model.Id == newTour.Model.Id) is { } existingTour)
+                Tours.Remove(existingTour);
+            Tours.Add(newTour);
+            logger.Log(LogLevel.Information, $"Successfully added or updated Tour with id {newTour.Model.Id}");
+            // Navigate to new tour info page
+            SelectedTour = newTour;
+            nav.Navigate(ContentPage.AppInfo);
+        }
+
+        private void TourDeletion(object o)
+        {
+            // Remove Tour
+            var id = (int) o;
+            if (Tours.FirstOrDefault(t => t.Model.Id == id) is { } deleteTour)
+                Tours.Remove(deleteTour);
+        }
 
         public ListViewModel(
             TourPlannerClient tp, Mediator mediator, ContentNavigation nav, Configuration cfg)
@@ -173,40 +218,13 @@ namespace Client.ViewModels
             toursView = CollectionViewSource.GetDefaultView(Tours);
             toursView.Filter = o => string.IsNullOrEmpty(Filter) ||
                                     ((TourWrapper) o).Name.ToLower().Contains(Filter.ToLower());
-
-            mediator.Register(o =>
-            {
-                var newFilter = (string) o;
-                Filter = newFilter;
-            }, ViewModelMessages.FilterChange);
-            mediator.Register(_ => { Disabled = true; }, ViewModelMessages.TransactionBegin);
-            mediator.Register(_ => { Disabled = false; }, ViewModelMessages.TransactionEnd);
-            mediator.Register(async o =>
-            {
-                // Create new Wrapper
-                var tour = (Tour) o;
-                // Fetch Route Information
-                var (routeImg, dummyImg) = await tp.GetRouteImage(tour.Id);
-                TourWrapper newTour = routeImg is { }
-                    ? new TourWrapper(tour, routeImg)
-                    : new TourWrapper(tour, dummyImg!, imageLoaded: false);
-                // Update Tour List
-                // Why Remove + Add? Reference to toursView should not change
-                if (Tours.FirstOrDefault(t => t.Model.Id == newTour.Model.Id) is { } existingTour)
-                    Tours.Remove(existingTour);
-                Tours.Add(newTour);
-                logger.Log(LogLevel.Information, $"Successfully added or updated Tour with id {newTour.Model.Id}");
-                // Navigate to new tour info page
-                SelectedTour = newTour;
-                nav.Navigate(ContentPage.AppInfo);
-            }, ViewModelMessages.TourAddition);
-            mediator.Register(o =>
-            {
-                // Remove Tour
-                var id = (int) o;
-                if (Tours.FirstOrDefault(t => t.Model.Id == id) is { } deleteTour)
-                    Tours.Remove(deleteTour);
-            }, ViewModelMessages.TourDeletion);
+            
+            // Register mediator events
+            mediator.Register(FilterChange, ViewModelMessages.FilterChange);
+            mediator.Register(TransactionBegin, ViewModelMessages.TransactionBegin);
+            mediator.Register(TransactionEnd, ViewModelMessages.TransactionEnd);
+            mediator.Register(TourAddition, ViewModelMessages.TourAddition);
+            mediator.Register(TourDeletion, ViewModelMessages.TourDeletion);
         }
     }
 }

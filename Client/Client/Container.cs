@@ -52,8 +52,7 @@ namespace Client
             serviceProvider.GetService<MenuViewModel>();
             serviceProvider.GetService<ListViewModel>();
             serviceProvider.GetService<InfoViewModel>();
-            var kek = serviceProvider.GetService<AddViewModel>();
-            Console.WriteLine("");
+            serviceProvider.GetService<AddViewModel>();
         }
 
         public MainViewModel MainViewModel

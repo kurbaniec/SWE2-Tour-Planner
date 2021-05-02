@@ -19,7 +19,7 @@ namespace Client.ViewModels
         public TourWrapper? SelectedTour
         {
             get => selectedTour;
-            set
+            private set
             {
                 if (value == selectedTour || value == null) return;
                 selectedTour = value;
@@ -125,7 +125,6 @@ namespace Client.ViewModels
         }
 
         private ICommand? deleteTour;
-
         public ICommand DeleteTour
         {
             get

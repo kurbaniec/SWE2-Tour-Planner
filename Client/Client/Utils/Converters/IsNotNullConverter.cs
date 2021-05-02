@@ -5,13 +5,13 @@ using System.Windows.Markup;
 
 namespace Client.Utils.Converters
 {
-    public class IsNullConverter : MarkupExtension, IValueConverter
+    public class IsNotNullConverter : MarkupExtension, IValueConverter
     {
-        private static IsNullConverter? instance;
+        private static IsNotNullConverter? instance;
         
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value == null);
+            return (value != null);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -21,7 +21,7 @@ namespace Client.Utils.Converters
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return instance ??= new IsNullConverter();
+            return instance ??= new IsNotNullConverter();
         }
     }
 }
