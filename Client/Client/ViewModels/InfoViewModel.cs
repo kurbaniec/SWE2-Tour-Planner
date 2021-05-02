@@ -128,6 +128,34 @@ namespace Client.ViewModels
             }
         }
 
+        private ICommand? deleteTour;
+
+        public ICommand DeleteTour
+        {
+            get
+            {
+                if (deleteTour != null) return deleteTour;
+                deleteTour = new RelayCommand(
+                    _ => !WaitingForResponse,
+                    async _ =>
+                    {
+                        logger.Log(LogLevel.Information, 
+                            $"Asking Users if Tour with id {selectedTour.Model.Id} should be really deleted");
+                        var ok = nav.ShowErrorDialogWithQuestion(
+                            "Do you really want to delete this Tour?\nThis process is not reversible.",
+                            "Tour Planner - Delete Tour");
+                        if (ok)
+                        {
+                            logger.Log(LogLevel.Information, "Starting deletion process");
+                            
+                        }
+                    }
+                );
+                return deleteTour;
+            }
+        }
+        
+
         private ICommand? addLog;
         public ICommand AddLog
         {

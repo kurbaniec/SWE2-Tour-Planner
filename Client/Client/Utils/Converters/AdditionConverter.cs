@@ -21,7 +21,7 @@ namespace Client.Utils.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null!;
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)

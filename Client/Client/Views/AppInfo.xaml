@@ -105,6 +105,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                         <TextBox FontWeight="Bold" MinWidth="30" MaxLength="30"
@@ -184,6 +185,7 @@
                 <Grid MaxWidth="{Binding Path=ActualWidth, ElementName=Panel, 
                     Converter={converters:WidthConverter}, ConverterParameter='2|0.4'}">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -306,8 +308,8 @@
                         <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
                     </Button>
                     <StackPanel Grid.Column="0" Grid.Row="3" 
-                                Margin="0 20 0 0"
-                                Orientation="Horizontal" HorizontalAlignment="Right">
+                        Margin="0 40 0 0"
+                        Orientation="Horizontal" HorizontalAlignment="Right">
                         <StackPanel.Style>
                             <Style TargetType="StackPanel">
                                 <Style.Triggers>
@@ -338,28 +340,22 @@
                             </local:Spinner.Style>
                         </local:Spinner>
                         <Button Margin="2 2 2 2" Width="100"
-                                Command="{Binding AcceptEdit}">
+                            Command="{Binding AcceptEdit}">
                             Save Changes
                             <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
                         </Button>
                         <Button Margin="2 2 2 2" Width="100"
-                                Command="{Binding CancelEdit}">
+                            Command="{Binding CancelEdit}">
                             Cancel
                             <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
                         </Button>
                     </StackPanel>
-                    <!--
-                    <Grid Grid.Column="0" Grid.Row="3" Background="Black">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.Style>
-                            <Style TargetType="Grid">
+                    <Button Grid.Column="0" Grid.Row="4"
+                        Margin="2 22 2 2" Width="100" HorizontalAlignment="Right"
+                        Foreground="White" Background="Crimson"
+                        Command="{Binding DeleteTour}">
+                        <Button.Style>
+                            <Style TargetType="Button">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Edit}" Value="True">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -372,32 +368,10 @@
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </Style.Setters>
                             </Style>
-                        </Grid.Style>
-                        <local:Spinner Grid.Column="0" Margin="2 2 2 2">
-                            <local:Spinner.Style>
-                                <Style TargetType="local:Spinner">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding WaitingForResponse}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                    <Style.Setters>
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </Style.Setters>
-                                </Style>
-                            </local:Spinner.Style>
-                        </local:Spinner>
-                        <Button Grid.Column="1" Margin="2 2 2 2" 
-                            Command="{Binding AcceptEdit}">
-                            Save Changes
-                            <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
-                        </Button>
-                        <Button Grid.Column="2" Margin="2 2 2 2"
-                            Command="{Binding CancelEdit}">
-                            Cancel
-                            <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
-                        </Button>
-                    </Grid>-->
+                        </Button.Style>
+                        Delete
+                        <Button.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></Button.LayoutTransform>
+                    </Button>
                 </Grid>
             </WrapPanel>
         </ScrollViewer>

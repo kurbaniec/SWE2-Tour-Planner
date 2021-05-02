@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Navigation;
 using Client.Utils.Logging;
@@ -28,12 +29,28 @@ namespace Client.Utils.Navigation
 
         public void ShowInfoDialog(string body, string header = "")
         {
-            MessageBox.Show(body, header, MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(body, header, 
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        
+        public bool ShowInfoDialogWithQuestion(string body, string header = "")
+        {
+            var result = MessageBox.Show(body, header, 
+                MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            return result is MessageBoxResult.OK or MessageBoxResult.Yes;
         }
         
         public void ShowErrorDialog(string body, string header = "")
         {
-            MessageBox.Show(body, header, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(body, header, 
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        
+        public bool ShowErrorDialogWithQuestion(string body, string header = "")
+        {
+            var result = MessageBox.Show(body, header, 
+                MessageBoxButton.OKCancel, MessageBoxImage.Error);
+            return result is MessageBoxResult.OK or MessageBoxResult.Yes;
         }
     }
 
