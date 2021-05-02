@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using Client.Utils.Commands;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
@@ -9,7 +10,7 @@ namespace Client.ViewModels
     {
         private readonly Mediator mediator;
         private readonly ContentNavigation nav;
-        
+
         private string filter;
         public string Filter
         {
@@ -22,7 +23,7 @@ namespace Client.ViewModels
                 mediator.NotifyColleagues(ViewModelMessages.FilterChange, filter);
             }
         }
-        
+
         private ICommand? clearFilter;
         public ICommand ClearFilter
         {
@@ -33,7 +34,7 @@ namespace Client.ViewModels
                     _ => !string.IsNullOrEmpty(filter),
                     // Filter instead of filter is used to trigger
                     // Filter's set function
-                    _ => Filter = "" 
+                    _ => Filter = ""
                 );
                 return clearFilter;
             }
@@ -52,7 +53,6 @@ namespace Client.ViewModels
         }
 
         private bool busy;
-
         public bool Busy
         {
             get => busy;
@@ -63,9 +63,72 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        private ICommand? import;
+        public ICommand? Import
+        {
+            get
+            {
+                if (import != null) return import;
+                import = new RelayCommand(
+                    _ => true,
+                    _ =>
+                    {
+                        var path = nav.ShowOpenFileDialog();
+                        if (path is {})
+                        {
+                            mediator.NotifyColleagues(ViewModelMessages.Import, path);
+                        }
+                    }
+                );
+                return import;
+            }
+        }
         
+        private ICommand? exportThis;
+        public ICommand? ExportThis
+        {
+            get
+            {
+                if (exportThis != null) return exportThis;
+                exportThis = new RelayCommand(
+                    _ => true,
+                    _ =>
+                    {
+                        var path = nav.ShowSaveFileDialog();
+                        if (path is { })
+                        {
+                            mediator.NotifyColleagues(ViewModelMessages.ExportThis, path);
+                        }
+                    }
+                );
+                return exportThis;
+            }
+        }
+        
+        private ICommand? exportAll;
+        public ICommand? ExportAll
+        {
+            get
+            {
+                if (exportAll != null) return exportAll;
+                exportAll = new RelayCommand(
+                    _ => true,
+                    _ =>
+                    {
+                        var path = nav.ShowSaveFileDialog();
+                        if (path is { })
+                        {
+                            mediator.NotifyColleagues(ViewModelMessages.ExportAll, path);
+                        }
+                    }
+                );
+                return exportAll;
+            }
+        }
+
         // Mediator events
-        
+
         private void TransactionBegin(object o)
         {
             Busy = true;
@@ -81,7 +144,7 @@ namespace Client.ViewModels
             var tour = (TourWrapper) o;
             SelectedTour = tour;
         }
-        
+
         public MenuViewModel(Mediator mediator, ContentNavigation nav)
         {
             this.mediator = mediator;

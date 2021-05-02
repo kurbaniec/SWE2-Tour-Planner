@@ -5,6 +5,7 @@ using System.Windows.Navigation;
 using Client.Utils.Logging;
 using Client.Views;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 
 namespace Client.Utils.Navigation
 {
@@ -51,6 +52,18 @@ namespace Client.Utils.Navigation
             var result = MessageBox.Show(body, header, 
                 MessageBoxButton.OKCancel, MessageBoxImage.Error);
             return result is MessageBoxResult.OK or MessageBoxResult.Yes;
+        }
+        
+        public string? ShowOpenFileDialog()
+        {
+            var openFileDialog = new OpenFileDialog {Filter = "Tour Data (*.td)|*.td"};
+            return openFileDialog.ShowDialog() == true ? openFileDialog.FileName : null;
+        }
+
+        public string? ShowSaveFileDialog()
+        {
+            var saveFileDialog = new SaveFileDialog {Filter = "Tour Data (*.td)|*.td"};
+            return saveFileDialog.ShowDialog() == true ? saveFileDialog.FileName : null;
         }
     }
 

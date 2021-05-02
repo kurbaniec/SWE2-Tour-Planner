@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Client.Logic.BL;
 using Client.Logic.Setup;
@@ -202,6 +205,56 @@ namespace Client.ViewModels
                 Tours.Remove(deleteTour);
         }
 
+        private async void Import(object o)
+        {
+            var path = (string) o;
+            var (newTours, errorMsg) = await tp.ImportTours(path);
+            if (newTours is { })
+            {
+                
+            }
+            else
+            {
+                nav.ShowErrorDialog($"Encountered error while importing Tours: \n{errorMsg}");
+            }
+        }
+
+        private async void ExportThis(object o)
+        {
+            var path = (string) o;
+            if (selectedTour is { })
+            {
+                var (ok, errorMsg) = await tp.ExportTours(
+                    path, new List<Tour>() {selectedTour.Model});
+                if (ok)
+                {
+                    
+                }
+                else
+                {
+                    nav.ShowErrorDialog($"Encountered error while exporting Tour: \n{errorMsg}");
+                }
+            }
+        }
+
+        private async void ExportAll(object o)
+        {
+            var path = (string) o;
+            if (Tours.Count > 0)
+            {
+                var tourModels = Tours.Select(t => t.Model).ToList();
+                var (ok, errorMsg) = await tp.ExportTours(path, tourModels);
+                if (ok)
+                {
+                    
+                }
+                else
+                {
+                    nav.ShowErrorDialog($"Encountered error while exporting Tours: \n{errorMsg}");
+                }
+            }
+        }
+
         public ListViewModel(
             TourPlannerClient tp, Mediator mediator, ContentNavigation nav, Configuration cfg)
         {
@@ -226,6 +279,9 @@ namespace Client.ViewModels
             mediator.Register(TransactionEnd, ViewModelMessages.TransactionEnd);
             mediator.Register(TourAddition, ViewModelMessages.TourAddition);
             mediator.Register(TourDeletion, ViewModelMessages.TourDeletion);
+            mediator.Register(Import, ViewModelMessages.Import);
+            mediator.Register(ExportThis, ViewModelMessages.ExportThis);
+            mediator.Register(ExportAll, ViewModelMessages.ExportAll);
         }
     }
 }

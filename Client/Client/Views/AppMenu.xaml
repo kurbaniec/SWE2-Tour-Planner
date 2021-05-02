@@ -23,10 +23,10 @@
                 </Style>
             </Menu.Style>
             <MenuItem Header="File">
-                <MenuItem Header="Import"/> 
-                <MenuItem Header="Export this Tour" 
+                <MenuItem Header="Import" Command="{Binding Import}"/> 
+                <MenuItem Header="Export this Tour" Command="{Binding ExportThis}"
                     IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}"/>
-                <MenuItem Header="Export all Tours" 
+                <MenuItem Header="Export all Tours" Command="{Binding ExportAll}" 
                     IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}"/>
                 <MenuItem.LayoutTransform><ScaleTransform ScaleX="1.25" ScaleY="1.25"/></MenuItem.LayoutTransform>
             </MenuItem>

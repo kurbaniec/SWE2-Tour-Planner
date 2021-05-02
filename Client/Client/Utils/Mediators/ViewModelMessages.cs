@@ -6,6 +6,9 @@
         TourDeletion,
         SelectedTourChange,
         FilterChange,
+        Import,
+        ExportThis,
+        ExportAll,
         TransactionBegin,
         TransactionEnd,
     };

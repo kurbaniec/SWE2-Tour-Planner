@@ -41,5 +41,15 @@ namespace Client.Logic.BL
         {
             return await api.GetRouteImage(id);
         }
+
+        public async Task<(List<Tour>?, string)> ImportTours(string inputPath)
+        {
+            return await handler.ImportTours(inputPath);
+        }
+
+        public async Task<(bool, string)> ExportTours(string outputPath, List<Tour> tours)
+        {
+            return await handler.ExportTours(outputPath, tours);
+        }
     }
 }

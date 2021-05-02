@@ -6,14 +6,14 @@ namespace Client.Logic.DAL
 {
     public class DataHandler : IImportExportHandler
     {
-        public Task<(List<Tour>?, string)> ImportTours(string inputPath)
+        public async Task<(List<Tour>?, string)> ImportTours(string inputPath)
         {
-            throw new System.NotImplementedException();
+            return (null, "");
         }
 
-        public Task<(bool, string)> ExportTours(string outputPath, List<Tour> tours)
+        public async Task<(bool, string)> ExportTours(string outputPath, List<Tour> tours)
         {
-            throw new System.NotImplementedException();
+            return (false, "");
         }
     }
 }
