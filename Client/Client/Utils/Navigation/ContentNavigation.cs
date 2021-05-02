@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Navigation;
@@ -64,6 +65,29 @@ namespace Client.Utils.Navigation
         {
             var saveFileDialog = new SaveFileDialog {Filter = "Tour Data (*.td)|*.td"};
             return saveFileDialog.ShowDialog() == true ? saveFileDialog.FileName : null;
+        }
+
+        public void ShowHelpPage(string url = "https://github.com/kurbaniec/SWE2-Tour-Planner")
+        {
+            // See: https://stackoverflow.com/a/502204/12347616
+            // And: https://github.com/dotnet/runtime/issues/28005#issuecomment-442214248
+            try
+            {
+                ProcessStartInfo psi = new()
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, "Could not locate browser to open url");
+                logger.Log(LogLevel.Error, ex.StackTrace);
+                ShowErrorDialog(
+                    "Could not locate a browser to open the help page.\n" +
+                    $"Please visit '{url}' manually.", "Tour Planner - Help");
+            }
         }
     }
 

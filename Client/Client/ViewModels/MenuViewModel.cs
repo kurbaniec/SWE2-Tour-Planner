@@ -65,7 +65,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? import;
-        public ICommand? Import
+        public ICommand Import
         {
             get
             {
@@ -86,7 +86,7 @@ namespace Client.ViewModels
         }
         
         private ICommand? exportThis;
-        public ICommand? ExportThis
+        public ICommand ExportThis
         {
             get
             {
@@ -107,7 +107,7 @@ namespace Client.ViewModels
         }
         
         private ICommand? exportAll;
-        public ICommand? ExportAll
+        public ICommand ExportAll
         {
             get
             {
@@ -124,6 +124,21 @@ namespace Client.ViewModels
                     }
                 );
                 return exportAll;
+            }
+        }
+
+        private ICommand? showHelp;
+
+        public ICommand ShowHelp
+        {
+            get
+            {
+                if (showHelp != null) return showHelp;
+                showHelp = new RelayCommand(
+                    _ => true,
+                    _ => nav.ShowHelpPage()
+                );
+                return showHelp;
             }
         }
 

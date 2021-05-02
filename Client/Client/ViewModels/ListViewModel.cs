@@ -211,7 +211,7 @@ namespace Client.ViewModels
             var (newTours, errorMsg) = await tp.ImportTours(path);
             if (newTours is { })
             {
-                
+                // TODO send to server 
             }
             else
             {
@@ -222,37 +222,26 @@ namespace Client.ViewModels
         private async void ExportThis(object o)
         {
             var path = (string) o;
-            if (selectedTour is { })
-            {
-                var (ok, errorMsg) = await tp.ExportTours(
-                    path, new List<Tour>() {selectedTour.Model});
-                if (ok)
-                {
-                    
-                }
-                else
-                {
-                    nav.ShowErrorDialog($"Encountered error while exporting Tour: \n{errorMsg}");
-                }
-            }
+            if (selectedTour is null) return;
+            var (ok, errorMsg) = await tp.ExportTours(
+                path, new List<Tour>() {selectedTour.Model});
+            if (ok)
+                nav.ShowInfoDialog("Tour successfully exported", "Tour Planner - Export");
+            else
+                nav.ShowErrorDialog($"Encountered error while exporting Tour: \n{errorMsg}", "Tour Planner - Export");
         }
 
         private async void ExportAll(object o)
         {
             var path = (string) o;
-            if (Tours.Count > 0)
-            {
-                var tourModels = Tours.Select(t => t.Model).ToList();
-                var (ok, errorMsg) = await tp.ExportTours(path, tourModels);
-                if (ok)
-                {
-                    
-                }
-                else
-                {
-                    nav.ShowErrorDialog($"Encountered error while exporting Tours: \n{errorMsg}");
-                }
-            }
+            if (Tours.Count <= 0) return;
+            var tourModels = Tours.Select(t => t.Model).ToList();
+            var (ok, errorMsg) = await tp.ExportTours(path, tourModels);
+            if (ok)
+                nav.ShowInfoDialog("Tours successfully exported", "Tour Planner - Export");
+            else
+                nav.ShowErrorDialog($"Encountered error while exporting Tours: \n{errorMsg}", "Tour Planner - Export");
+            
         }
 
         public ListViewModel(
