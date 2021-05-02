@@ -37,14 +37,14 @@ namespace Client.ViewModels
             }
         }
 
-        private bool waitingForResponse;
-        public bool WaitingForResponse
+        private bool busy;
+        public bool Busy
         {
-            get => waitingForResponse;
+            get => busy;
             set
             {
-                if (value == waitingForResponse) return;
-                waitingForResponse = value;
+                if (value == busy) return;
+                busy = value;
                 OnPropertyChanged();
             }
         }
@@ -56,10 +56,10 @@ namespace Client.ViewModels
             {
                 if (addTour != null) return addTour;
                 addTour = new RelayCommand(
-                    _ => !WaitingForResponse && Tour.IsValid,
+                    _ => !Busy && Tour.IsValid,
                     async _ =>
                     {
-                        WaitingForResponse = true;
+                        Busy = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
                         var (responseTour, errorMessage) = await tp.AddTour(tour.GetRequestTour());
@@ -77,8 +77,7 @@ namespace Client.ViewModels
                                 $"Encountered error while adding Tour: \n{errorMessage}",
                                 "Tour Planner - Add Tour");
                         }
-
-                        WaitingForResponse = false;
+                        Busy = false;
                         Edit = true;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }

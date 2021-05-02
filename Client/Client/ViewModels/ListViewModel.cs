@@ -216,6 +216,7 @@ namespace Client.ViewModels
             // Setup Filter
             // See: https://markheath.net/post/list-filtering-in-wpf-with-m-v-vm
             toursView = CollectionViewSource.GetDefaultView(Tours);
+            // TODO implement more sophisticated Filter
             toursView.Filter = o => string.IsNullOrEmpty(Filter) ||
                                     ((TourWrapper) o).Name.ToLower().Contains(Filter.ToLower());
             

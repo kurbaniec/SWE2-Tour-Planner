@@ -8,11 +8,13 @@ namespace Client.Logic.BL
 {
     public class TourPlannerClient
     {
-        private ITourApi api;
+        private readonly ITourApi api;
+        private readonly IImportExportHandler handler;
 
-        public TourPlannerClient(ITourApi api)
+        public TourPlannerClient(ITourApi api, IImportExportHandler handler)
         {
             this.api = api;
+            this.handler = handler;
         }
         
         public async Task<(List<Tour>?, string)> GetTours()

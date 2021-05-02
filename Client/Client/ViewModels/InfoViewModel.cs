@@ -53,14 +53,14 @@ namespace Client.ViewModels
             }
         }
 
-        private bool waitingForResponse;
-        public bool WaitingForResponse
+        private bool busy;
+        public bool Busy
         {
-            get => waitingForResponse;
+            get => busy;
             set
             {
-                if (value == waitingForResponse) return;
-                waitingForResponse = value;
+                if (value == busy) return;
+                busy = value;
                 OnPropertyChanged();
             }
         }
@@ -72,7 +72,7 @@ namespace Client.ViewModels
             {
                 if (cancelEdit != null) return cancelEdit;
                 cancelEdit = new RelayCommand(
-                    _ => !WaitingForResponse,
+                    _ => !Busy,
                     _ =>
                     {
                         selectedTour?.DiscardChanges();
@@ -90,12 +90,12 @@ namespace Client.ViewModels
             {
                 if (acceptEdit != null) return acceptEdit;
                 acceptEdit = new RelayCommand(
-                    _ => !WaitingForResponse &&
+                    _ => !Busy &&
                          (SelectedTour == null || SelectedTour.IsValid),
                     async _ =>
                     {
                         if (selectedTour is null) return;
-                        WaitingForResponse = true;
+                        Busy = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
                         logger.Log(LogLevel.Information, 
@@ -116,7 +116,7 @@ namespace Client.ViewModels
                                 $"Encountered error while updating Tour: \n{errorMsg}", 
                                 "Tour Planner - Update Tour");
                         }
-                        WaitingForResponse = false;
+                        Busy = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }
                 );
@@ -131,7 +131,7 @@ namespace Client.ViewModels
             {
                 if (deleteTour != null) return deleteTour;
                 deleteTour = new RelayCommand(
-                    _ => !WaitingForResponse,
+                    _ => !Busy,
                     async _ =>
                     {
                         if (selectedTour is null) return;
@@ -141,7 +141,7 @@ namespace Client.ViewModels
                             "Do you really want to delete this Tour?\nThis process is not reversible.",
                             "Tour Planner - Delete Tour");
                         if (!ok) return;
-                        WaitingForResponse = true;
+                        Busy = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
                         logger.Log(LogLevel.Information, "Starting deletion process");
@@ -165,7 +165,7 @@ namespace Client.ViewModels
                                 $"Encountered error while deleting Tour: \n{errorMsg}", 
                                 "Tour Planner - Delete Tour");
                         }
-                        WaitingForResponse = false;
+                        Busy = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }
                 );
@@ -173,7 +173,6 @@ namespace Client.ViewModels
             }
         }
         
-
         private ICommand? addLog;
         public ICommand AddLog
         {
@@ -181,7 +180,7 @@ namespace Client.ViewModels
             {
                 if (addLog != null) return addLog;
                 addLog = new RelayCommand(
-                    _ => !WaitingForResponse, _ =>
+                    _ => !Busy, _ =>
                     {
                         if (SelectedTour is null) return;
                         Edit = true;
@@ -192,6 +191,13 @@ namespace Client.ViewModels
             }
         }
 
+        private void SelectedTourChange(object o)
+        {
+            selectedTour?.DiscardChanges();
+            if (Edit) Edit = false;
+            var tour = (TourWrapper) o;
+            SelectedTour = tour;
+        }
 
         public InfoViewModel(TourPlannerClient tp, Mediator mediator, ContentNavigation nav)
         {
@@ -199,14 +205,7 @@ namespace Client.ViewModels
             this.mediator = mediator;
             this.nav = nav;
             // Register to changes
-            mediator.Register(o =>
-            {
-                selectedTour?.DiscardChanges();
-                if (Edit)
-                    Edit = false;
-                var tour = (TourWrapper) o;
-                SelectedTour = tour;
-            }, ViewModelMessages.SelectedTourChange);
+            mediator.Register(SelectedTourChange, ViewModelMessages.SelectedTourChange);
         }
     }
 }

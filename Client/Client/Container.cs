@@ -29,8 +29,9 @@ namespace Client
             services.AddSingleton<ContentNavigation>();
             services.AddSingleton<ITourApi>(x =>
                 new TourApi(x.GetService<Configuration>()!));
+            services.AddSingleton<IImportExportHandler>(new DataHandler());
             services.AddSingleton<TourPlannerClient>(x =>
-                new TourPlannerClient(x.GetService<ITourApi>()!));
+                new TourPlannerClient(x.GetService<ITourApi>()!, x.GetService<IImportExportHandler>()!));
             services.AddSingleton<MainViewModel>(x =>
                 new MainViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<MenuViewModel>(x =>

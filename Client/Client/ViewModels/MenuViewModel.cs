@@ -30,10 +30,10 @@ namespace Client.ViewModels
             {
                 if (clearFilter != null) return clearFilter;
                 clearFilter = new RelayCommand(
-                    p => !string.IsNullOrEmpty(filter),
+                    _ => !string.IsNullOrEmpty(filter),
                     // Filter instead of filter is used to trigger
                     // Filter's set function
-                    p => Filter = "" 
+                    _ => Filter = "" 
                 );
                 return clearFilter;
             }
