@@ -124,7 +124,23 @@ namespace Client.Logic.DAL
 
         public async Task<(bool, string)> DeleteTour(int id)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var response = await client.DeleteAsync($"{baseUrl}/api/tour/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    logger.Log(LogLevel.Information, $"Tour with id {id} deleted successfully");
+                    return (true, string.Empty);
+                }
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                logger.Log(LogLevel.Error, errorMsg);
+                return (false, errorMsg);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                logger.Log(LogLevel.Error, httpEx.StackTrace);
+                return (false, httpEx.Message);
+            }
         }
 
         public async Task<(BitmapImage?, BitmapImage?)> GetRouteImage(int id)

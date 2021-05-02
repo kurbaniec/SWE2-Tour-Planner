@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Client.Logic.BL;
 using Client.Utils.Commands;
 using Client.Utils.Logging;
@@ -96,29 +94,27 @@ namespace Client.ViewModels
                          (SelectedTour == null || SelectedTour.IsValid),
                     async _ =>
                     {
+                        if (selectedTour is null) return;
                         WaitingForResponse = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
-                        if (selectedTour is { })
+                        logger.Log(LogLevel.Information, 
+                            $"Trying to update Tour with id {selectedTour.Model.Id}");
+                        var (updatedTour, errorMsg) = await tp.UpdateTour(selectedTour.GetRequestTour());
+                        if (updatedTour is { })
                         {
-                            logger.Log(LogLevel.Information, 
-                                $"Trying to update Tour with id {selectedTour.Model.Id}");
-                            var (updatedTour, errorMsg) = await tp.UpdateTour(selectedTour.GetRequestTour());
-                            if (updatedTour is { })
-                            {
-                                logger.Log(LogLevel.Information,
-                                    $"Update for Tour with id {selectedTour.Model.Id} was successful");
-                                mediator.NotifyColleagues(ViewModelMessages.TourAddition, updatedTour);
-                                nav.ShowInfoDialog("Update was successful", "Tour Planer - Update Tour");
-                            }
-                            else
-                            {
-                                logger.Log(LogLevel.Warning,
-                                    $"Update for Tour with id {selectedTour.Model.Id} was not successful");
-                                nav.ShowErrorDialog(
-                                    $"Encountered error while updating Tour: \n{errorMsg}", 
-                                    "Tour Planner - Update Tour");
-                            }
+                            logger.Log(LogLevel.Information,
+                                $"Update for Tour with id {selectedTour.Model.Id} was successful");
+                            mediator.NotifyColleagues(ViewModelMessages.TourAddition, updatedTour);
+                            nav.ShowInfoDialog("Update was successful", "Tour Planer - Update Tour");
+                        }
+                        else
+                        {
+                            logger.Log(LogLevel.Warning,
+                                $"Update for Tour with id {selectedTour.Model.Id} was not successful");
+                            nav.ShowErrorDialog(
+                                $"Encountered error while updating Tour: \n{errorMsg}", 
+                                "Tour Planner - Update Tour");
                         }
                         WaitingForResponse = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
@@ -139,16 +135,39 @@ namespace Client.ViewModels
                     _ => !WaitingForResponse,
                     async _ =>
                     {
+                        if (selectedTour is null) return;
                         logger.Log(LogLevel.Information, 
                             $"Asking Users if Tour with id {selectedTour.Model.Id} should be really deleted");
                         var ok = nav.ShowErrorDialogWithQuestion(
                             "Do you really want to delete this Tour?\nThis process is not reversible.",
                             "Tour Planner - Delete Tour");
-                        if (ok)
+                        if (!ok) return;
+                        WaitingForResponse = true;
+                        Edit = false;
+                        mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
+                        logger.Log(LogLevel.Information, "Starting deletion process");
+                        var (isDeleted, errorMsg) = await tp.DeleteTour(selectedTour.Model.Id);
+                        if (isDeleted)
                         {
-                            logger.Log(LogLevel.Information, "Starting deletion process");
-                            
+                            logger.Log(LogLevel.Information,
+                                $"Deletion of Tour with id {selectedTour.Model.Id} was successful");
+                            mediator.NotifyColleagues(ViewModelMessages.TourDeletion, selectedTour.Model.Id);
+                            SelectedTour = null;
+                            nav.Navigate(ContentPage.AppWelcome);
+                            nav.ShowInfoDialog(
+                                "Deletion of Tour was successful", 
+                                "Tour Planner - Delete Tour");
                         }
+                        else
+                        {
+                            logger.Log(LogLevel.Warning,
+                                $"Deletion of Tour with id {selectedTour.Model.Id} was not successful");
+                            nav.ShowErrorDialog(
+                                $"Encountered error while deleting Tour: \n{errorMsg}", 
+                                "Tour Planner - Delete Tour");
+                        }
+                        WaitingForResponse = false;
+                        mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }
                 );
                 return deleteTour;

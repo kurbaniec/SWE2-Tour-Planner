@@ -54,8 +54,7 @@ namespace Server.Controllers
                     if (response is { }) return response;
                 }
             }
-
-            return Response.Status(Status.NotFound);
+            return Response.PlainText("Route Image not found", Status.NotFound);
         }
 
         [Post("/api/tour")]
@@ -117,28 +116,18 @@ namespace Server.Controllers
                 return Response.PlainText("Invalid payload", Status.BadRequest);
             }
         }
-
-
-        [Post("/api/test")]
-        public Response Test([JsonString] string json)
+        
+        [Delete("/api/tour")]
+        public Response DeleteTour(PathVariable<int> id)
         {
-            Console.WriteLine(json);
-            return Response.Status(Status.Ok);
-        }
-
-        [Post("/api/test2")]
-        public Response Test2(Dictionary<string, object>? json)
-        {
-            Console.WriteLine(json);
-            return Response.Status(Status.Ok);
-        }
-
-        [Post("/api/test3")]
-        public Response Test2([JsonString] string jsonString, Dictionary<string, object>? json)
-        {
-            Console.WriteLine(jsonString);
-            Console.WriteLine(json);
-            return Response.Status(Status.Ok);
+            if (id.Ok)
+            {
+                var (isDeleted, errorMsg) = tp.DeleteTour(id.Value!);
+                return isDeleted ? 
+                    Response.Status(Status.NoContent) : 
+                    Response.PlainText(errorMsg, Status.BadRequest);
+            }
+            return Response.PlainText("Not valid Route id given", Status.BadRequest);
         }
     }
 }

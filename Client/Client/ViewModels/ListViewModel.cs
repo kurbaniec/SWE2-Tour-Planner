@@ -200,6 +200,10 @@ namespace Client.ViewModels
                 SelectedTour = newTour;
                 nav.Navigate(ContentPage.AppInfo);
             }, ViewModelMessages.TourAddition);
+            mediator.Register(o =>
+            {
+                // TODO remove tour from list
+            }, ViewModelMessages.TourDeletion);
         }
     }
 }

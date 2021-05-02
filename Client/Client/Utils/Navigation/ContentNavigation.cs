@@ -58,5 +58,6 @@ namespace Client.Utils.Navigation
     {
         AppAdd,
         AppInfo,
+        AppWelcome,
     }
 }
