@@ -14,7 +14,6 @@ namespace Client.ViewModels
         public TourLog Model => log;
 
         private DateTime? date;
-
         public DateTime? Date
         {
             get => date;
@@ -27,7 +26,6 @@ namespace Client.ViewModels
         }
 
         private Type type;
-
         public Type Type
         {
             get => type;
@@ -40,7 +38,6 @@ namespace Client.ViewModels
         }
 
         private TimeSpan? duration;
-
         public TimeSpan? Duration
         {
             get => duration;
@@ -53,7 +50,6 @@ namespace Client.ViewModels
         }
 
         private int? distance;
-
         public int? Distance
         {
             get => distance;
@@ -66,7 +62,6 @@ namespace Client.ViewModels
         }
 
         private int? rating;
-
         public int? Rating
         {
             get => rating;
@@ -79,7 +74,6 @@ namespace Client.ViewModels
         }
 
         private string report;
-
         public string Report
         {
             get => report;
@@ -92,7 +86,6 @@ namespace Client.ViewModels
         }
 
         private double? avgSpeed;
-
         public double? AvgSpeed
         {
             get => avgSpeed;
@@ -106,7 +99,6 @@ namespace Client.ViewModels
         }
 
         private double? maxSpeed;
-
         public double? MaxSpeed
         {
             get => maxSpeed;
@@ -120,7 +112,6 @@ namespace Client.ViewModels
         }
 
         private double? heightDifference;
-
         public double? HeightDifference
         {
             get => heightDifference;
@@ -134,7 +125,6 @@ namespace Client.ViewModels
         }
 
         private int stops;
-
         public int Stops
         {
             get => stops;
@@ -158,52 +148,6 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        /**
-        private readonly Dictionary<string, string> error = new();
-        public string Error => string.Join("; ", error.Values);
-        public bool IsValid => string.IsNullOrEmpty(Error);
-
-        public string this[string propertyName]
-        {
-            get
-            {
-                string errorMsg = string.Empty;
-                switch (propertyName)
-                {
-                    case "Date":
-                        break;
-                    case "Type":
-                        break;
-                    case "Duration":
-                        if (duration == null)
-                            errorMsg = "To cannot be empty";
-                        break;
-                    case "Distance":
-                        if (Distance == null)
-                            errorMsg = "Distance cannot be empty";
-                        break;
-                    case "Rating":
-                        break;
-                    case "AvgSpeed":
-                        break;
-                    case "MaxSpeed":
-                        break;
-                    case "HeightDifference":
-                        break;
-                }
-
-                // Update property with all errors
-                if (string.IsNullOrEmpty(errorMsg))
-                    error.Remove(propertyName);
-                else
-                    error[propertyName] = errorMsg;
-                OnPropertyChanged($"Error");
-                OnPropertyChanged($"Valid");
-                // Return error message
-                return errorMsg;
-            }
-        }*/
 
         public TourLogWrapper(TourLog log)
         {

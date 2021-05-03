@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -11,6 +12,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Client.Utils.Extensions;
 using Model;
+using Type = Model.Type;
 
 namespace Client.ViewModels
 {
@@ -205,12 +207,18 @@ namespace Client.ViewModels
 
         public void AddNewLog()
         {
-            Logs.Add(new TourLogWrapper());
+            Logs.Add(WrapTourLog(new TourLog(
+                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10, 10,
+                "Report goes here...", 10.0,
+                20.0, 100, 0
+            )));
+            OnPropertyChanged("Logs");
         }
 
         public void RemoveLog(TourLogWrapper log)
         {
             Logs.Remove(log);
+            OnPropertyChanged("Logs");
         }
 
         public Tour GetRequestTour()

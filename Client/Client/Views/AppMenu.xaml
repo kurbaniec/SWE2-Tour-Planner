@@ -14,38 +14,48 @@
         <Menu DockPanel.Dock="Top">
             <Menu.Style>
                 <Style TargetType="Menu">
-                    <Setter Property="IsEnabled" Value="True"/>
+                    <Setter Property="IsEnabled" Value="True" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Busy}" Value="True">
-                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Menu.Style>
             <MenuItem Header="File">
-                <MenuItem Header="Import" Command="{Binding Import}"/> 
-                <MenuItem Header="Export this Tour" Command="{Binding ExportThis}"
-                    IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}"/>
-                <MenuItem Header="Export all Tours" Command="{Binding ExportAll}" 
-                    IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}"/>
-                <MenuItem.LayoutTransform><ScaleTransform ScaleX="1.25" ScaleY="1.25"/></MenuItem.LayoutTransform>
+                <MenuItem Header="Import" Command="{Binding Import}" />
+                <MenuItem Header="Export" IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}">
+                    <MenuItem Header="This Tour" Command="{Binding ExportThis}" />
+                    <MenuItem Header="All Tours" Command="{Binding ExportAll}" />
+                </MenuItem>
+                <MenuItem Header="Print">
+                    <MenuItem Header="Full" />
+                    <MenuItem Header="Summary" />
+                </MenuItem>
+                <MenuItem.LayoutTransform>
+                    <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
+                </MenuItem.LayoutTransform>
             </MenuItem>
             <MenuItem Header="Help" Command="{Binding ShowHelp}">
-                <MenuItem.LayoutTransform><ScaleTransform ScaleX="1.25" ScaleY="1.25"/></MenuItem.LayoutTransform>
+                <MenuItem.LayoutTransform>
+                    <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
+                </MenuItem.LayoutTransform>
             </MenuItem>
         </Menu>
         <!-- Stretch textbox https://stackoverflow.com/a/37663956/12347616 -->
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBox Text="{Binding Path=Filter, UpdateSourceTrigger=PropertyChanged}" />
             <Button Grid.Column="1" Command="{Binding ClearFilter}">
                 Clear
-                <Button.LayoutTransform><ScaleTransform ScaleX="1.25" ScaleY="1.25"/></Button.LayoutTransform>
+                <Button.LayoutTransform>
+                    <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
+                </Button.LayoutTransform>
             </Button>
         </Grid>
     </DockPanel>
-    
+
 </UserControl>

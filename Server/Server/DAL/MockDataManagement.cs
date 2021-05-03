@@ -121,7 +121,11 @@ namespace Server.DAL
                 t.Logs = tour.Logs;
                 // Index new logs with id
                 var logHighest = tour.Logs.OrderByDescending(l => l.Id).Take(1).FirstOrDefault();
-                var logId = logHighest?.Id ?? 1000;
+                int logId;
+                if (logHighest == null || logHighest.Id == 0)
+                    logId = 1000;
+                else
+                    logId = logHighest.Id;
                 t.Logs.ForEach(l =>
                 {
                     if (l.Id == 0) l.Id = logId++;

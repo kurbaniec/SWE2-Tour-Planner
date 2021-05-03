@@ -12,7 +12,6 @@ using Client.Utils.Logging;
 using Microsoft.Extensions.Logging;
 using Model;
 using Newtonsoft.Json;
-using JsonException = System.Text.Json.JsonException;
 
 namespace Client.Logic.DAL
 {
