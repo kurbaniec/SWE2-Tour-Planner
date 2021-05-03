@@ -208,6 +208,11 @@ namespace Client.ViewModels
             Logs.Add(new TourLogWrapper());
         }
 
+        public void RemoveLog(TourLogWrapper log)
+        {
+            Logs.Remove(log);
+        }
+
         public Tour GetRequestTour()
         {
             return new(tour.Id, from, to, name, distance, description,

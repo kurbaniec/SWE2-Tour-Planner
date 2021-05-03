@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using Client.Logic.BL;
 using Client.Utils.Commands;
 using Client.Utils.Logging;
@@ -188,6 +189,26 @@ namespace Client.ViewModels
                     }
                 );
                 return addLog;
+            }
+        }
+        
+        private ICommand? deleteLog;
+        public ICommand DeleteLog
+        {
+            get
+            {
+                if (deleteLog != null) return deleteLog;
+                deleteLog = new RelayCommand(
+                    _ => !Busy, p =>
+                    {
+                        if (SelectedTour is null) return;
+                        if (p is TourLogWrapper log)
+                        {
+                            SelectedTour.RemoveLog(log);
+                        }
+                    }
+                );
+                return deleteLog;
             }
         }
 

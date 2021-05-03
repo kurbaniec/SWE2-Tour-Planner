@@ -269,6 +269,7 @@
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*" />
                                             <RowDefinition />
+                                            <RowDefinition />
                                         </Grid.RowDefinitions>
                                         <DataGrid Grid.Row="0" RowHeight="25"
                                                   ItemsSource="{Binding . ,
@@ -320,6 +321,32 @@
                                             </DataGrid.Columns>
                                         </DataGrid>
                                         <TextBox Grid.Row="1" TextWrapping="Wrap" Text="{Binding Report}" />
+                                        <Button Grid.Row="2" Width="75" HorizontalAlignment="Right"
+                                                Foreground="White" Background="Crimson"
+                                                Command="{Binding DataContext.DeleteLog, 
+                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                                CommandParameter="{Binding}">
+                                            Delete
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Style.Triggers>
+                                                        <DataTrigger
+                                                            Binding="{Binding DataContext.Edit, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                            Value="True">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                        <DataTrigger
+                                                            Binding="{Binding DataContext.Busy, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                            Value="True">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                    <Style.Setters>
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </Style.Setters>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
                                     </Grid>
                                 </Expander>
                             </DataTemplate>
@@ -339,10 +366,8 @@
                                     </Setter.Value>
                                 </Setter>
                             </Style>
-
                         </ListView.ItemContainerStyle>
                     </ListView>
-
                     <Button Grid.Column="0" Grid.Row="2" Content="Add Log"
                             HorizontalAlignment="Left" Margin="10 0 0 0" Width="55"
                             Command="{Binding AddLog}">
