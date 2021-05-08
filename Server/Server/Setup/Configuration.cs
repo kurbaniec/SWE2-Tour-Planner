@@ -21,6 +21,8 @@ namespace Server.Setup
         public string MapApiKey { get; }
         public string RoutePath { get; }
         
+        public string PostgresConnString { get; }
+        
         private readonly ILogger logger = WebServiceLogging.CreateLogger<Configuration>();
 
         public Configuration()
@@ -63,6 +65,12 @@ namespace Server.Setup
             if (!Directory.Exists(routePath))
                 Directory.CreateDirectory(routePath);
             RoutePath = routePath;
+            // Postgres config
+            var user = (string) Config["server"]!["db"]!["user"]!;
+            var password = (string) Config["server"]!["db"]!["password"]!;
+            var ip = (string) Config["server"]!["db"]!["ip"]!;
+            var port = (string) Config["server"]!["db"]!["port"]!;
+            PostgresConnString = $"Server={ip};Port={port};User Id={user};Password={password};";
             logger.Log(LogLevel.Debug, "Configuration read and initialized");
         }
     }

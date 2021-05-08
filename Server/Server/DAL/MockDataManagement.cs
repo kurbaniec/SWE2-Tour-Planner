@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Model;
+using Server.Setup;
 using WebService_Lib.Attributes;
 using Type = Model.Type;
 
@@ -12,6 +13,7 @@ namespace Server.DAL
     public class MockDataManagement : IDataManagement
     {
         private List<Tour> tours;
+        [Autowired] private readonly Configuration cfg = null!;
 
         public MockDataManagement()
         {
