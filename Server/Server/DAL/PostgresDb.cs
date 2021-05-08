@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Model;
 using Npgsql;
+using NpgsqlTypes;
 using Server.Setup;
 using WebService_Lib.Attributes;
 using WebService_Lib.Logging;
@@ -23,17 +25,83 @@ namespace Server.DAL
             }
         }
 
-        private string connString;
+        private string connString = null!;
         private readonly ILogger logger = WebServiceLogging.CreateLogger<IDataManagement>();
 
         public List<Tour> GetTours()
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                using var conn = Connection();
+                return new List<Tour>();
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Warning, ex.StackTrace);
+                return new List<Tour>();
+            }
         }
 
         public Tour? GetTour(int id)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                using var conn = Connection();
+                using var cmdTour = new NpgsqlCommand(@"
+                    SELECT * from tour 
+                    WHERE id = @p",
+                    conn);
+                cmdTour.Parameters.AddWithValue("p", NpgsqlDbType.Integer, id);
+                cmdTour.Parameters.Add(new NpgsqlParameter("source", NpgsqlDbType.Varchar)
+                    {Direction = ParameterDirection.Output});
+                cmdTour.Parameters.Add(new NpgsqlParameter("destination", NpgsqlDbType.Varchar)
+                    {Direction = ParameterDirection.Output});
+                cmdTour.Parameters.Add(new NpgsqlParameter("name", NpgsqlDbType.Varchar)
+                    {Direction = ParameterDirection.Output});
+                cmdTour.Parameters.Add(new NpgsqlParameter("distance", NpgsqlDbType.Double)
+                    {Direction = ParameterDirection.Output});
+                cmdTour.Parameters.Add(new NpgsqlParameter("description", NpgsqlDbType.Text)
+                    {Direction = ParameterDirection.Output});
+                if (cmdTour.Parameters[1].Value is string from &&
+                    cmdTour.Parameters[2].Value is string to &&
+                    cmdTour.Parameters[3].Value is string name &&
+                    cmdTour.Parameters[4].Value is double distance &&
+                    cmdTour.Parameters[5].Value is string description)
+                {
+                    var logs = new List<TourLog>();
+                    using var cmdLogs = new NpgsqlCommand(@"
+                        SELECT * from tourlog
+                        WHERE tour = @p",
+                        conn);
+                    cmdLogs.Parameters.AddWithValue("p", NpgsqlDbType.Integer, id);
+                    using var dr = cmdLogs.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        var logId = dr.GetInt32(0);
+                        var date = dr.GetDateTime(2);
+                        var type = Enum.Parse<Model.Type>(dr.GetString(3));
+                        var duration = (TimeSpan) dr.GetInterval(4);
+                        var logDistance = dr.GetDouble(5);
+                        var rating = dr.GetInt32(6);
+                        var report = dr.GetTextReader(7).ReadToEnd();
+                        var avgSpeed = dr.GetDouble(8);
+                        var maxSpeed = dr.GetDouble(9);
+                        var heightDifference = dr.GetDouble(10);
+                        var stops = dr.GetInt32(11);
+                        logs.Add(new TourLog(logId, date, type, duration, logDistance, rating, report, avgSpeed,
+                            maxSpeed, heightDifference, stops));
+                    }
+
+                    return new Tour(id, from, to, name, distance, description, logs);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Warning, ex.StackTrace);
+                return null;
+            }
         }
 
         public (Tour?, string) AddTour(Tour tour)
@@ -64,6 +132,7 @@ namespace Server.DAL
                     connString += "Database=tp;";
                     return;
                 }
+
                 // Create databases
                 using (var cmd = new NpgsqlCommand(@"
                     CREATE DATABASE tp
@@ -73,6 +142,7 @@ namespace Server.DAL
                 {
                     cmd.ExecuteNonQuery();
                 }
+
                 // Add databases to connString
                 conn.Close();
                 connString += "Database=tp;";
@@ -117,6 +187,7 @@ namespace Server.DAL
                 {
                     cmd.ExecuteNonQuery();
                 }
+
                 conn.Close();
             }
             catch (Exception ex)
