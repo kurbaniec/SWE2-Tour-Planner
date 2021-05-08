@@ -12,7 +12,7 @@ using WebService_Lib.Logging;
 
 namespace Server.DAL
 {
-    //[Component]
+    [Component]
     public class PostgresDb : IDataManagement
     {
         [Autowired]
@@ -28,21 +28,67 @@ namespace Server.DAL
         private string connString = null!;
         private readonly ILogger logger = WebServiceLogging.CreateLogger<IDataManagement>();
 
-        public List<Tour> GetTours()
+        public (List<Tour>?, string) GetTours()
         {
             try
             {
+                var tours = new List<Tour>();
                 using var conn = Connection();
-                return new List<Tour>();
+                using var cmdTours = new NpgsqlCommand("SELECT * from tour", conn);
+                var dr = cmdTours.ExecuteReader();
+                while (dr.Read())
+                {
+                    var id = dr.GetInt32(0);
+                    var from = dr.GetString(1);
+                    var to = dr.GetString(2);
+                    var name = dr.GetString(3);
+                    var distance = dr.GetDouble(4);
+                    var description = dr.GetTextReader(5).ReadToEnd();
+                    tours.Add(new Tour(id, from, to, name, distance, description, new List<TourLog>()));
+                }
+
+                dr.Close();
+
+                foreach (var tour in tours)
+                {
+                    var logs = new List<TourLog>();
+                    using var cmdLogs = new NpgsqlCommand(@"
+                        SELECT * from tourlog
+                        WHERE tour = @p",
+                        conn);
+                    cmdLogs.Parameters.AddWithValue("p", NpgsqlDbType.Integer, tour.Id);
+                    var drLogs = cmdLogs.ExecuteReader();
+                    while (drLogs.Read())
+                    {
+                        var logId = drLogs.GetInt32(0);
+                        var date = drLogs.GetDateTime(2);
+                        var type = Enum.Parse<Model.Type>(drLogs.GetString(3));
+                        var duration = (TimeSpan) drLogs.GetInterval(4);
+                        var logDistance = drLogs.GetDouble(5);
+                        var rating = drLogs.GetInt32(6);
+                        var report = drLogs.GetTextReader(7).ReadToEnd();
+                        var avgSpeed = drLogs.GetDouble(8);
+                        var maxSpeed = drLogs.GetDouble(9);
+                        var heightDifference = drLogs.GetDouble(10);
+                        var stops = drLogs.GetInt32(11);
+                        logs.Add(new TourLog(logId, date, type, duration, logDistance, rating, report, avgSpeed,
+                            maxSpeed, heightDifference, stops));
+                    }
+
+                    tour.Logs = logs;
+                    drLogs.Close();
+                }
+
+                return (tours, string.Empty);
             }
             catch (Exception ex)
             {
                 logger.Log(LogLevel.Warning, ex.StackTrace);
-                return new List<Tour>();
+                return (null, "Internal server error");
             }
         }
 
-        public Tour? GetTour(int id)
+        public (Tour?, string) GetTour(int id)
         {
             try
             {
@@ -92,21 +138,86 @@ namespace Server.DAL
                             maxSpeed, heightDifference, stops));
                     }
 
-                    return new Tour(id, from, to, name, distance, description, logs);
+                    return (new Tour(id, from, to, name, distance, description, logs), string.Empty);
                 }
 
-                return null;
+                return (null, "Invalid id given");
             }
             catch (Exception ex)
             {
                 logger.Log(LogLevel.Warning, ex.StackTrace);
-                return null;
+                return (null, "Internal server error");
             }
         }
 
         public (Tour?, string) AddTour(Tour tour)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                using var conn = Connection();
+                var transaction = BeginTransaction(conn);
+                if (transaction == null) return (null, "Could not start new transaction");
+                // Add tour and retrieve id
+                // See: https://stackoverflow.com/a/5765441/12347616
+                // Also use DEFAULT "value" to trigger Serial
+                // See: https://www.postgresqltutorial.com/postgresql-serial/
+                using var tourCmd = new NpgsqlCommand(@"
+                    INSERT INTO tour VALUES(DEFAULT, @p0, @p1, @p2, @p3, @p4) 
+                    RETURNING id",
+                    conn);
+                tourCmd.Parameters.AddWithValue("p0", NpgsqlDbType.Varchar, tour.From);
+                tourCmd.Parameters.AddWithValue("p1", NpgsqlDbType.Varchar, tour.To);
+                tourCmd.Parameters.AddWithValue("p2", NpgsqlDbType.Varchar, tour.Name);
+                tourCmd.Parameters.AddWithValue("p3", NpgsqlDbType.Double, tour.Distance);
+                tourCmd.Parameters.AddWithValue("p4", NpgsqlDbType.Text, tour.Description);
+                // Get inserted id
+                // See: https://stackoverflow.com/a/20758425/12347616
+                var tourCmdId = tourCmd.ExecuteScalar();
+                if (tourCmdId is int tourId)
+                {
+                    tour.Id = tourId;
+                    foreach (var log in tour.Logs)
+                    {
+                        using var logCmd = new NpgsqlCommand(@"
+                            INSERT INTO tourlog VALUES(
+                                DEFAULT, @p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10
+                            ) RETURNING id",
+                            conn);
+                        logCmd.Parameters.AddWithValue("p0", NpgsqlDbType.Integer, tourId);
+                        logCmd.Parameters.AddWithValue("p1", NpgsqlDbType.Date, log.Date);
+                        logCmd.Parameters.AddWithValue("p2", NpgsqlDbType.Varchar, log.Type.ToString());
+                        logCmd.Parameters.AddWithValue("p3", NpgsqlDbType.Interval, log.Duration);
+                        logCmd.Parameters.AddWithValue("p4", NpgsqlDbType.Double, log.Distance);
+                        logCmd.Parameters.AddWithValue("p5", NpgsqlDbType.Integer, log.Rating);
+                        logCmd.Parameters.AddWithValue("p6", NpgsqlDbType.Text, log.Report);
+                        logCmd.Parameters.AddWithValue("p7", NpgsqlDbType.Double, log.AvgSpeed);
+                        logCmd.Parameters.AddWithValue("p8", NpgsqlDbType.Double, log.MaxSpeed);
+                        logCmd.Parameters.AddWithValue("p9", NpgsqlDbType.Double, log.HeightDifference);
+                        logCmd.Parameters.AddWithValue("p10", NpgsqlDbType.Integer, log.Stops);
+                        var logCmdId = logCmd.ExecuteScalar();
+                        if (logCmdId is int logId)
+                        {
+                            log.Id = logId;
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            return (null, "Internal server error");
+                        }
+                    }
+
+                    transaction.Commit();
+                    return (tour, string.Empty);
+                }
+
+                transaction.Rollback();
+                return (null, "Internal server error");
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Warning, ex.StackTrace);
+                return (null, "Internal server error");
+            }
         }
 
         public (Tour?, string) UpdateTour(Tour tour)

@@ -9,7 +9,7 @@ using Type = Model.Type;
 namespace Server.DAL
 {
     // TODO remove later 
-    [Component]
+    //[Component]
     public class MockDataManagement : IDataManagement
     {
         private List<Tour> tours;
@@ -62,14 +62,14 @@ namespace Server.DAL
             tours.Add(tour2);*/
         }
         
-        public List<Tour> GetTours()
+        public (List<Tour>?, string) GetTours()
         {
-            return tours;
+            return (tours, string.Empty);
         }
 
-        public Tour? GetTour(int id)
+        public (Tour?, string) GetTour(int id)
         {
-            return tours.FirstOrDefault(t => t.Id == id);
+            return (tours.FirstOrDefault(t => t.Id == id), string.Empty);
         }
 
         public (Tour?, string) AddTour(Tour tour)

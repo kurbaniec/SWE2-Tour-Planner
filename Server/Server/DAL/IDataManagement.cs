@@ -5,9 +5,9 @@ namespace Server.DAL
 {
     public interface IDataManagement
     {
-        List<Tour> GetTours();
+        (List<Tour>?, string) GetTours();
 
-        Tour? GetTour(int id);
+        (Tour?, string) GetTour(int id);
 
         (Tour?, string) AddTour(Tour tour);
 

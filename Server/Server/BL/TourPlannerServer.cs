@@ -27,7 +27,7 @@ namespace Server.BL
             this.map = map;
         }
 
-        public List<Tour> GetTours()
+        public (List<Tour>?, string) GetTours()
         {
             logger.Log(LogLevel.Information, "Returning all Tours");
             return db.GetTours();
@@ -92,7 +92,7 @@ namespace Server.BL
                 return (null, "Id cannot be 0");
             }
 
-            var oldTour = db.GetTour(tour.Id);
+            var (oldTour, _) = db.GetTour(tour.Id);
             if (oldTour is null)
             {
                 logger.Log(LogLevel.Error, "Invalid tour id given");

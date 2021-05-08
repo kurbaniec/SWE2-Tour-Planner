@@ -21,16 +21,12 @@ namespace Server.Controllers
         [Get("/api/tours")]
         public Response GetTours()
         {
-            string jsonString;
             try
             {
-                var tours = tp.GetTours();
-                jsonString = JsonConvert.SerializeObject(tours);
-
-                // TOOD use later to convert dictionary
-                //var json = JsonConvert.DeserializeObject<Dictionary<string, Object>>(jsonString);
-                //var jsonString2 = JsonConvert.SerializeObject(json);
-                //var tourback = JsonConvert.DeserializeObject<Tour>(jsonString2);
+                var (tours, errorMsg) = tp.GetTours();
+                if (tours is null) return Response.PlainText(errorMsg, Status.BadRequest);
+                string jsonString = JsonConvert.SerializeObject(tours);
+                return Response.Json(jsonString);
             }
             catch (Exception ex)
             {
@@ -38,8 +34,6 @@ namespace Server.Controllers
                 logger.Log(LogLevel.Error, ex.StackTrace);
                 return Response.Status(Status.BadRequest);
             }
-
-            return Response.Json(jsonString);
         }
 
         [Get("/api/route")]
@@ -54,6 +48,7 @@ namespace Server.Controllers
                     if (response is { }) return response;
                 }
             }
+
             return Response.PlainText("Route Image not found", Status.NotFound);
         }
 
@@ -86,7 +81,7 @@ namespace Server.Controllers
                 return Response.PlainText("Invalid payload", Status.BadRequest);
             }
         }
-        
+
         [Post("/api/tours")]
         public Response AddTours([JsonString] string json)
         {
@@ -146,17 +141,16 @@ namespace Server.Controllers
                 return Response.PlainText("Invalid payload", Status.BadRequest);
             }
         }
-        
+
         [Delete("/api/tour")]
         public Response DeleteTour(PathVariable<int> id)
         {
             if (id.Ok)
             {
                 var (isDeleted, errorMsg) = tp.DeleteTour(id.Value!);
-                return isDeleted ? 
-                    Response.Status(Status.NoContent) : 
-                    Response.PlainText(errorMsg, Status.BadRequest);
+                return isDeleted ? Response.Status(Status.NoContent) : Response.PlainText(errorMsg, Status.BadRequest);
             }
+
             return Response.PlainText("Not valid Route id given", Status.BadRequest);
         }
     }
