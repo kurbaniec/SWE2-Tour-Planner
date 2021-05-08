@@ -108,6 +108,7 @@ namespace Server.DAL
                     {Direction = ParameterDirection.Output});
                 cmdTour.Parameters.Add(new NpgsqlParameter("description", NpgsqlDbType.Text)
                     {Direction = ParameterDirection.Output});
+                cmdTour.ExecuteNonQuery();
                 if (cmdTour.Parameters[1].Value is string from &&
                     cmdTour.Parameters[2].Value is string to &&
                     cmdTour.Parameters[3].Value is string name &&
@@ -152,10 +153,11 @@ namespace Server.DAL
 
         public (Tour?, string) AddTour(Tour tour)
         {
+            NpgsqlTransaction? transaction = null;
             try
             {
                 using var conn = Connection();
-                var transaction = BeginTransaction(conn);
+                transaction = BeginTransaction(conn);
                 if (transaction == null) return (null, "Could not start new transaction");
                 // Add tour and retrieve id
                 // See: https://stackoverflow.com/a/5765441/12347616
@@ -216,18 +218,101 @@ namespace Server.DAL
             catch (Exception ex)
             {
                 logger.Log(LogLevel.Warning, ex.StackTrace);
+                transaction?.Rollback();
                 return (null, "Internal server error");
             }
         }
 
         public (Tour?, string) UpdateTour(Tour tour)
         {
-            throw new System.NotImplementedException();
+            NpgsqlTransaction? transaction = null;
+            try
+            {
+                using var conn = Connection();
+                transaction = BeginTransaction(conn);
+                if (transaction == null) return (null, "Could not start new transaction");
+                // Remove tour (which also removes all related logs)
+                using var deleteCmd = new NpgsqlCommand(@"
+                    DELETE FROM tour WHERE id=@p",
+                    conn);
+                deleteCmd.Parameters.AddWithValue("p", NpgsqlDbType.Integer, tour.Id);
+                deleteCmd.ExecuteNonQuery();
+                // Add tour (with id)
+                using var tourCmd = new NpgsqlCommand(@"
+                    INSERT INTO tour VALUES(@pid, @p0, @p1, @p2, @p3, @p4)",
+                    conn);
+                tourCmd.Parameters.AddWithValue("pid", NpgsqlDbType.Integer, tour.Id);
+                tourCmd.Parameters.AddWithValue("p0", NpgsqlDbType.Varchar, tour.From);
+                tourCmd.Parameters.AddWithValue("p1", NpgsqlDbType.Varchar, tour.To);
+                tourCmd.Parameters.AddWithValue("p2", NpgsqlDbType.Varchar, tour.Name);
+                tourCmd.Parameters.AddWithValue("p3", NpgsqlDbType.Double, tour.Distance);
+                tourCmd.Parameters.AddWithValue("p4", NpgsqlDbType.Text, tour.Description);
+                tourCmd.ExecuteNonQuery();
+                // Add logs
+                foreach (var log in tour.Logs)
+                {
+                    using var logCmd = new NpgsqlCommand(@"
+                        INSERT INTO tourlog VALUES(
+                            DEFAULT, @p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10
+                        ) RETURNING id",
+                        conn);
+                    logCmd.Parameters.AddWithValue("p0", NpgsqlDbType.Integer, tour.Id);
+                    logCmd.Parameters.AddWithValue("p1", NpgsqlDbType.Date, log.Date);
+                    logCmd.Parameters.AddWithValue("p2", NpgsqlDbType.Varchar, log.Type.ToString());
+                    logCmd.Parameters.AddWithValue("p3", NpgsqlDbType.Interval, log.Duration);
+                    logCmd.Parameters.AddWithValue("p4", NpgsqlDbType.Double, log.Distance);
+                    logCmd.Parameters.AddWithValue("p5", NpgsqlDbType.Integer, log.Rating);
+                    logCmd.Parameters.AddWithValue("p6", NpgsqlDbType.Text, log.Report);
+                    logCmd.Parameters.AddWithValue("p7", NpgsqlDbType.Double, log.AvgSpeed);
+                    logCmd.Parameters.AddWithValue("p8", NpgsqlDbType.Double, log.MaxSpeed);
+                    logCmd.Parameters.AddWithValue("p9", NpgsqlDbType.Double, log.HeightDifference);
+                    logCmd.Parameters.AddWithValue("p10", NpgsqlDbType.Integer, log.Stops);
+                    var logCmdId = logCmd.ExecuteScalar();
+                    if (logCmdId is int logId)
+                    {
+                        log.Id = logId;
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                        return (null, "Internal server error");
+                    }
+                }
+
+                transaction.Commit();
+                return (tour, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Warning, ex.StackTrace);
+                transaction?.Rollback();
+                return (null, "Internal server error");
+            }
         }
 
         public (bool, string) DeleteTour(int id)
         {
-            throw new System.NotImplementedException();
+            NpgsqlTransaction? transaction = null;
+            try
+            {
+                using var conn = Connection();
+                transaction = BeginTransaction(conn);
+                if (transaction == null) return (false, "Could not start new transaction");
+
+                using var cmd = new NpgsqlCommand(@"
+                    DELETE from tour WHERE id=@p0",
+                    conn);
+                cmd.Parameters.AddWithValue("p0", NpgsqlDbType.Integer, id);
+                cmd.ExecuteNonQuery();
+                transaction.Commit();
+                return (true, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Warning, ex.StackTrace);
+                transaction?.Rollback();
+                return (false, "Internal server error");
+            }
         }
 
         private void CreateDatabaseIfNotExists()
