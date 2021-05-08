@@ -10,11 +10,11 @@ namespace Model
         public string From { set; get; }
         public string To { set; get; }
         public string Name { set; get; }
-        public int Distance { set; get; }
+        public double Distance { set; get; }
         public string Description { set; get; }
         public List<TourLog> Logs { set; get; }
         
-        public Tour(string from, string to, string name, int distance, string description,
+        public Tour(string from, string to, string name, double distance, string description,
             List<TourLog> logs)
         {
             From = from;
@@ -25,7 +25,7 @@ namespace Model
             Logs = logs;
         }
 
-        public Tour(string from, string to, string name, int distance, string description)
+        public Tour(string from, string to, string name, double distance, string description)
         {
             From = from;
             To = to;
@@ -35,7 +35,7 @@ namespace Model
             Logs = new List<TourLog>();
         }
         
-        public Tour(int id, string @from, string to, string name, int distance, string description, List<TourLog> logs)
+        public Tour(int id, string @from, string to, string name, double distance, string description, List<TourLog> logs)
         {
             Id = id;
             From = @from;

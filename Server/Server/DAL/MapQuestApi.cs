@@ -38,13 +38,12 @@ namespace Server.DAL
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonString = response.Content.ReadAsStringAsync().Result;
-                    // TODO parse response and return it
                     JObject mapQuestInfo = JObject.Parse(jsonString);
                     if (mapQuestInfo["route"]?["distance"] is { } distanceRaw &&
                         mapQuestInfo["route"]?["boundingBox"] is { } boundingBoxRaw &&
                         mapQuestInfo["route"]?["sessionId"] is { } sessionIdRaw)
                     {
-                        var distance = (int) distanceRaw;
+                        var distance = (double) distanceRaw;
                         var boundingBox =
                             boundingBoxRaw["ul"]!["lat"]!.ToString().Replace(",", ".") + ","
                             + boundingBoxRaw["ul"]!["lng"]!.ToString().Replace(",", ".") + ","

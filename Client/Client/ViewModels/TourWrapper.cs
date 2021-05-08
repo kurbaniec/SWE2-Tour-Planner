@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using Client.Utils.Extensions;
 using Model;
@@ -61,13 +56,14 @@ namespace Client.ViewModels
             }
         }
 
-        private int distance;
+        private double distance;
 
-        public int Distance
+        public double Distance
         {
             get => distance;
             set
             {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (distance == value) return;
                 distance = value;
                 OnPropertyChanged();
@@ -208,7 +204,7 @@ namespace Client.ViewModels
         public void AddNewLog()
         {
             Logs.Add(WrapTourLog(new TourLog(
-                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10, 10,
+                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10.0, 10,
                 "Report goes here...", 10.0,
                 20.0, 100, 0
             )));

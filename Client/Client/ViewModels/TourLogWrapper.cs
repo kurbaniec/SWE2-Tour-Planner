@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Input;
-using Client.Utils.Commands;
 using Model;
 using Type = Model.Type;
 
@@ -49,12 +45,13 @@ namespace Client.ViewModels
             }
         }
 
-        private int? distance;
-        public int? Distance
+        private double? distance;
+        public double? Distance
         {
             get => distance;
             set
             {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (distance == value) return;
                 distance = value;
                 OnPropertyChanged();
@@ -166,7 +163,7 @@ namespace Client.ViewModels
 
         public TourLogWrapper() : this(
             new TourLog(
-                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10, 10,
+                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10.0, 10,
                 "Report goes here...", 10.0,
                 20.0, 100, 0
             )

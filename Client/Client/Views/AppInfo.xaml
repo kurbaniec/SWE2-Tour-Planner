@@ -297,24 +297,27 @@
                                                         </DataTemplate>
                                                     </DataGridTemplateColumn.CellEditingTemplate>
                                                 </DataGridTemplateColumn>
+                                                <!-- Numeric columns need lost focus 
+                                                See https://stackoverflow.com/a/39471512/12347616 -->
                                                 <DataGridTextColumn Header="Duration"
                                                                     Binding="{Binding Duration, 
                                                 UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                                                 <DataGridTextColumn Header="Distance"
                                                                     Binding="{Binding Distance, 
                                                 UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                                                <!-- TODO make also combobox -->
                                                 <DataGridTextColumn Header="Rating"
                                                                     Binding="{Binding Rating, 
                                                 UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                                                 <DataGridTextColumn Header="Average Speed"
                                                                     Binding="{Binding AvgSpeed, 
-                                                UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                                                UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                                                 <DataGridTextColumn Header="Max Speed"
                                                                     Binding="{Binding MaxSpeed, 
-                                                UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                                                UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                                                 <DataGridTextColumn Header="Height Difference"
                                                                     Binding="{Binding HeightDifference, 
-                                                UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                                                UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                                                 <DataGridTextColumn Header="Stops"
                                                                     Binding="{Binding Stops, 
                                                 UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
