@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Model;
 using QuestPDF.Drawing;
@@ -86,12 +87,11 @@ namespace Server.DAL
                 {
                     row.RelativeColumn().Stack(stack =>
                     {
-                        stack.Element().Text($"Tour: {Model.Name}", TextStyle.Default.Size(20));
-                        stack.Element().Text($"#{Model.Id}");
-                        stack.Element().Text($"Issue date: {DateTime.Now}");
+                        stack.Element().Text(!IsSummary ? "Tour Report" : "Tour Report - Summary",
+                            TextStyle.Default.Size(20));
+                        stack.Element().Text($"Tour:  \"{Model.Name}\" | #{Model.Id}");
+                        stack.Element().Text($"Issue date: {DateTime.Now:yyyy/MM/dd}");
                     });
-
-                    row.ConstantColumn(100).Height(50).Placeholder();
                 });
             }
 
@@ -105,10 +105,15 @@ namespace Server.DAL
                         stack.Element(ComposeRouteImage);
 
                     if (!IsSummary)
+                    {
+                        stack.Element().Text("Logs:");
                         stack.Element(ComposeReport);
-
+                    }
                     else
+                    {
+                        stack.Element().Text("Summary:");
                         stack.Element(ComposeSummary);
+                    }
                 });
             }
 
@@ -127,10 +132,69 @@ namespace Server.DAL
 
             void ComposeReport(IContainer container)
             {
+                container.PaddingTop(10).Section(section =>
+                {
+                    // header
+                    section.Header().BorderBottom(1).Padding(5).Row(row =>
+                    {
+                        row.ConstantColumn(25).Text("#");
+                        row.RelativeColumn().Text("Date");
+                        row.RelativeColumn().Text("Type");
+                        row.RelativeColumn().Text("Duration");
+                        row.RelativeColumn().Text("Distance");
+                        row.RelativeColumn().Text("Rating");
+                        row.RelativeColumn().Text("Avg. Speed");
+                        row.RelativeColumn().Text("Max Speed");
+                        row.RelativeColumn().Text("Height Diff.");
+                        row.RelativeColumn().Text("Stops");
+                        row.RelativeColumn(2).Text("Report");
+                    });
+                    
+                    // content
+                    section
+                        .Content()
+                        .PageableStack(stack =>
+                        {
+                            foreach (var log in Model.Logs)
+                            {
+                                stack.Element().BorderBottom(1).BorderColor("CCC").Padding(5).Row(row =>
+                                {
+                                    row.ConstantColumn(25).Text(log.Id);
+                                    row.RelativeColumn().Text($"{log.Date:yyyy/MM/dd}");
+                                    row.RelativeColumn().Text(log.Type);
+                                    row.RelativeColumn().Text(log.Duration);
+                                    row.RelativeColumn().Text(log.Distance);
+                                    row.RelativeColumn().Text(log.Rating);
+                                    row.RelativeColumn().Text(log.AvgSpeed);
+                                    row.RelativeColumn().Text(log.MaxSpeed);
+                                    row.RelativeColumn().Text(log.HeightDifference);
+                                    row.RelativeColumn().Text(log.Stops);
+                                    row.RelativeColumn(2).Text(log.Report);
+                                });
+                            }
+                        });
+                });
             }
 
+            /**
+             * public double OverallDistance { set; get; }
+                public double AvgRating { get; set; }
+                public double AvgSpeed { set; get; }
+                public double MaxSpeed { set; get; }
+                public double AvgHeightDifference { set; get; }
+                public double AvgStops { set; get; }
+             */
             void ComposeSummary(IContainer container)
             {
+                var overallDistance = Model.Logs.Sum(log => log.Distance);
+                // Sum TimeSpans
+                // See: https://stackoverflow.com/a/4703056/12347616
+                var overallDuration = new TimeSpan(Model.Logs.Sum(log => log.Duration.Ticks));
+                var avgRating = Model.Logs.Sum(log => log.Rating) / (double) Model.Logs.Count;
+                var avgSpeed = Model.Logs.Sum(log => log.AvgSpeed) / (double) Model.Logs.Count;
+                var maxSpeed = Model.Logs.Max(log => log.MaxSpeed);
+                var maxHeightDifference = Model.Logs.Max(log => log.HeightDifference);
+                var avgStops = Model.Logs.Sum(log => log.Stops) / (double) Model.Logs.Count;
             }
         }
     }
