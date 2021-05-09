@@ -20,9 +20,9 @@ namespace Server.Setup
         public JObject Config { get; }
         public string MapApiKey { get; }
         public string RoutePath { get; }
-        
+        public string ExportPath { get; }
         public string PostgresConnString { get; }
-        
+
         private readonly ILogger logger = WebServiceLogging.CreateLogger<Configuration>();
 
         public Configuration()
@@ -47,6 +47,7 @@ namespace Server.Setup
                     throw new FileNotFoundException("Could not find config file");
                 }
             }
+
             var configStr = File.ReadAllText(configPath);
             Config = JObject.Parse(configStr);
             // Set Logging
@@ -65,6 +66,13 @@ namespace Server.Setup
             if (!Directory.Exists(routePath))
                 Directory.CreateDirectory(routePath);
             RoutePath = routePath;
+            // Directory where to store exports
+            var exportPath = (string) Config["server"]!["exports-path"]!;
+            if (!Path.IsPathRooted(routePath))
+                exportPath = $"{runningPath}{routePath}";
+            if (!Directory.Exists(exportPath))
+                Directory.CreateDirectory(exportPath);
+            ExportPath = exportPath;
             // Postgres config
             var user = (string) Config["server"]!["db"]!["user"]!;
             var password = (string) Config["server"]!["db"]!["password"]!;

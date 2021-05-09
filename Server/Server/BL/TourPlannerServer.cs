@@ -13,6 +13,7 @@ namespace Server.BL
     {
         [Autowired] private readonly IDataManagement db = null!;
         [Autowired] private readonly IMapApi map = null!;
+        [Autowired] private readonly IExportHandler handler = null!;
         private readonly ILogger logger = WebServiceLogging.CreateLogger<TourPlannerServer>();
 
         // ReSharper disable once UnusedMember.Global
@@ -21,10 +22,11 @@ namespace Server.BL
         }
 
         // ReSharper disable once UnusedMember.Global
-        public TourPlannerServer(IDataManagement db, IMapApi map)
+        public TourPlannerServer(IDataManagement db, IMapApi map, IExportHandler handler)
         {
             this.db = db;
             this.map = map;
+            this.handler = handler;
         }
 
         public (List<Tour>?, string) GetTours()
@@ -129,11 +131,18 @@ namespace Server.BL
             return db.DeleteTour(id);
         }
 
+        // TODO to (string?, string)
         public string? GetRouteImage(int id)
         {
             logger.Log(LogLevel.Information, 
                 $"Trying to request route information image for Tour with id {id}");
             return map.GetRouteImagePath(id);
+        }
+
+        public (string?, string) GetPdfExport(int id)
+        {
+            var (tour, dbError) = db.GetTour(id);
+            return tour is null ? (null, dbError) : handler.Export(tour);
         }
     }
 }

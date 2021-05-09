@@ -13,6 +13,7 @@
         },
         "logger-config": "logger.server.config",
         "mapquest-api-key": "<insert key here>",
-        "routes-path": "maps"
+        "routes-path": "maps",
+        "exports-path": "exports"
     }
 }
