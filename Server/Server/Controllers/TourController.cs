@@ -154,12 +154,29 @@ namespace Server.Controllers
             return Response.PlainText("Not valid Route id given", Status.BadRequest);
         }
         
-        [Get("/api/export")]
-        public Response GetPdfExport(PathVariable<int> id)
+        [Get("/api/export/full")]
+        public Response GetPdfExportFull(PathVariable<int> id)
         {
             if (id.Ok)
             {
                 var (filePath, errorMsg) = tp.GetPdfExport(id.Value!);
+                if (filePath is { } path)
+                {
+                    var response = Response.File(path);
+                    return response ?? Response.PlainText("Could not locate export", Status.InternalServerError);
+                }
+                return Response.PlainText(errorMsg, Status.BadRequest);
+            }
+
+            return Response.PlainText("Invalid request", Status.BadRequest);
+        }
+        
+        [Get("/api/export/summary")]
+        public Response GetPdfExportSummary(PathVariable<int> id)
+        {
+            if (id.Ok)
+            {
+                var (filePath, errorMsg) = tp.GetPdfExport(id.Value!, true);
                 if (filePath is { } path)
                 {
                     var response = Response.File(path);

@@ -19,13 +19,13 @@ namespace Server.DAL
         private string ExportPath => cfg.ExportPath;
         private readonly ILogger logger = WebServiceLogging.CreateLogger<IExportHandler>();
 
-        public (string?, string) Export(Tour tour, string? imagePath)
+        public (string?, string) Export(Tour tour, string? imagePath, bool isSummary = false)
         {
             try
             {
                 // Create pdf with Quest PDF
                 // See: https://www.questpdf.com/documentation/getting-started.html
-                var document = new TourReport(tour, imagePath);
+                var document = new TourReport(tour, imagePath, isSummary);
                 var filePath = $"{ExportPath}{Path.DirectorySeparatorChar}{tour.Id}-{Guid.NewGuid()}";
                 document.GeneratePdf(filePath);
                 logger.Log(LogLevel.Information, 
@@ -38,52 +38,6 @@ namespace Server.DAL
                 return (null, "Could not generate export");
             }
         }
-
-        public (string?, string) ExportSummary(Tour tour, string? imagePath)
-        {
-            try
-            {
-                var document = new TourReport(tour, imagePath, true);
-                var filePath = $"{ExportPath}{Path.DirectorySeparatorChar}{tour.Id}-{Guid.NewGuid()}";
-                document.GeneratePdf(filePath);
-                logger.Log(LogLevel.Information, 
-                    $"Successfully created export \"{filePath}\" for Tour with id {tour.Id}");
-                return (filePath, string.Empty);
-            }
-            catch (Exception ex)
-            {
-                logger.Log(LogLevel.Warning, ex.StackTrace);
-                return (null, "Could not generate export");
-            }
-        }
-
-        /*
-        public class TourReport
-        {
-            public string Name { get; set; }
-            public DateTime IssueDate { get; set; }
-            public int Id { get; set; }
-            public string From { get; set; }
-            public string To { get; set; }
-            public double Distance { get; set; }
-            public string Description { get; set; }
-            public List<TourLogReport> Logs { get; set; }
-        }
-
-        public class TourLogReport
-        {
-            public int Id { get; set; }
-            public DateTime Date { get; set; }
-            public Model.Type Type { get; set; }
-            public TimeSpan Duration { get; set; }
-            public double Distance { set; get; }
-            public int Rating { get; set; }
-            public string Report { set; get; }
-            public double AvgSpeed { set; get; }
-            public double MaxSpeed { set; get; }
-            public double HeightDifference { set; get; }
-            public int Stops { set; get; }
-        }*/
 
         public class TourLogsSummary
         {

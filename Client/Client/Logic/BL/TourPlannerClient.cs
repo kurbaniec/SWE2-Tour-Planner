@@ -56,5 +56,10 @@ namespace Client.Logic.BL
         {
             return await handler.ExportTours(outputPath, tours);
         }
+
+        public async Task<(bool, string)> Print(string outputPath, int id, bool isSummary = false)
+        {
+            return await api.GetExport(id, outputPath, isSummary);
+        }
     }
 }

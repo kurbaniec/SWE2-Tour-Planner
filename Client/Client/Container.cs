@@ -35,7 +35,8 @@ namespace Client
             services.AddSingleton<MainViewModel>(x =>
                 new MainViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<MenuViewModel>(x =>
-                new MenuViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
+                new MenuViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
+                    x.GetService<ContentNavigation>()!));
             services.AddSingleton<ListViewModel>(x =>
                 new ListViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
                     x.GetService<ContentNavigation>()!, x.GetService<Configuration>()!));

@@ -18,5 +18,7 @@ namespace Client.Logic.DAL
         Task<(bool, string)> DeleteTour(int id);
 
         Task<(BitmapImage?, BitmapImage?)> GetRouteImage(int id);
+        
+        Task<(bool, string)> GetExport(int id, string outputPath, bool isSummary = false);
     }
 }

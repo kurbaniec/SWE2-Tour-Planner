@@ -232,5 +232,29 @@ namespace Client.Logic.DAL
             logger.Log(LogLevel.Warning, "Dummy Route Image will be used");
             return (null, dummyRouteImage);
         }
+
+        public async Task<(bool, string)> GetExport(int id, string outputPath, bool isSummary = false)
+        {
+            try
+            {
+                // Get pdf export from server
+                string url = !isSummary ? $"{baseUrl}/api/export/full/{id}" : $"{baseUrl}/api/export/summary/{id}";
+                using var response = await client.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    await using var stream = File.Create(outputPath);
+                    await response.Content.CopyToAsync(stream);
+                    return (true, string.Empty);
+                }
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                logger.Log(LogLevel.Error, errorMsg);
+                return (false, errorMsg);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex.StackTrace);
+                return (false, ex.Message);
+            }
+        }
     }
 }

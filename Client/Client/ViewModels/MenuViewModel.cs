@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using Client.Logic.BL;
 using Client.Utils.Commands;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
@@ -8,6 +9,7 @@ namespace Client.ViewModels
 {
     public class MenuViewModel : BaseViewModel
     {
+        private readonly TourPlannerClient tp;
         private readonly Mediator mediator;
         private readonly ContentNavigation nav;
 
@@ -74,7 +76,7 @@ namespace Client.ViewModels
                     _ => true,
                     _ =>
                     {
-                        var path = nav.ShowOpenFileDialog();
+                        var path = nav.ShowOpenFileDialog("Tour Data (*.td)|*.td");
                         if (path is {})
                         {
                             mediator.NotifyColleagues(ViewModelMessages.Import, path);
@@ -95,7 +97,7 @@ namespace Client.ViewModels
                     _ => true,
                     _ =>
                     {
-                        var path = nav.ShowSaveFileDialog();
+                        var path = nav.ShowSaveFileDialog("Tour Data (*.td)|*.td");
                         if (path is { })
                         {
                             mediator.NotifyColleagues(ViewModelMessages.ExportThis, path);
@@ -116,7 +118,7 @@ namespace Client.ViewModels
                     _ => true,
                     _ =>
                     {
-                        var path = nav.ShowSaveFileDialog();
+                        var path = nav.ShowSaveFileDialog("Tour Data (*.td)|*.td");
                         if (path is { })
                         {
                             mediator.NotifyColleagues(ViewModelMessages.ExportAll, path);
@@ -124,6 +126,31 @@ namespace Client.ViewModels
                     }
                 );
                 return exportAll;
+            }
+        }
+
+        private ICommand? print;
+        public ICommand Print
+        {
+            get
+            {
+                if (print != null) return print;
+                print = new RelayCommand(
+                    _ => true,
+                    async p =>
+                    {
+                        var isSummary = (bool) (p ?? false);
+                        var path = nav.ShowSaveFileDialog("Pdf (*.pdf)|*.pdf");
+                        if (path is null) return;
+                        if (selectedTour is null) return;
+                        var (ok, errorMsg) = await tp.Print(path, selectedTour.Model.Id, isSummary);
+                        if (ok)
+                            nav.ShowInfoDialog("Print of Tour was successful", "Tour Planner - Print");
+                        else
+                            nav.ShowErrorDialog($"Encountered error while printing Tour: \n{errorMsg}", "Tour Planner - Print");
+                    }
+                );
+                return print;
             }
         }
 
@@ -160,8 +187,9 @@ namespace Client.ViewModels
             SelectedTour = tour;
         }
 
-        public MenuViewModel(Mediator mediator, ContentNavigation nav)
+        public MenuViewModel(TourPlannerClient tp, Mediator mediator, ContentNavigation nav)
         {
+            this.tp = tp;
             this.mediator = mediator;
             this.nav = nav;
             filter = "";

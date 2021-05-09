@@ -55,15 +55,15 @@ namespace Client.Utils.Navigation
             return result is MessageBoxResult.OK or MessageBoxResult.Yes;
         }
         
-        public string? ShowOpenFileDialog()
+        public string? ShowOpenFileDialog(string? filter = null)
         {
-            var openFileDialog = new OpenFileDialog {Filter = "Tour Data (*.td)|*.td"};
+            var openFileDialog = new OpenFileDialog {Filter = filter};
             return openFileDialog.ShowDialog() == true ? openFileDialog.FileName : null;
         }
 
-        public string? ShowSaveFileDialog()
+        public string? ShowSaveFileDialog(string? filter = null)
         {
-            var saveFileDialog = new SaveFileDialog {Filter = "Tour Data (*.td)|*.td"};
+            var saveFileDialog = new SaveFileDialog {Filter = filter};
             return saveFileDialog.ShowDialog() == true ? saveFileDialog.FileName : null;
         }
 

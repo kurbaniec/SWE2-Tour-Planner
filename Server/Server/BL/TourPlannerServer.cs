@@ -44,6 +44,7 @@ namespace Server.BL
                 logger.Log(LogLevel.Error, "To and From cannot be empty");
                 return (null, "To and From cannot be empty");
             }
+
             var (mapApiResponse, mapError) = map.GetRouteInfo(tour.From, tour.To);
             if (mapApiResponse is { })
             {
@@ -134,15 +135,17 @@ namespace Server.BL
         // TODO to (string?, string)
         public string? GetRouteImage(int id)
         {
-            logger.Log(LogLevel.Information, 
+            logger.Log(LogLevel.Information,
                 $"Trying to request route information image for Tour with id {id}");
             return map.GetRouteImagePath(id);
         }
 
-        public (string?, string) GetPdfExport(int id)
+        public (string?, string) GetPdfExport(int id, bool isSummary = false)
         {
             var (tour, dbError) = db.GetTour(id);
-            return tour is null ? (null, dbError) : handler.Export(tour, null);
+            if (tour is null) return (null, dbError);
+            var imagePath = GetRouteImage(id);
+            return handler.Export(tour, imagePath, isSummary);
         }
     }
 }
