@@ -29,7 +29,7 @@ namespace Server.DAL
                 var document = new TourReport(tour, imagePath, isSummary);
                 var filePath = $"{ExportPath}{Path.DirectorySeparatorChar}{tour.Id}-{Guid.NewGuid()}";
                 document.GeneratePdf(filePath);
-                logger.Log(LogLevel.Information, 
+                logger.Log(LogLevel.Information,
                     $"Successfully created export \"{filePath}\" for Tour with id {tour.Id}");
                 return (filePath, string.Empty);
             }
@@ -103,15 +103,35 @@ namespace Server.DAL
 
                     if (ImagePath != null)
                         stack.Element(ComposeRouteImage);
+                    
+                    stack.Element().Row(row =>
+                    {
+                        row.RelativeColumn().BorderBottom(1).PaddingBottom(5).Text("From");
+                        row.RelativeColumn().BorderBottom(1).PaddingBottom(5).Text("To");
+                        row.RelativeColumn().BorderBottom(1).PaddingBottom(5).Text("Distance");
+                    });
+                    stack.Element().Row(row =>
+                    {
+                        row.RelativeColumn().Text(Model.From);
+                        row.RelativeColumn().Text(Model.To);
+                        row.RelativeColumn().Text(Model.Distance);
+                    });
+                    if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        stack.Element().BorderBottom(1).PaddingBottom(5).Text("Description");
+                        stack.Element().Text(Model.Description);
+                    }
+
+                    stack.Spacing(5);
 
                     if (!IsSummary)
                     {
-                        stack.Element().Text("Logs:");
+                        stack.Element().PaddingTop(15).Text("Logs", TextStyle.Default.Size(15));
                         stack.Element(ComposeReport);
                     }
                     else
                     {
-                        stack.Element().Text("Summary:");
+                        stack.Element().PaddingTop(15).Text("Summary", TextStyle.Default.Size(15));
                         stack.Element(ComposeSummary);
                     }
                 });
@@ -137,19 +157,19 @@ namespace Server.DAL
                     // header
                     section.Header().BorderBottom(1).Padding(5).Row(row =>
                     {
-                        row.ConstantColumn(25).Text("#");
-                        row.RelativeColumn().Text("Date");
-                        row.RelativeColumn().Text("Type");
-                        row.RelativeColumn().Text("Duration");
-                        row.RelativeColumn().Text("Distance");
-                        row.RelativeColumn().Text("Rating");
-                        row.RelativeColumn().Text("Avg. Speed");
-                        row.RelativeColumn().Text("Max Speed");
-                        row.RelativeColumn().Text("Height Diff.");
-                        row.RelativeColumn().Text("Stops");
-                        row.RelativeColumn(2).Text("Report");
+                        row.ConstantColumn(25).Text("#", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Date", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Type", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Duration", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Distance", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Rating", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Avg. Speed", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Max Speed", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Height Diff.", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Stops", TextStyle.Default.Size(8));
+                        row.RelativeColumn(2).Text("Report", TextStyle.Default.Size(8));
                     });
-                    
+
                     // content
                     section
                         .Content()
@@ -159,31 +179,23 @@ namespace Server.DAL
                             {
                                 stack.Element().BorderBottom(1).BorderColor("CCC").Padding(5).Row(row =>
                                 {
-                                    row.ConstantColumn(25).Text(log.Id);
-                                    row.RelativeColumn().Text($"{log.Date:yyyy/MM/dd}");
-                                    row.RelativeColumn().Text(log.Type);
-                                    row.RelativeColumn().Text(log.Duration);
-                                    row.RelativeColumn().Text(log.Distance);
-                                    row.RelativeColumn().Text(log.Rating);
-                                    row.RelativeColumn().Text(log.AvgSpeed);
-                                    row.RelativeColumn().Text(log.MaxSpeed);
-                                    row.RelativeColumn().Text(log.HeightDifference);
-                                    row.RelativeColumn().Text(log.Stops);
-                                    row.RelativeColumn(2).Text(log.Report);
+                                    row.ConstantColumn(25).Text(log.Id, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text($"{log.Date:yyyy/MM/dd}", TextStyle.Default.Size(10));
+                                    row.RelativeColumn().Text(log.Type, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text(log.Duration, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text(log.Distance, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text(log.Rating, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text(log.AvgSpeed, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text(log.MaxSpeed, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text(log.HeightDifference, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text(log.Stops, TextStyle.Default.Size(8));
+                                    row.RelativeColumn(2).Text(log.Report, TextStyle.Default.Size(8));
                                 });
                             }
                         });
                 });
             }
-
-            /**
-             * public double OverallDistance { set; get; }
-                public double AvgRating { get; set; }
-                public double AvgSpeed { set; get; }
-                public double MaxSpeed { set; get; }
-                public double AvgHeightDifference { set; get; }
-                public double AvgStops { set; get; }
-             */
+            
             void ComposeSummary(IContainer container)
             {
                 var overallDistance = Model.Logs.Sum(log => log.Distance);
@@ -195,6 +207,36 @@ namespace Server.DAL
                 var maxSpeed = Model.Logs.Max(log => log.MaxSpeed);
                 var maxHeightDifference = Model.Logs.Max(log => log.HeightDifference);
                 var avgStops = Model.Logs.Sum(log => log.Stops) / (double) Model.Logs.Count;
+
+                container.PaddingTop(10).Section(section =>
+                {
+                    // header
+                    section.Header().BorderBottom(1).Padding(5).Row(row =>
+                    {
+                        row.RelativeColumn().Text("Overall distance", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Overall duration", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Avg. Rating", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Avg. Speed", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Max Speed", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Max Height Diff.", TextStyle.Default.Size(8));
+                        row.RelativeColumn().Text("Avg. Stops", TextStyle.Default.Size(8));
+                    });
+
+                    // content
+                    section.Content().PageableStack(stack =>
+                    {
+                        stack.Element().BorderBottom(1).BorderColor("CCC").Padding(5).Row(row =>
+                        {
+                            row.RelativeColumn().Text(overallDistance, TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text(overallDuration, TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text(avgRating, TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text(avgSpeed, TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text(maxSpeed, TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text(maxHeightDifference, TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text(avgStops, TextStyle.Default.Size(8));
+                        });
+                    });
+                });
             }
         }
     }
