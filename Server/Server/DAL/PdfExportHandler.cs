@@ -40,23 +40,11 @@ namespace Server.DAL
             }
         }
 
-        public class TourLogsSummary
+        private class TourReport : IDocument
         {
-            public List<DateTime> Dates { get; set; }
-            public List<Model.Type> UsedTypes { get; set; }
-            public double OverallDistance { set; get; }
-            public double AvgRating { get; set; }
-            public double AvgSpeed { set; get; }
-            public double MaxSpeed { set; get; }
-            public double AvgHeightDifference { set; get; }
-            public double AvgStops { set; get; }
-        }
-
-        public class TourReport : IDocument
-        {
-            public Tour Model { get; }
-            public string? ImagePath { get; }
-            public bool IsSummary { get; }
+            private Tour Model { get; }
+            private string? ImagePath { get; }
+            private bool IsSummary { get; }
 
 
             public TourReport(Tour model, string? imagePath, bool isSummary = false)
@@ -81,7 +69,7 @@ namespace Server.DAL
                     });
             }
 
-            void ComposeHeader(IContainer container)
+            private void ComposeHeader(IContainer container)
             {
                 container.Row(row =>
                 {
@@ -89,85 +77,92 @@ namespace Server.DAL
                     {
                         stack.Element().Text(!IsSummary ? "Tour Report" : "Tour Report - Summary",
                             TextStyle.Default.Size(20));
-                        stack.Element().Text($"Tour:  \"{Model.Name}\" | #{Model.Id}");
-                        stack.Element().Text($"Issue date: {DateTime.Now:yyyy/MM/dd}");
+                        stack.Element().Text($"\"{Model.Name}\" | #{Model.Id}");
+                        stack.Element().Text($"{DateTime.Now:yyyy/MM/dd}");
                     });
                 });
             }
 
-            void ComposeContent(IContainer container)
+            private void ComposeContent(IContainer container)
             {
                 container.PaddingVertical(40).PageableStack(stack =>
                 {
                     stack.Spacing(5);
 
-                    if (ImagePath != null)
-                        stack.Element(ComposeRouteImage);
-                    
                     stack.Element().Row(row =>
                     {
-                        row.RelativeColumn().BorderBottom(1).PaddingBottom(5).Text("From");
-                        row.RelativeColumn().BorderBottom(1).PaddingBottom(5).Text("To");
-                        row.RelativeColumn().BorderBottom(1).PaddingBottom(5).Text("Distance");
+                        row.RelativeColumn(2).BorderBottom(1).Text("From");
+                        row.ConstantColumn(30);
+                        row.RelativeColumn(2).BorderBottom(1).Text("To");
+                        row.ConstantColumn(30);
+                        row.RelativeColumn().BorderBottom(1).Text("Distance");
                     });
                     stack.Element().Row(row =>
                     {
-                        row.RelativeColumn().Text(Model.From);
-                        row.RelativeColumn().Text(Model.To);
-                        row.RelativeColumn().Text(Model.Distance);
+                        row.RelativeColumn(2).Text(Model.From);
+                        row.ConstantColumn(30);
+                        row.RelativeColumn(2).Text(Model.To);
+                        row.ConstantColumn(30);
+                        row.RelativeColumn().Text($"{Model.Distance} km");
                     });
+
                     if (!string.IsNullOrEmpty(Model.Description))
                     {
-                        stack.Element().BorderBottom(1).PaddingBottom(5).Text("Description");
+                        stack.Element().PaddingTop(12).BorderBottom(1).PaddingBottom(5).Text("Description");
                         stack.Element().Text(Model.Description);
                     }
 
-                    stack.Spacing(5);
+                    if (ImagePath != null)
+                    {
+                        stack.Element(ComposeRouteImage);
+                    }
 
                     if (!IsSummary)
                     {
-                        stack.Element().PaddingTop(15).Text("Logs", TextStyle.Default.Size(15));
+                        stack.Element().PageBreak();
                         stack.Element(ComposeReport);
                     }
                     else
                     {
-                        stack.Element().PaddingTop(15).Text("Summary", TextStyle.Default.Size(15));
                         stack.Element(ComposeSummary);
                     }
                 });
             }
 
-            void ComposeRouteImage(IContainer container)
+            private void ComposeRouteImage(IContainer container)
             {
                 if (!File.Exists(ImagePath)) return;
                 var imageData = File.ReadAllBytes(ImagePath!);
                 container.Stack(stack =>
                 {
+                    stack.Element().PaddingTop(12).BorderBottom(1).Text("Route Information");
                     // Add image
                     // See: https://www.questpdf.com/documentation/api-reference.html#static-images
-                    stack.Element().Image(imageData, ImageScaling.FitArea);
-                    stack.Spacing(5);
+                    stack.Element().PaddingTop(10).Image(imageData, ImageScaling.FitArea);
                 });
             }
 
-            void ComposeReport(IContainer container)
+            private void ComposeReport(IContainer container)
             {
-                container.PaddingTop(10).Section(section =>
+                container.Section(section =>
                 {
                     // header
-                    section.Header().BorderBottom(1).Padding(5).Row(row =>
+                    section.Header().Stack(stack =>
                     {
-                        row.ConstantColumn(25).Text("#", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Date", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Type", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Duration", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Distance", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Rating", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Avg. Speed", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Max Speed", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Height Diff.", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Stops", TextStyle.Default.Size(8));
-                        row.RelativeColumn(2).Text("Report", TextStyle.Default.Size(8));
+                        stack.Element().BorderBottom(1).Text("Logs");
+                        stack.Element().BorderBottom(1).Padding(5).PaddingTop(10).Row(row =>
+                        {
+                            row.ConstantColumn(25).Text("#", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Date", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Type", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Duration", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Distance", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Rating", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Avg. Speed", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Max Speed", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Height Diff.", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Stops", TextStyle.Default.Size(8));
+                        });
                     });
 
                     // content
@@ -180,7 +175,7 @@ namespace Server.DAL
                                 stack.Element().BorderBottom(1).BorderColor("CCC").Padding(5).Row(row =>
                                 {
                                     row.ConstantColumn(25).Text(log.Id, TextStyle.Default.Size(8));
-                                    row.RelativeColumn().Text($"{log.Date:yyyy/MM/dd}", TextStyle.Default.Size(10));
+                                    row.RelativeColumn().Text($"{log.Date:yyyy/MM/dd}", TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text(log.Type, TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text(log.Duration, TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text(log.Distance, TextStyle.Default.Size(8));
@@ -189,14 +184,15 @@ namespace Server.DAL
                                     row.RelativeColumn().Text(log.MaxSpeed, TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text(log.HeightDifference, TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text(log.Stops, TextStyle.Default.Size(8));
-                                    row.RelativeColumn(2).Text(log.Report, TextStyle.Default.Size(8));
                                 });
+                                stack.Element().BorderBottom(1).BorderColor("CCC").Padding(5)
+                                    .Text($"Report: {log.Report}", TextStyle.Default.Size(8));
                             }
                         });
                 });
             }
-            
-            void ComposeSummary(IContainer container)
+
+            private void ComposeSummary(IContainer container)
             {
                 var overallDistance = Model.Logs.Sum(log => log.Distance);
                 // Sum TimeSpans
@@ -208,20 +204,24 @@ namespace Server.DAL
                 var maxHeightDifference = Model.Logs.Max(log => log.HeightDifference);
                 var avgStops = Model.Logs.Sum(log => log.Stops) / (double) Model.Logs.Count;
 
-                container.PaddingTop(10).Section(section =>
+                container.Section(section =>
                 {
                     // header
-                    section.Header().BorderBottom(1).Padding(5).Row(row =>
+                    section.Header().Stack(stack =>
                     {
-                        row.RelativeColumn().Text("Overall distance", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Overall duration", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Avg. Rating", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Avg. Speed", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Max Speed", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Max Height Diff.", TextStyle.Default.Size(8));
-                        row.RelativeColumn().Text("Avg. Stops", TextStyle.Default.Size(8));
+                        stack.Element().PaddingTop(12).BorderBottom(1).Text("Summary");
+                        stack.Element().BorderBottom(1).Padding(5).PaddingTop(10).Row(row =>
+                        {
+                            row.RelativeColumn().Text("Overall distance", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Overall duration", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Avg. Rating", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Avg. Speed", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Max Speed", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Max Height Diff.", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text("Avg. Stops", TextStyle.Default.Size(8));
+                        });
                     });
-
+                    
                     // content
                     section.Content().PageableStack(stack =>
                     {
