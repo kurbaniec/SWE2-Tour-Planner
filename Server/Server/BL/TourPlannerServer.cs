@@ -142,7 +142,7 @@ namespace Server.BL
         public (string?, string) GetPdfExport(int id)
         {
             var (tour, dbError) = db.GetTour(id);
-            return tour is null ? (null, dbError) : handler.Export(tour);
+            return tour is null ? (null, dbError) : handler.Export(tour, null);
         }
     }
 }

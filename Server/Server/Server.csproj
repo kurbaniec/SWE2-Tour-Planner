@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.1" />
     <PackageReference Include="Npgsql" Version="5.0.1.1" />
+    <PackageReference Include="QuestPDF" Version="2021.4.0" />
   </ItemGroup>
 
   <!-- See: https://stackoverflow.com/a/51544654/12347616-->
