@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -28,6 +30,7 @@ namespace Client.ViewModels
         private readonly ICollectionView toursView;
 
         private TourWrapper? selectedTour;
+
         public TourWrapper? SelectedTour
         {
             get => selectedTour;
@@ -77,6 +80,7 @@ namespace Client.ViewModels
         }
 
         private string filter;
+
         private string Filter
         {
             get => filter;
@@ -90,6 +94,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? openAddTour;
+
         public ICommand? OpenAddTour
         {
             get
@@ -107,6 +112,7 @@ namespace Client.ViewModels
         }
 
         private bool busy;
+
         public bool Busy
         {
             get => busy;
@@ -119,6 +125,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? loadData;
+
         public ICommand LoadData
         {
             get
@@ -159,7 +166,7 @@ namespace Client.ViewModels
                 return loadData;
             }
         }
-        
+
         // Mediator Events
 
         private void TransactionBegin(object? o)
@@ -194,7 +201,7 @@ namespace Client.ViewModels
             logger.Log(LogLevel.Information, $"Successfully added or updated Tour with id {newTour.Model.Id}");
             return newTour;
         }
-        
+
         private async void TourAddition(object? o)
         {
             if (o == null) return;
@@ -256,11 +263,13 @@ namespace Client.ViewModels
                     newTours.ForEach(async t => await TourAdditionProcess(t));
                     nav.ShowInfoDialog("Tour(s) successfully imported", "Tour Planner - Import");
                 }
-                else 
-                    nav.ShowErrorDialog($"Encountered error while importing Tours: \n{apiError}", "Tour Planner - Import");
+                else
+                    nav.ShowErrorDialog($"Encountered error while importing Tours: \n{apiError}",
+                        "Tour Planner - Import");
             }
-            else nav.ShowErrorDialog(
-                $"Encountered error while importing Tours: \n{importError}", "Tour Planner - Import");
+            else
+                nav.ShowErrorDialog(
+                    $"Encountered error while importing Tours: \n{importError}", "Tour Planner - Import");
         }
 
         private async void ExportThis(object? o)
@@ -287,7 +296,6 @@ namespace Client.ViewModels
                 nav.ShowInfoDialog("Tours successfully exported", "Tour Planner - Export");
             else
                 nav.ShowErrorDialog($"Encountered error while exporting Tours: \n{errorMsg}", "Tour Planner - Export");
-            
         }
 
         public ListViewModel(
@@ -305,9 +313,49 @@ namespace Client.ViewModels
             // See: https://markheath.net/post/list-filtering-in-wpf-with-m-v-vm
             toursView = CollectionViewSource.GetDefaultView(Tours);
             // TODO implement more sophisticated Filter
-            toursView.Filter = o => string.IsNullOrEmpty(Filter) ||
-                                    ((TourWrapper) o).Name.ToLower().Contains(Filter.ToLower());
-            
+            /*toursView.Filter = o => string.IsNullOrEmpty(Filter) ||
+                                    ((TourWrapper) o).Name.ToLower().Contains(Filter.ToLower());*/
+            toursView.Filter = o =>
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(Filter))
+                        return true;
+
+                    foreach (var property in o.GetType().GetProperties())
+                    {
+                        // Check if is IEnumerable and iterate over
+                        // Note: Strings are IEnumerable but in this context not useful
+                        // See: https://stackoverflow.com/a/6735081/12347616
+                        if (property.GetValue(o) is IEnumerable enumerable and not string)
+                        {
+                            foreach (var oEnumerable in enumerable)
+                            {
+                                foreach (var oEnumProperty in oEnumerable.GetType().GetProperties())
+                                {
+                                    if (oEnumProperty.GetValue(oEnumerable)?.ToString() is { } str
+                                        && str.ToLower().Contains(Filter.ToLower()))
+                                        return true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (property.GetValue(o)?.ToString() is { } str
+                                && str.ToLower().Contains(Filter.ToLower()))
+                                return true;
+                        }
+                    }
+
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            };
+
+
             // Register mediator events
             mediator.Register(FilterChange, ViewModelMessages.FilterChange);
             mediator.Register(TransactionBegin, ViewModelMessages.TransactionBegin);
