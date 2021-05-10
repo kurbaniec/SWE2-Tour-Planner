@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -27,7 +26,7 @@ namespace Server.DAL
                 // Create pdf with Quest PDF
                 // See: https://www.questpdf.com/documentation/getting-started.html
                 var document = new TourReport(tour, imagePath, isSummary);
-                var filePath = $"{ExportPath}{Path.DirectorySeparatorChar}{tour.Id}-{Guid.NewGuid()}";
+                var filePath = $"{ExportPath}{Path.DirectorySeparatorChar}{tour.Id}-{Guid.NewGuid()}.pdf";
                 document.GeneratePdf(filePath);
                 logger.Log(LogLevel.Information,
                     $"Successfully created export \"{filePath}\" for Tour with id {tour.Id}");
@@ -198,8 +197,12 @@ namespace Server.DAL
                 // Sum TimeSpans
                 // See: https://stackoverflow.com/a/4703056/12347616
                 var overallDuration = new TimeSpan(Model.Logs.Sum(log => log.Duration.Ticks));
-                var avgRating = Model.Logs.Sum(log => log.Rating) / (double) Model.Logs.Count;
-                var avgSpeed = Model.Logs.Sum(log => log.AvgSpeed) / (double) Model.Logs.Count;
+                // Get most often used rating
+                // See: https://stackoverflow.com/q/28828407/12347616
+                var avgRating = Model.Logs.GroupBy(log => log.Rating)
+                    .OrderByDescending(r => r.Count())
+                    .Select(rt => rt.Key).First();
+                var avgSpeed = Model.Logs.Sum(log => log.AvgSpeed) / Model.Logs.Count;
                 var maxSpeed = Model.Logs.Max(log => log.MaxSpeed);
                 var maxHeightDifference = Model.Logs.Max(log => log.HeightDifference);
                 var avgStops = Model.Logs.Sum(log => log.Stops) / (double) Model.Logs.Count;
@@ -221,7 +224,7 @@ namespace Server.DAL
                             row.RelativeColumn().Text("Avg. Stops", TextStyle.Default.Size(8));
                         });
                     });
-                    
+
                     // content
                     section.Content().PageableStack(stack =>
                     {

@@ -204,7 +204,7 @@ namespace Client.ViewModels
         public void AddNewLog()
         {
             Logs.Add(WrapTourLog(new TourLog(
-                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10.0, 10,
+                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10.0, Rating.Good,
                 "Report goes here...", 10.0,
                 20.0, 100, 0
             )));

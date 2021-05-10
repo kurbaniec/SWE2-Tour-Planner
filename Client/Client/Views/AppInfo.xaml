@@ -306,9 +306,21 @@
                                                                     Binding="{Binding Distance, 
                                                 UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                                                 <!-- TODO make also combobox -->
-                                                <DataGridTextColumn Header="Rating"
-                                                                    Binding="{Binding Rating, 
-                                                UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                                                <DataGridTemplateColumn Header="Rating">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Rating}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox
+                                                                ItemsSource="{Binding Rating, 
+                                                          Converter={converters:EnumListConverter}}"
+                                                                SelectedItem="{Binding Rating}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                                </DataGridTemplateColumn>
                                                 <DataGridTextColumn Header="Average Speed"
                                                                     Binding="{Binding AvgSpeed, 
                                                 UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />

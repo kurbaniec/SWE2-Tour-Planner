@@ -62,9 +62,9 @@ namespace Client.ViewModels
             }
         }
 
-        private int? rating;
+        private Rating rating;
 
-        public int? Rating
+        public Rating Rating
         {
             get => rating;
             set
@@ -174,7 +174,7 @@ namespace Client.ViewModels
 
         public TourLogWrapper() : this(
             new TourLog(
-                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10.0, 10,
+                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10.0, Rating.Good,
                 "Report goes here...", 10.0,
                 20.0, 100, 0
             )
@@ -184,7 +184,7 @@ namespace Client.ViewModels
 
         public TourLog GetRequestTourLog()
         {
-            return new(log.Id, (DateTime) date!, type, (TimeSpan) duration!, (int) distance!, (int) rating!, report,
+            return new(log.Id, (DateTime) date!, type, (TimeSpan) duration!, (int) distance!, rating, report,
                 (double) avgSpeed!, (double) maxSpeed!, (double) heightDifference!,
                 stops);
         }
@@ -195,7 +195,7 @@ namespace Client.ViewModels
             log.Type = type;
             log.Duration = (TimeSpan) duration!;
             log.Distance = (int) distance!;
-            log.Rating = (int) rating!;
+            log.Rating = rating;
             log.Report = report;
             log.AvgSpeed = (double) avgSpeed!;
             log.MaxSpeed = (double) maxSpeed!;

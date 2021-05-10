@@ -65,7 +65,7 @@ namespace Server.DAL
                         var type = Enum.Parse<Model.Type>(drLogs.GetString(3));
                         var duration = (TimeSpan) drLogs.GetInterval(4);
                         var logDistance = drLogs.GetDouble(5);
-                        var rating = drLogs.GetInt32(6);
+                        var rating = Enum.Parse<Rating>(drLogs.GetString(6));
                         var report = drLogs.GetTextReader(7).ReadToEnd();
                         var avgSpeed = drLogs.GetDouble(8);
                         var maxSpeed = drLogs.GetDouble(9);
@@ -129,7 +129,7 @@ namespace Server.DAL
                         var type = Enum.Parse<Model.Type>(dr.GetString(3));
                         var duration = (TimeSpan) dr.GetInterval(4);
                         var logDistance = dr.GetDouble(5);
-                        var rating = dr.GetInt32(6);
+                        var rating = Enum.Parse<Rating>(dr.GetString(6));
                         var report = dr.GetTextReader(7).ReadToEnd();
                         var avgSpeed = dr.GetDouble(8);
                         var maxSpeed = dr.GetDouble(9);
@@ -190,7 +190,7 @@ namespace Server.DAL
                         logCmd.Parameters.AddWithValue("p2", NpgsqlDbType.Varchar, log.Type.ToString());
                         logCmd.Parameters.AddWithValue("p3", NpgsqlDbType.Interval, log.Duration);
                         logCmd.Parameters.AddWithValue("p4", NpgsqlDbType.Double, log.Distance);
-                        logCmd.Parameters.AddWithValue("p5", NpgsqlDbType.Integer, log.Rating);
+                        logCmd.Parameters.AddWithValue("p5", NpgsqlDbType.Varchar, log.Rating.ToString());
                         logCmd.Parameters.AddWithValue("p6", NpgsqlDbType.Text, log.Report);
                         logCmd.Parameters.AddWithValue("p7", NpgsqlDbType.Double, log.AvgSpeed);
                         logCmd.Parameters.AddWithValue("p8", NpgsqlDbType.Double, log.MaxSpeed);
@@ -261,7 +261,7 @@ namespace Server.DAL
                     logCmd.Parameters.AddWithValue("p2", NpgsqlDbType.Varchar, log.Type.ToString());
                     logCmd.Parameters.AddWithValue("p3", NpgsqlDbType.Interval, log.Duration);
                     logCmd.Parameters.AddWithValue("p4", NpgsqlDbType.Double, log.Distance);
-                    logCmd.Parameters.AddWithValue("p5", NpgsqlDbType.Integer, log.Rating);
+                    logCmd.Parameters.AddWithValue("p5", NpgsqlDbType.Varchar, log.Rating.ToString());
                     logCmd.Parameters.AddWithValue("p6", NpgsqlDbType.Text, log.Report);
                     logCmd.Parameters.AddWithValue("p7", NpgsqlDbType.Double, log.AvgSpeed);
                     logCmd.Parameters.AddWithValue("p8", NpgsqlDbType.Double, log.MaxSpeed);
@@ -367,7 +367,7 @@ namespace Server.DAL
                         type VARCHAR(256) NOT NULL,
                         duration INTERVAL NOT NULL,
                         distance DOUBLE PRECISION NOT NULL,
-                        rating INTEGER NOT NULL,
+                        rating VARCHAR(256) NOT NULL,
                         report TEXT NOT NULL,
                         avgspeed DOUBLE PRECISION NOT NULL,
                         maxspeed DOUBLE PRECISION NOT NULL,
