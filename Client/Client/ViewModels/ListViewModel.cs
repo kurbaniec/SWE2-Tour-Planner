@@ -35,12 +35,12 @@ namespace Client.ViewModels
             get => selectedTour;
             set
             {
-                if (value == selectedTour || value == null) return;
+                if (value == selectedTour) return;
                 selectedTour = value;
                 // Load route information image if not already done
                 // Based on https://stackoverflow.com/a/6613751/12347616
                 // And: https://stackoverflow.com/a/23443359/12347616
-                if (!selectedTour.ImageLoaded)
+                if (selectedTour is {ImageLoaded: false})
                 {
                     Application.Current.Dispatcher.InvokeAsync(async () =>
                     {
@@ -100,8 +100,12 @@ namespace Client.ViewModels
                 if (openAddTour != null) return openAddTour;
                 openAddTour = new RelayCommand(
                     _ => true,
-                    _ => nav.Navigate(ContentPage.AppAdd)
-                );
+                    _ =>
+                    {
+                        SelectedTour = null;
+                        //mediator.NotifyColleagues(ViewModelMessages.SelectedTourChange, null!);
+                        nav.Navigate(ContentPage.AppAdd);
+                    });
                 return openAddTour;
             }
         }

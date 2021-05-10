@@ -42,6 +42,14 @@
                     <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
                 </MenuItem.LayoutTransform>
             </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Copy Tour"
+                          IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}"
+                          Command="{Binding}" />
+                <MenuItem.LayoutTransform>
+                    <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
+                </MenuItem.LayoutTransform>
+            </MenuItem>
             <MenuItem Header="Help" Command="{Binding ShowHelp}">
                 <MenuItem.LayoutTransform>
                     <ScaleTransform ScaleX="1.25" ScaleY="1.25" />

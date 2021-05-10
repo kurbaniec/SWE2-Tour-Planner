@@ -15,9 +15,9 @@ namespace Client.ViewModels
 
         private readonly ContentNavigation nav;
 
-        private Page currentPage;
+        private Page? currentPage;
 
-        public Page CurrentPage
+        public Page? CurrentPage
         {
             get => currentPage;
             set
@@ -31,12 +31,6 @@ namespace Client.ViewModels
         {
             this.mediator = mediator;
             this.nav = nav;
-
-            mediator.Register(o =>
-            {
-                var model = (TourWrapper) o;
-                Console.WriteLine($"Selected {model.Name}");
-            }, ViewModelMessages.SelectedTourChange);
         }
     }
 }

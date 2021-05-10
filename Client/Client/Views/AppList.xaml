@@ -12,25 +12,25 @@
     <!-- And: https://devblogs.microsoft.com/dotnet/open-sourcing-xaml-behaviors-for-wpf/ -->
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadData}"/>
+            <i:InvokeCommandAction Command="{Binding LoadData}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.Resources>
         <Style TargetType="Grid">
             <Style.Resources>
                 <Style TargetType="Button">
-                    <Setter Property="IsEnabled" Value="True"/>
+                    <Setter Property="IsEnabled" Value="True" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Disabled}" Value="True">
-                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
                 <Style TargetType="ListBox">
-                    <Setter Property="IsEnabled" Value="True"/>
+                    <Setter Property="IsEnabled" Value="True" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Disabled}" Value="True">
-                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -38,19 +38,25 @@
         </Style>
     </UserControl.Resources>
     <Grid Margin="5 5 0 5" MinWidth="85" VerticalAlignment="Stretch">
-        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Button Grid.Column="0" Grid.Row="0" Command="{Binding OpenAddTour}">
             Add Tour
-            <Button.LayoutTransform><ScaleTransform ScaleX="1.2" ScaleY="1.2"/></Button.LayoutTransform>
+            <Button.LayoutTransform>
+                <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+            </Button.LayoutTransform>
         </Button>
-        <ListBox Grid.Column="0" Grid.Row="1" 
+        <ListBox Grid.Column="0" Grid.Row="1"
                  ItemsSource="{Binding Tours}" DisplayMemberPath="Name"
-                 SelectedItem="{Binding SelectedTour}">
-            <ListBox.LayoutTransform><ScaleTransform ScaleX="1.2" ScaleY="1.2"/></ListBox.LayoutTransform>
+                 SelectedItem="{Binding SelectedTour, UpdateSourceTrigger=PropertyChanged}">
+            <ListBox.LayoutTransform>
+                <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+            </ListBox.LayoutTransform>
         </ListBox>
     </Grid>
 </UserControl>

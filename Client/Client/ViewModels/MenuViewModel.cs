@@ -183,7 +183,7 @@ namespace Client.ViewModels
 
         private void SelectedTourChange(object o)
         {
-            var tour = (TourWrapper) o;
+            var tour = (TourWrapper?) o;
             SelectedTour = tour;
         }
 

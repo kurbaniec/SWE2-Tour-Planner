@@ -216,7 +216,7 @@ namespace Client.ViewModels
         {
             selectedTour?.DiscardChanges();
             if (Edit) Edit = false;
-            var tour = (TourWrapper) o;
+            var tour = (TourWrapper?) o;
             SelectedTour = tour;
         }
 
