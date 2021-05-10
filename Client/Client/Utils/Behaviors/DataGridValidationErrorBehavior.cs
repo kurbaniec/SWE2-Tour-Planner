@@ -26,7 +26,9 @@ namespace Client.Utils.Behaviors
             set { this.SetValue(HasValidationErrorProperty, value); }
         }
 
+        // ReSharper disable once EmptyConstructor
         public DataGridValidationErrorBehavior()
+            // ReSharper disable once RedundantBaseConstructorCall
             : base()
         { }
 
@@ -47,13 +49,13 @@ namespace Client.Utils.Behaviors
         protected override void OnAttached()
         {
             base.OnAttached();
-            Validation.AddErrorHandler(this.AssociatedObject, Validation_Error);
+            Validation.AddErrorHandler(this.AssociatedObject, Validation_Error!);
         }
 
         protected override void OnDetaching()
         {
             base.OnDetaching();
-            Validation.RemoveErrorHandler(this.AssociatedObject, Validation_Error);
+            Validation.RemoveErrorHandler(this.AssociatedObject, Validation_Error!);
         }
     }
 }

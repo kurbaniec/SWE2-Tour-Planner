@@ -21,7 +21,7 @@
                 <Style TargetType="Button">
                     <Setter Property="IsEnabled" Value="True" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Disabled}" Value="True">
+                        <DataTrigger Binding="{Binding Busy}" Value="True">
                             <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -29,7 +29,7 @@
                 <Style TargetType="ListBox">
                     <Setter Property="IsEnabled" Value="True" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Disabled}" Value="True">
+                        <DataTrigger Binding="{Binding Busy}" Value="True">
                             <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                     </Style.Triggers>

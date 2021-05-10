@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using Client.Logic.BL;
 using Client.Logic.Setup;
@@ -49,8 +47,7 @@ namespace Client.ViewModels
                             var id = SelectedTour.Model.Id;
                             logger.Log(LogLevel.Information,
                                 $"Requesting route information image for Tour with id {id}");
-                            var (routeImg, _)
-                                = await tp.GetRouteImage(id);
+                            var (routeImg, _) = await tp.GetRouteImage(id);
 
                             if (routeImg is { } && selectedTour is { } && selectedTour.Model.Id == id)
                             {
@@ -103,21 +100,20 @@ namespace Client.ViewModels
                     _ =>
                     {
                         SelectedTour = null;
-                        //mediator.NotifyColleagues(ViewModelMessages.SelectedTourChange, null!);
                         nav.Navigate(ContentPage.AppAdd);
                     });
                 return openAddTour;
             }
         }
 
-        private bool disabled;
-        public bool Disabled
+        private bool busy;
+        public bool Busy
         {
-            get => disabled;
+            get => busy;
             set
             {
-                if (disabled == value) return;
-                disabled = value;
+                if (busy == value) return;
+                busy = value;
                 OnPropertyChanged();
             }
         }
@@ -158,7 +154,7 @@ namespace Client.ViewModels
                             }
                         }
 
-                        mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
+                        mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null);
                     });
                 return loadData;
             }
@@ -166,18 +162,19 @@ namespace Client.ViewModels
         
         // Mediator Events
 
-        private void TransactionBegin(object o)
+        private void TransactionBegin(object? o)
         {
-            Disabled = true;
+            Busy = true;
         }
 
-        private void TransactionEnd(object o)
+        private void TransactionEnd(object? o)
         {
-            Disabled = false;
+            Busy = false;
         }
 
-        private void FilterChange(object o)
+        private void FilterChange(object? o)
         {
+            if (o == null) return;
             var newFilter = (string) o;
             Filter = newFilter;
         }
@@ -198,8 +195,9 @@ namespace Client.ViewModels
             return newTour;
         }
         
-        private async void TourAddition(object o)
+        private async void TourAddition(object? o)
         {
+            if (o == null) return;
             // Create new Wrapper
             var tour = (Tour) o;
             var newTour = await TourAdditionProcess(tour);
@@ -208,16 +206,46 @@ namespace Client.ViewModels
             nav.Navigate(ContentPage.AppInfo);
         }
 
-        private void TourDeletion(object o)
+        private async void TourCopy(object? o)
         {
+            if (selectedTour == null) return;
+            Busy = true;
+            mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null);
+            // Make a tour of current tour
+            var copy = selectedTour.GetRequestTour();
+            copy.Id = 0;
+            copy.Name += " - Copy";
+            var (responseTour, errorMessage) = await tp.AddTour(copy);
+            if (responseTour is { } newTour)
+            {
+                mediator.NotifyColleagues(ViewModelMessages.TourAddition, newTour);
+                nav.ShowInfoDialog(
+                    "Tour Copy was successful",
+                    "Tour Planner - Copy Tour");
+            }
+            else
+            {
+                nav.ShowErrorDialog(
+                    $"Encountered error while copying Tour: \n{errorMessage}",
+                    "Tour Planner - Copy Tour");
+            }
+
+            Busy = false;
+            mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null);
+        }
+
+        private void TourDeletion(object? o)
+        {
+            if (o == null) return;
             // Remove Tour
             var id = (int) o;
             if (Tours.FirstOrDefault(t => t.Model.Id == id) is { } deleteTour)
                 Tours.Remove(deleteTour);
         }
 
-        private async void Import(object o)
+        private async void Import(object? o)
         {
+            if (o == null) return;
             var path = (string) o;
             var (toursToImport, importError) = await tp.ImportTours(path);
             if (toursToImport is { })
@@ -235,8 +263,9 @@ namespace Client.ViewModels
                 $"Encountered error while importing Tours: \n{importError}", "Tour Planner - Import");
         }
 
-        private async void ExportThis(object o)
+        private async void ExportThis(object? o)
         {
+            if (o == null) return;
             var path = (string) o;
             if (selectedTour is null) return;
             var (ok, errorMsg) = await tp.ExportTours(
@@ -247,8 +276,9 @@ namespace Client.ViewModels
                 nav.ShowErrorDialog($"Encountered error while exporting Tour: \n{errorMsg}", "Tour Planner - Export");
         }
 
-        private async void ExportAll(object o)
+        private async void ExportAll(object? o)
         {
+            if (o == null) return;
             var path = (string) o;
             if (Tours.Count <= 0) return;
             var tourModels = Tours.Select(t => t.Model).ToList();
@@ -287,6 +317,7 @@ namespace Client.ViewModels
             mediator.Register(Import, ViewModelMessages.Import);
             mediator.Register(ExportThis, ViewModelMessages.ExportThis);
             mediator.Register(ExportAll, ViewModelMessages.ExportAll);
+            mediator.Register(TourCopy, ViewModelMessages.TourCopy);
         }
     }
 }

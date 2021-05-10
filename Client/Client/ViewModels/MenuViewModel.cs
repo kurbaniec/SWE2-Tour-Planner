@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Client.Logic.BL;
 using Client.Utils.Commands;
 using Client.Utils.Mediators;
@@ -14,6 +13,7 @@ namespace Client.ViewModels
         private readonly ContentNavigation nav;
 
         private string filter;
+
         public string Filter
         {
             get => filter;
@@ -27,6 +27,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? clearFilter;
+
         public ICommand ClearFilter
         {
             get
@@ -43,6 +44,7 @@ namespace Client.ViewModels
         }
 
         private TourWrapper? selectedTour;
+
         public TourWrapper? SelectedTour
         {
             get => selectedTour;
@@ -55,6 +57,7 @@ namespace Client.ViewModels
         }
 
         private bool busy;
+
         public bool Busy
         {
             get => busy;
@@ -67,6 +70,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? import;
+
         public ICommand Import
         {
             get
@@ -77,7 +81,7 @@ namespace Client.ViewModels
                     _ =>
                     {
                         var path = nav.ShowOpenFileDialog("Tour Data (*.td)|*.td");
-                        if (path is {})
+                        if (path is { })
                         {
                             mediator.NotifyColleagues(ViewModelMessages.Import, path);
                         }
@@ -86,8 +90,9 @@ namespace Client.ViewModels
                 return import;
             }
         }
-        
+
         private ICommand? exportThis;
+
         public ICommand ExportThis
         {
             get
@@ -107,8 +112,9 @@ namespace Client.ViewModels
                 return exportThis;
             }
         }
-        
+
         private ICommand? exportAll;
+
         public ICommand ExportAll
         {
             get
@@ -130,6 +136,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? print;
+
         public ICommand Print
         {
             get
@@ -147,7 +154,8 @@ namespace Client.ViewModels
                         if (ok)
                             nav.ShowInfoDialog("Print of Tour was successful", "Tour Planner - Print");
                         else
-                            nav.ShowErrorDialog($"Encountered error while printing Tour: \n{errorMsg}", "Tour Planner - Print");
+                            nav.ShowErrorDialog($"Encountered error while printing Tour: \n{errorMsg}",
+                                "Tour Planner - Print");
                     }
                 );
                 return print;
@@ -169,19 +177,35 @@ namespace Client.ViewModels
             }
         }
 
+        private ICommand? copyTour;
+
+        public ICommand CopyTour
+        {
+            get
+            {
+                if (copyTour != null) return copyTour;
+                copyTour = new RelayCommand(
+                    _ => true,
+                    _ => mediator.NotifyColleagues(ViewModelMessages.TourCopy, null)
+                );
+                return copyTour;
+            }
+        }
+
+
         // Mediator events
 
-        private void TransactionBegin(object o)
+        private void TransactionBegin(object? o)
         {
             Busy = true;
         }
 
-        private void TransactionEnd(object o)
+        private void TransactionEnd(object? o)
         {
             Busy = false;
         }
 
-        private void SelectedTourChange(object o)
+        private void SelectedTourChange(object? o)
         {
             var tour = (TourWrapper?) o;
             SelectedTour = tour;

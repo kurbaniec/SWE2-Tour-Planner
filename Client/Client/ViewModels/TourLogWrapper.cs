@@ -10,6 +10,7 @@ namespace Client.ViewModels
         public TourLog Model => log;
 
         private DateTime? date;
+
         public DateTime? Date
         {
             get => date;
@@ -22,6 +23,7 @@ namespace Client.ViewModels
         }
 
         private Type type;
+
         public Type Type
         {
             get => type;
@@ -34,6 +36,7 @@ namespace Client.ViewModels
         }
 
         private TimeSpan? duration;
+
         public TimeSpan? Duration
         {
             get => duration;
@@ -46,6 +49,7 @@ namespace Client.ViewModels
         }
 
         private double? distance;
+
         public double? Distance
         {
             get => distance;
@@ -59,6 +63,7 @@ namespace Client.ViewModels
         }
 
         private int? rating;
+
         public int? Rating
         {
             get => rating;
@@ -71,6 +76,7 @@ namespace Client.ViewModels
         }
 
         private string report;
+
         public string Report
         {
             get => report;
@@ -83,6 +89,7 @@ namespace Client.ViewModels
         }
 
         private double? avgSpeed;
+
         public double? AvgSpeed
         {
             get => avgSpeed;
@@ -96,6 +103,7 @@ namespace Client.ViewModels
         }
 
         private double? maxSpeed;
+
         public double? MaxSpeed
         {
             get => maxSpeed;
@@ -109,6 +117,7 @@ namespace Client.ViewModels
         }
 
         private double? heightDifference;
+
         public double? HeightDifference
         {
             get => heightDifference;
@@ -122,6 +131,7 @@ namespace Client.ViewModels
         }
 
         private int stops;
+
         public int Stops
         {
             get => stops;
@@ -134,6 +144,7 @@ namespace Client.ViewModels
         }
 
         private bool isValid = true;
+
         public bool IsValid
         {
             get => isValid;

@@ -85,11 +85,11 @@ namespace Client.ViewModels
 
         public bool ImageLoaded;
         private BitmapImage? image;
-        
+
         public BitmapImage? Image
         {
             get => image;
-        
+
             set
             {
                 if (image == value) return;
@@ -187,7 +187,7 @@ namespace Client.ViewModels
             // Functional programming with LINQ
             this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(WrapTourLog).ToList());
         }
-        
+
         public TourWrapper(Tour tour, BitmapImage image, bool imageLoaded = true)
         {
             this.tour = tour;

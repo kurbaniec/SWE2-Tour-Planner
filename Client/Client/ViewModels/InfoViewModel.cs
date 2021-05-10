@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Client.Logic.BL;
 using Client.Utils.Commands;
 using Client.Utils.Logging;
@@ -17,6 +16,7 @@ namespace Client.ViewModels
         private readonly ILogger logger = ApplicationLogging.CreateLogger<InfoViewModel>();
 
         private TourWrapper? selectedTour;
+
         public TourWrapper? SelectedTour
         {
             get => selectedTour;
@@ -29,6 +29,7 @@ namespace Client.ViewModels
         }
 
         private bool edit;
+
         public bool Edit
         {
             get => edit;
@@ -41,6 +42,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? changeEditMode;
+
         public ICommand ChangeEditMode
         {
             get
@@ -55,6 +57,7 @@ namespace Client.ViewModels
         }
 
         private bool busy;
+
         public bool Busy
         {
             get => busy;
@@ -67,6 +70,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? cancelEdit;
+
         public ICommand CancelEdit
         {
             get
@@ -85,6 +89,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? acceptEdit;
+
         public ICommand AcceptEdit
         {
             get
@@ -99,7 +104,7 @@ namespace Client.ViewModels
                         Busy = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
-                        logger.Log(LogLevel.Information, 
+                        logger.Log(LogLevel.Information,
                             $"Trying to update Tour with id {selectedTour.Model.Id}");
                         var (updatedTour, errorMsg) = await tp.UpdateTour(selectedTour.GetRequestTour());
                         if (updatedTour is { })
@@ -114,9 +119,10 @@ namespace Client.ViewModels
                             logger.Log(LogLevel.Warning,
                                 $"Update for Tour with id {selectedTour.Model.Id} was not successful");
                             nav.ShowErrorDialog(
-                                $"Encountered error while updating Tour: \n{errorMsg}", 
+                                $"Encountered error while updating Tour: \n{errorMsg}",
                                 "Tour Planner - Update Tour");
                         }
+
                         Busy = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }
@@ -126,6 +132,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? deleteTour;
+
         public ICommand DeleteTour
         {
             get
@@ -136,7 +143,7 @@ namespace Client.ViewModels
                     async _ =>
                     {
                         if (selectedTour is null) return;
-                        logger.Log(LogLevel.Information, 
+                        logger.Log(LogLevel.Information,
                             $"Asking Users if Tour with id {selectedTour.Model.Id} should be really deleted");
                         var ok = nav.ShowInfoDialogWithQuestion(
                             "Do you really want to delete this Tour?\nThis process is not reversible.",
@@ -155,7 +162,7 @@ namespace Client.ViewModels
                             SelectedTour = null;
                             nav.Navigate(ContentPage.AppWelcome);
                             nav.ShowInfoDialog(
-                                "Deletion of Tour was successful", 
+                                "Deletion of Tour was successful",
                                 "Tour Planner - Delete Tour");
                         }
                         else
@@ -163,9 +170,10 @@ namespace Client.ViewModels
                             logger.Log(LogLevel.Warning,
                                 $"Deletion of Tour with id {selectedTour.Model.Id} was not successful");
                             nav.ShowErrorDialog(
-                                $"Encountered error while deleting Tour: \n{errorMsg}", 
+                                $"Encountered error while deleting Tour: \n{errorMsg}",
                                 "Tour Planner - Delete Tour");
                         }
+
                         Busy = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }
@@ -173,8 +181,9 @@ namespace Client.ViewModels
                 return deleteTour;
             }
         }
-        
+
         private ICommand? addLog;
+
         public ICommand AddLog
         {
             get
@@ -191,8 +200,9 @@ namespace Client.ViewModels
                 return addLog;
             }
         }
-        
+
         private ICommand? deleteLog;
+
         public ICommand DeleteLog
         {
             get
@@ -212,7 +222,7 @@ namespace Client.ViewModels
             }
         }
 
-        private void SelectedTourChange(object o)
+        private void SelectedTourChange(object? o)
         {
             selectedTour?.DiscardChanges();
             if (Edit) Edit = false;

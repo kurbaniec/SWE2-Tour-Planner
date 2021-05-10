@@ -304,7 +304,7 @@
                                                 UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                                                 <DataGridTextColumn Header="Distance"
                                                                     Binding="{Binding Distance, 
-                                                UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                                                UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                                                 <!-- TODO make also combobox -->
                                                 <DataGridTextColumn Header="Rating"
                                                                     Binding="{Binding Rating, 

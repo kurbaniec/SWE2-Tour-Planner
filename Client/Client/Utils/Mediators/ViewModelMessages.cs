@@ -4,6 +4,7 @@
     {
         TourAddition,
         TourDeletion,
+        TourCopy,
         SelectedTourChange,
         FilterChange,
         Import,

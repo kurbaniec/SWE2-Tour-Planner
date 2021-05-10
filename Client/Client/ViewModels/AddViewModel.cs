@@ -26,6 +26,7 @@ namespace Client.ViewModels
         }
 
         private bool edit = true;
+
         public bool Edit
         {
             get => edit;
@@ -38,6 +39,7 @@ namespace Client.ViewModels
         }
 
         private bool busy;
+
         public bool Busy
         {
             get => busy;
@@ -50,6 +52,7 @@ namespace Client.ViewModels
         }
 
         private ICommand? addTour;
+
         public ICommand AddTour
         {
             get
@@ -61,7 +64,7 @@ namespace Client.ViewModels
                     {
                         Busy = true;
                         Edit = false;
-                        mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
+                        mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null);
                         var (responseTour, errorMessage) = await tp.AddTour(tour.GetRequestTour());
                         if (responseTour is { } newTour)
                         {
@@ -77,15 +80,16 @@ namespace Client.ViewModels
                                 $"Encountered error while adding Tour: \n{errorMessage}",
                                 "Tour Planner - Add Tour");
                         }
+
                         Busy = false;
                         Edit = true;
-                        mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
+                        mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null);
                     }
                 );
                 return addTour;
             }
         }
-        
+
         public AddViewModel(TourPlannerClient tp, Mediator mediator, ContentNavigation nav)
         {
             this.tp = tp;

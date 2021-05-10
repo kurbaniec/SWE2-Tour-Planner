@@ -45,7 +45,7 @@
             <MenuItem Header="Edit">
                 <MenuItem Header="Copy Tour"
                           IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}"
-                          Command="{Binding}" />
+                          Command="{Binding CopyTour}" />
                 <MenuItem.LayoutTransform>
                     <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
                 </MenuItem.LayoutTransform>

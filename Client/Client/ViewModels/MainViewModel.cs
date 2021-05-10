@@ -1,11 +1,6 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
+﻿using System.Windows.Controls;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
-using Client.Views;
-using Client.ViewModels;
 
 namespace Client.ViewModels
 {
