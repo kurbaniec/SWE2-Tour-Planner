@@ -173,15 +173,17 @@ namespace Server.DAL
                             {
                                 stack.Element().BorderBottom(1).BorderColor("CCC").Padding(5).Row(row =>
                                 {
+                                    // Round and limit double values
+                                    // See: https://stackoverflow.com/a/2453982/12347616
                                     row.ConstantColumn(25).Text(log.Id, TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text($"{log.Date:yyyy/MM/dd}", TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text(log.Type, TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text(log.Duration, TextStyle.Default.Size(8));
-                                    row.RelativeColumn().Text(log.Distance, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text($"{log.Distance:N2}", TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text(log.Rating, TextStyle.Default.Size(8));
-                                    row.RelativeColumn().Text(log.AvgSpeed, TextStyle.Default.Size(8));
-                                    row.RelativeColumn().Text(log.MaxSpeed, TextStyle.Default.Size(8));
-                                    row.RelativeColumn().Text(log.HeightDifference, TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text($"{log.AvgSpeed:N2}", TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text($"{log.MaxSpeed:N2}", TextStyle.Default.Size(8));
+                                    row.RelativeColumn().Text($"{log.HeightDifference:N2}", TextStyle.Default.Size(8));
                                     row.RelativeColumn().Text(log.Stops, TextStyle.Default.Size(8));
                                 });
                                 stack.Element().BorderBottom(1).BorderColor("CCC").Padding(5)
@@ -233,10 +235,10 @@ namespace Server.DAL
                             row.RelativeColumn().Text(overallDistance, TextStyle.Default.Size(8));
                             row.RelativeColumn().Text(overallDuration, TextStyle.Default.Size(8));
                             row.RelativeColumn().Text(avgRating, TextStyle.Default.Size(8));
-                            row.RelativeColumn().Text(avgSpeed, TextStyle.Default.Size(8));
-                            row.RelativeColumn().Text(maxSpeed, TextStyle.Default.Size(8));
-                            row.RelativeColumn().Text(maxHeightDifference, TextStyle.Default.Size(8));
-                            row.RelativeColumn().Text(avgStops, TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text($"{avgSpeed:N2}", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text($"{maxSpeed:N2}", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text($"{maxHeightDifference:N2}", TextStyle.Default.Size(8));
+                            row.RelativeColumn().Text($"{avgStops:N2}", TextStyle.Default.Size(8));
                         });
                     });
                 });
