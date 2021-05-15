@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using Model;
 using Server.DAL;
@@ -29,12 +28,31 @@ namespace Server.BL
             this.handler = handler;
         }
 
+        /// <summary>
+        /// Query all Tours from the configured Data Access Layer (DAL).
+        /// </summary>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the queried Tours as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (List<Tour>?, string) GetTours()
         {
             logger.Log(LogLevel.Information, "Returning all Tours");
             return db.GetTours();
         }
 
+        /// <summary>
+        /// Adds a new Tour in the configured DAL.
+        /// </summary>
+        /// <param name="tour">
+        /// Tour which should be added.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the added Tour as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (Tour?, string) AddTour(Tour tour)
         {
             logger.Log(LogLevel.Information, "Trying to add new Tour");
@@ -63,6 +81,17 @@ namespace Server.BL
             return (null, mapError);
         }
 
+        /// <summary>
+        /// Adds multiple new Tours in the configured DAL.
+        /// </summary>
+        /// <param name="tours">
+        /// Tours which should be added.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the added Tours as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (List<Tour>?, string) AddTours(List<Tour> tours)
         {
             var newTours = new List<Tour>();
@@ -78,6 +107,17 @@ namespace Server.BL
             return (newTours, string.Empty);
         }
 
+        /// <summary>
+        /// Updates an existing Tour in the configured DAL.
+        /// </summary>
+        /// <param name="tour">
+        /// Tour which should be updated.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the updated Tour as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (Tour?, string) UpdateTour(Tour tour)
         {
             logger.Log(LogLevel.Information, $"Trying to update Tour with id {tour.Id}");
@@ -126,12 +166,34 @@ namespace Server.BL
             return db.UpdateTour(tour);
         }
 
+        /// <summary>
+        /// Deletes an existing Tour in the configured DAL.
+        /// </summary>
+        /// <param name="id">
+        /// The id of the Tour which should be deleted.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the true as item1 and a empty string as item2 is returned.
+        /// On failure item1 is false and item2 will contain the error message.
+        /// </returns>
         public (bool, string) DeleteTour(int id)
         {
             logger.Log(LogLevel.Information, $"Trying to delete Tour with id {id}");
             return db.DeleteTour(id);
         }
         
+        /// <summary>
+        /// Requests the Route Image of an existing Tour in the configured DAL.
+        /// </summary>
+        /// <param name="id">
+        /// Id of the Tour of whom the Route Image is requested.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the Route Image as item1 and null as item2 is returned.
+        /// On failure item1 is null and item2 will contain a placeholder image.
+        /// </returns>
         public (string?, string) GetRouteImage(int id)
         {
             logger.Log(LogLevel.Information,
@@ -139,6 +201,20 @@ namespace Server.BL
             return map.GetRouteImagePath(id);
         }
 
+        /// <summary>
+        /// Exports a printable document from a given Tour.
+        /// </summary>
+        /// <param name="id">
+        /// Id of the Tour that should be printed.
+        /// </param>
+        /// <param name="isSummary">
+        /// Determines if a summary or full report is generated.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the path to the document as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (string?, string) GetPdfExport(int id, bool isSummary = false)
         {
             var (tour, dbError) = db.GetTour(id);

@@ -1,5 +1,8 @@
 ﻿namespace Server.DAL
 {
+    /// <summary>
+    /// Represents a Map API response.
+    /// </summary>
     public class MapApiResponse
     {
         public double Distance { get; }

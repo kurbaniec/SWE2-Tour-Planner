@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace Model
 {
+    /// <summary>
+    /// Data model that represents a Tour.
+    /// </summary>
     public class Tour
     {
         public int Id { get; set; }

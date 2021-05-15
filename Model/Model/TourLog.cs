@@ -2,6 +2,9 @@
 
 namespace Model
 {
+    /// <summary>
+    /// Data model that represents a log of a Tour.
+    /// </summary>
     public class TourLog
     {
         public int Id { set; get; }

@@ -12,6 +12,9 @@ using WebService_Lib.Logging;
 
 namespace Server.DAL
 {
+    /// <summary>
+    /// Concrete implementation of <c>IExportHandler</c>.
+    /// </summary>
     [Component]
     public class PdfExportHandler : IExportHandler
     {
@@ -19,6 +22,23 @@ namespace Server.DAL
         private string ExportPath => cfg.ExportPath;
         private readonly ILogger logger = WebServiceLogging.CreateLogger<IExportHandler>();
 
+        /// <summary>
+        /// Exports a printable document from a given Tour.
+        /// </summary>
+        /// <param name="tour">
+        /// Tour that should be printed.
+        /// </param>
+        /// <param name="imagePath">
+        /// Path to the image that should be used for the Route Image.
+        /// </param>
+        /// <param name="isSummary">
+        /// Determines if a summary or full report is generated.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the path to the document as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (string?, string) Export(Tour tour, string? imagePath, bool isSummary = false)
         {
             try
@@ -38,6 +58,8 @@ namespace Server.DAL
                 return (null, "Could not generate export");
             }
         }
+        
+        // Classes & methods used in order to generate a Pdf with QuestPdf.
 
         private class TourReport : IDocument
         {

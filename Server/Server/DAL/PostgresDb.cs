@@ -12,6 +12,10 @@ using WebService_Lib.Logging;
 
 namespace Server.DAL
 {
+    /// <summary>
+    /// Concrete implementation of <c>IDataManagement</c>.
+    /// PostgreSQL is used as the database.
+    /// </summary>
     [Component]
     public class PostgresDb : IDataManagement
     {
@@ -28,6 +32,14 @@ namespace Server.DAL
         private string connString = null!;
         private readonly ILogger logger = WebServiceLogging.CreateLogger<IDataManagement>();
 
+        /// <summary>
+        /// Query all Tours from the database.
+        /// </summary>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the queried Tours as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (List<Tour>?, string) GetTours()
         {
             try
@@ -88,6 +100,14 @@ namespace Server.DAL
             }
         }
 
+        /// <summary>
+        /// Query specific Tours from the database.
+        /// </summary>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the queried Tour as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (Tour?, string) GetTour(int id)
         {
             try
@@ -151,6 +171,17 @@ namespace Server.DAL
             }
         }
 
+        /// <summary>
+        /// Adds a new Tour in the database.
+        /// </summary>
+        /// <param name="tour">
+        /// Tour which should be added.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the added Tour as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (Tour?, string) AddTour(Tour tour)
         {
             NpgsqlTransaction? transaction = null;
@@ -223,6 +254,17 @@ namespace Server.DAL
             }
         }
 
+        /// <summary>
+        /// Updates an existing Tour in the database.
+        /// </summary>
+        /// <param name="tour">
+        /// Tour which should be updated.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the updated Tour as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public (Tour?, string) UpdateTour(Tour tour)
         {
             NpgsqlTransaction? transaction = null;
@@ -290,6 +332,17 @@ namespace Server.DAL
             }
         }
 
+        /// <summary>
+        /// Deletes an existing Tour in the database.
+        /// </summary>
+        /// <param name="id">
+        /// The id of the Tour which should be deleted.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the true as item1 and a empty string as item2 is returned.
+        /// On failure item1 is false and item2 will contain the error message.
+        /// </returns>
         public (bool, string) DeleteTour(int id)
         {
             NpgsqlTransaction? transaction = null;
@@ -315,6 +368,12 @@ namespace Server.DAL
             }
         }
 
+        /// <summary>
+        /// Create database and tables if not already done.
+        /// </summary>
+        /// <exception cref="ApplicationException">
+        /// Thrown and not caught when a database connection cannot be established.
+        /// </exception>
         private void CreateDatabaseIfNotExists()
         {
             try
