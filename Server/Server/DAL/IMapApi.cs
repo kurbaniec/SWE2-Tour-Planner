@@ -10,6 +10,6 @@ namespace Server.DAL
 
         (bool, string) SaveRouteImage(int id, string boundingBox, string sessionId);
 
-        string? GetRouteImagePath(int id);
+        (string?, string) GetRouteImagePath(int id);
     }
 }

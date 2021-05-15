@@ -121,10 +121,13 @@ namespace Server.DAL
             }
         }
 
-        public string? GetRouteImagePath(int id)
+        public (string?, string) GetRouteImagePath(int id)
         {
             var path = $"{RoutePath}{Path.DirectorySeparatorChar}{id}.png";
-            return File.Exists(path) ? path : null;
+            if (File.Exists(path))
+                return (path, string.Empty);
+            logger.Log(LogLevel.Error, $"File {path} does not exists");
+            return (null, "File does not exist");
         }
     }
 }

@@ -19,9 +19,9 @@ namespace Server.DAL
             return (true, "");
         }
 
-        public string? GetRouteImagePath(int id)
+        public (string?, string) GetRouteImagePath(int id)
         {
-            return path + Path.DirectorySeparatorChar + "map.png";
+            return (path + Path.DirectorySeparatorChar + "map.png", string.Empty);
         }
 
         public MockMapApi()

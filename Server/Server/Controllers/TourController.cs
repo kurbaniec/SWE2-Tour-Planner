@@ -41,7 +41,7 @@ namespace Server.Controllers
         {
             if (id.Ok)
             {
-                var imagePath = tp.GetRouteImage(id.Value!);
+                var (imagePath, _) = tp.GetRouteImage(id.Value!);
                 if (imagePath is { } path)
                 {
                     var response = Response.File(path);

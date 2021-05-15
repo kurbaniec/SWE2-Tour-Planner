@@ -15,6 +15,10 @@ using Newtonsoft.Json;
 
 namespace Client.Logic.DAL
 {
+    /// <summary>
+    /// Concrete implementation of <c>ITourApi</c>.
+    /// Communicates with TourPlanner service to invoke CRUD operations.
+    /// </summary>
     public class TourApi : ITourApi
     {
         private readonly Configuration cfg;
@@ -28,6 +32,14 @@ namespace Client.Logic.DAL
             this.baseUrl = cfg.BaseUrl;
         }
 
+        /// <summary>
+        /// Query all Tours from the service.
+        /// </summary>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the queried Tours as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public async Task<(List<Tour>?, string)> GetTours()
         {
             try
@@ -51,10 +63,22 @@ namespace Client.Logic.DAL
                 logger.Log(LogLevel.Error, httpEx.StackTrace);
                 return (null, httpEx.Message);
             }
+
             logger.Log(LogLevel.Error, "Unknown Error");
             return (null, "Unknown Error");
         }
 
+        /// <summary>
+        /// Adds a new Tour in the service.
+        /// </summary>
+        /// <param name="tour">
+        /// Tour which should be added.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the added Tour as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public async Task<(Tour?, string)> AddTour(Tour tour)
         {
             try
@@ -72,6 +96,7 @@ namespace Client.Logic.DAL
                     logger.Log(LogLevel.Information, "Received new tour successfully");
                     return (newTour, string.Empty);
                 }
+
                 var errorMsg = await response.Content.ReadAsStringAsync();
                 logger.Log(LogLevel.Error, errorMsg);
                 return (null, errorMsg);
@@ -88,13 +113,24 @@ namespace Client.Logic.DAL
             }
         }
 
-        public async Task<(List<Tour>?, string)> AddTours(List<Tour> tour)
+        /// <summary>
+        /// Adds multiple new Tours in the service.
+        /// </summary>
+        /// <param name="tours">
+        /// Tours which should be added.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the added Tours as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
+        public async Task<(List<Tour>?, string)> AddTours(List<Tour> tours)
         {
             try
             {
                 var response = await client.PostAsync($"{baseUrl}/api/tours",
                     new StringContent(
-                        JsonConvert.SerializeObject(tour),
+                        JsonConvert.SerializeObject(tours),
                         Encoding.Default,
                         "application/json"
                     ));
@@ -105,6 +141,7 @@ namespace Client.Logic.DAL
                     logger.Log(LogLevel.Information, "Received new tours successfully");
                     return (newTours, string.Empty);
                 }
+
                 var errorMsg = await response.Content.ReadAsStringAsync();
                 logger.Log(LogLevel.Error, errorMsg);
                 return (null, errorMsg);
@@ -121,6 +158,17 @@ namespace Client.Logic.DAL
             }
         }
 
+        /// <summary>
+        /// Updates an existing Tour in the service.
+        /// </summary>
+        /// <param name="tour">
+        /// Tour which should be updated.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the updated Tour as item1 and a empty string as item2 is returned.
+        /// On failure item1 is null and item2 will contain the error message.
+        /// </returns>
         public async Task<(Tour?, string)> UpdateTour(Tour tour)
         {
             try
@@ -138,6 +186,7 @@ namespace Client.Logic.DAL
                     logger.Log(LogLevel.Information, $"Tour with id {tour.Id} updated successfully");
                     return (newTour, string.Empty);
                 }
+
                 var errorMsg = await response.Content.ReadAsStringAsync();
                 logger.Log(LogLevel.Error, errorMsg);
                 return (null, errorMsg);
@@ -154,6 +203,17 @@ namespace Client.Logic.DAL
             }
         }
 
+        /// <summary>
+        /// Deletes an existing Tour in the service.
+        /// </summary>
+        /// <param name="id">
+        /// The id of the Tour which should be deleted.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the true as item1 and a empty string as item2 is returned.
+        /// On failure item1 is false and item2 will contain the error message.
+        /// </returns>
         public async Task<(bool, string)> DeleteTour(int id)
         {
             try
@@ -164,6 +224,7 @@ namespace Client.Logic.DAL
                     logger.Log(LogLevel.Information, $"Tour with id {id} deleted successfully");
                     return (true, string.Empty);
                 }
+
                 var errorMsg = await response.Content.ReadAsStringAsync();
                 logger.Log(LogLevel.Error, errorMsg);
                 return (false, errorMsg);
@@ -175,6 +236,18 @@ namespace Client.Logic.DAL
             }
         }
 
+        /// <summary>
+        /// Requests the Route Image of an existing Tour from the service.
+        /// Placeholder image is generated locally when problems occur.
+        /// </summary>
+        /// <param name="id">
+        /// Id of the Tour of whom the Route Image is requested.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with the Route Image as item1 and null as item2 is returned.
+        /// On failure item1 is null and item2 will contain a placeholder image.
+        /// </returns>
         public async Task<(BitmapImage?, BitmapImage?)> GetRouteImage(int id)
         {
             try
@@ -195,7 +268,7 @@ namespace Client.Logic.DAL
                     routeImage.StreamSource = stream;
                     routeImage.EndInit();
                     routeImage.Freeze();
-                    logger.Log(LogLevel.Information, 
+                    logger.Log(LogLevel.Information,
                         $"Received Route Information Image for Tour with id {id} successfully");
                     return (routeImage, null);
                 }
@@ -204,7 +277,8 @@ namespace Client.Logic.DAL
             {
                 logger.Log(LogLevel.Error, ex.StackTrace);
             }
-            logger.Log(LogLevel.Warning, 
+
+            logger.Log(LogLevel.Warning,
                 $"Route Information Image for Tour with id {id} not received successfully");
             // Create Dummy Route Image
             // ---
@@ -215,8 +289,8 @@ namespace Client.Logic.DAL
             gfx.FillRectangle(
                 new SolidBrush(Color.Salmon), 0, 0, 1920, 1440);
             gfx.DrawString(
-                "Could not load image.\nPlease try again later.", 
-                new Font("Arial", 24), 
+                "Could not load image.\nPlease try again later.",
+                new Font("Arial", 24),
                 new SolidBrush(Color.Black), 120, 120);
             // Convert to BitMapImage
             // See: https://stackoverflow.com/a/23831231/12347616
@@ -233,6 +307,23 @@ namespace Client.Logic.DAL
             return (null, dummyRouteImage);
         }
 
+        /// <summary>
+        /// Requests a printable document from a given Tour from the service.
+        /// </summary>
+        /// <param name="outputPath">
+        /// Path to the file where the document should be exported.
+        /// </param>
+        /// <param name="id">
+        /// Id of the Tour that should be printed.
+        /// </param>
+        /// <param name="isSummary">
+        /// Determines if a summary or full report is generated.
+        /// </param>
+        /// <returns>
+        /// Returns a tuple.
+        /// On success a tuple with true as item1 and a empty string as item2 is returned.
+        /// On failure item1 is false and item2 will contain the error message.
+        /// </returns>
         public async Task<(bool, string)> GetExport(int id, string outputPath, bool isSummary = false)
         {
             try
@@ -246,6 +337,7 @@ namespace Client.Logic.DAL
                     await response.Content.CopyToAsync(stream);
                     return (true, string.Empty);
                 }
+
                 var errorMsg = await response.Content.ReadAsStringAsync();
                 logger.Log(LogLevel.Error, errorMsg);
                 return (false, errorMsg);

@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Globalization;
-using System.Threading;
 using Client.Utils.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace Client.Logic.DAL
 {
+    /// <summary>
+    /// Concrete implementation of <c>IFilter</c>.
+    /// Uses a more general approach for filtering and is not only limited to Tours
+    /// of type <c>TourWrapper</c>.
+    /// </summary>
     public class GeneralFilter : IFilter
     {
         public string Filter { get; set; } = string.Empty;
@@ -22,6 +26,15 @@ namespace Client.Logic.DAL
             nfi = new NumberFormatInfo {NumberDecimalSeparator = "."};
         }
 
+        /// <summary>
+        /// Method that can be used to filter objects in an <c>CollectionView</c>.
+        /// </summary>
+        /// <param name="o">
+        /// Object that will be checked with the filter criteria.
+        /// </param>
+        /// <returns>
+        /// True, if the object should be displayed, else false.
+        /// </returns>
         public bool ApplyFilter(object o)
         {
             try

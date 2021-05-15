@@ -131,9 +131,8 @@ namespace Server.BL
             logger.Log(LogLevel.Information, $"Trying to delete Tour with id {id}");
             return db.DeleteTour(id);
         }
-
-        // TODO to (string?, string)
-        public string? GetRouteImage(int id)
+        
+        public (string?, string) GetRouteImage(int id)
         {
             logger.Log(LogLevel.Information,
                 $"Trying to request route information image for Tour with id {id}");
@@ -144,7 +143,7 @@ namespace Server.BL
         {
             var (tour, dbError) = db.GetTour(id);
             if (tour is null) return (null, dbError);
-            var imagePath = GetRouteImage(id);
+            var (imagePath, _) = GetRouteImage(id);
             return handler.Export(tour, imagePath, isSummary);
         }
     }
