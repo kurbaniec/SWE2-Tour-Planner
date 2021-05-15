@@ -20,11 +20,13 @@ namespace Server_Test.Unit.Mocks
 
         public (string?, string) GetRouteImagePath(int id)
         {
-            return (path + Path.DirectorySeparatorChar + "map.png", string.Empty);
+            //return (path + Path.DirectorySeparatorChar + "map.png", string.Empty);
+            return (null, string.Empty);
         }
 
         public MockMapApi()
         {
+            /*
             // Get project directory
             string runningPath = AppDomain.CurrentDomain.BaseDirectory!;
             // Platform agnostic path
@@ -34,7 +36,7 @@ namespace Server_Test.Unit.Mocks
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
-            }
+            }*/
         }
     }
 }

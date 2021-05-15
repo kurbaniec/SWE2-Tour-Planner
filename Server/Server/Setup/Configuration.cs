@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WebService_Lib;
 using WebService_Lib.Attributes;
@@ -80,6 +78,16 @@ namespace Server.Setup
             var port = (string) Config["server"]!["db"]!["port"]!;
             PostgresConnString = $"Server={ip};Port={port};User Id={user};Password={password};";
             logger.Log(LogLevel.Debug, "Configuration read and initialized");
+        }
+
+        // Use only for debug purposes
+        public Configuration(string routePath, string exportPath, string connString)
+        {
+            RoutePath = routePath;
+            ExportPath = exportPath;
+            PostgresConnString = connString;
+            Config = new JObject();
+            MapApiKey = string.Empty;
         }
     }
 }

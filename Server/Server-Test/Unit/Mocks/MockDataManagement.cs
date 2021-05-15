@@ -67,7 +67,8 @@ namespace Server_Test.Unit.Mocks
 
         public (Tour?, string) GetTour(int id)
         {
-            return (tours.FirstOrDefault(t => t.Id == id), string.Empty);
+            var tour = tours.FirstOrDefault(t => t.Id == id);
+            return tour is { } ? (tour, string.Empty) : (null, "Invalid id given");
         }
 
         public (Tour?, string) AddTour(Tour tour)

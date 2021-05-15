@@ -22,6 +22,13 @@ namespace Server.DAL
         private string ExportPath => cfg.ExportPath;
         private readonly ILogger logger = WebServiceLogging.CreateLogger<IExportHandler>();
 
+        public PdfExportHandler() {}
+
+        public PdfExportHandler(Configuration cfg)
+        {
+            this.cfg = cfg;
+        }
+        
         /// <summary>
         /// Exports a printable document from a given Tour.
         /// </summary>
