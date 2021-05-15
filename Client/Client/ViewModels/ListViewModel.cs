@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -9,7 +7,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Client.Logic.BL;
-using Client.Logic.Setup;
 using Client.Utils.Commands;
 using Client.Utils.Logging;
 using Client.Utils.Mediators;
@@ -79,15 +76,13 @@ namespace Client.ViewModels
             }
         }
 
-        private string filter;
-
         private string Filter
         {
-            get => filter;
             set
             {
-                if (value == filter) return;
-                filter = value;
+                // Update Filter in business layer
+                tp.UpdateFilter(value);
+                // Trigger Filter again
                 toursView.Refresh();
                 OnPropertyChanged();
             }
@@ -299,62 +294,23 @@ namespace Client.ViewModels
         }
 
         public ListViewModel(
-            TourPlannerClient tp, Mediator mediator, ContentNavigation nav, Configuration cfg)
+            TourPlannerClient tp, Mediator mediator, ContentNavigation nav)
         {
             this.tp = tp;
             this.mediator = mediator;
             this.nav = nav;
 
-            filter = "";
             Tours = new ObservableCollection<TourWrapper>();
             selectedTour = null;
 
             // Setup Filter
             // See: https://markheath.net/post/list-filtering-in-wpf-with-m-v-vm
             toursView = CollectionViewSource.GetDefaultView(Tours);
-            // TODO implement more sophisticated Filter
-            /*toursView.Filter = o => string.IsNullOrEmpty(Filter) ||
-                                    ((TourWrapper) o).Name.ToLower().Contains(Filter.ToLower());*/
-            toursView.Filter = o =>
-            {
-                try
-                {
-                    if (string.IsNullOrEmpty(Filter))
-                        return true;
-
-                    foreach (var property in o.GetType().GetProperties())
-                    {
-                        // Check if is IEnumerable and iterate over
-                        // Note: Strings are IEnumerable but in this context not useful
-                        // See: https://stackoverflow.com/a/6735081/12347616
-                        if (property.GetValue(o) is IEnumerable enumerable and not string)
-                        {
-                            foreach (var oEnumerable in enumerable)
-                            {
-                                foreach (var oEnumProperty in oEnumerable.GetType().GetProperties())
-                                {
-                                    if (oEnumProperty.GetValue(oEnumerable)?.ToString() is { } str
-                                        && str.ToLower().Contains(Filter.ToLower()))
-                                        return true;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (property.GetValue(o)?.ToString() is { } str
-                                && str.ToLower().Contains(Filter.ToLower()))
-                                return true;
-                        }
-                    }
-
-                    return false;
-                }
-                catch (Exception ex)
-                {
-                    return false;
-                }
-            };
-
+            // Use Filter provided by business logic
+            toursView.Filter = tp.FilterMethod;
+            // Sort items by name
+            // See: https://stackoverflow.com/a/39805681/12347616
+            toursView.SortDescriptions.Add(new SortDescription(nameof(TourWrapper.Name), ListSortDirection.Ascending));
 
             // Register mediator events
             mediator.Register(FilterChange, ViewModelMessages.FilterChange);

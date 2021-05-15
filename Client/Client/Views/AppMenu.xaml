@@ -62,7 +62,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBox Text="{Binding Path=Filter, UpdateSourceTrigger=LostFocus}" />
+            <TextBox Text="{Binding Path=Filter, UpdateSourceTrigger=PropertyChanged}" />
             <Button Grid.Column="1" Command="{Binding ClearFilter}">
                 Clear
                 <Button.LayoutTransform>

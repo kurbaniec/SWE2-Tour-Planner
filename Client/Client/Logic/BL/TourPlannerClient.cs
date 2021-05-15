@@ -10,11 +10,13 @@ namespace Client.Logic.BL
     {
         private readonly ITourApi api;
         private readonly IImportExportHandler handler;
+        private readonly IFilter filter;
 
-        public TourPlannerClient(ITourApi api, IImportExportHandler handler)
+        public TourPlannerClient(ITourApi api, IImportExportHandler handler, IFilter filter)
         {
             this.api = api;
             this.handler = handler;
+            this.filter = filter;
         }
         
         public async Task<(List<Tour>?, string)> GetTours()
@@ -60,6 +62,17 @@ namespace Client.Logic.BL
         public async Task<(bool, string)> Print(string outputPath, int id, bool isSummary = false)
         {
             return await api.GetExport(id, outputPath, isSummary);
+        }
+
+        public bool FilterMethod(object o)
+        {
+            return filter.ApplyFilter(o);
+        }
+
+        public void UpdateFilter(string newFilter)
+        {
+            if (filter.Filter != newFilter)
+                filter.Filter = newFilter;
         }
     }
 }

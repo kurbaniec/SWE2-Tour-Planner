@@ -30,8 +30,10 @@ namespace Client
             services.AddSingleton<ITourApi>(x =>
                 new TourApi(x.GetService<Configuration>()!));
             services.AddSingleton<IImportExportHandler>(new DataHandler());
+            services.AddSingleton<IFilter>(new GeneralFilter());
             services.AddSingleton<TourPlannerClient>(x =>
-                new TourPlannerClient(x.GetService<ITourApi>()!, x.GetService<IImportExportHandler>()!));
+                new TourPlannerClient(x.GetService<ITourApi>()!, x.GetService<IImportExportHandler>()!,
+                    x.GetService<IFilter>()!));
             services.AddSingleton<MainViewModel>(x =>
                 new MainViewModel(x.GetService<Mediator>()!, x.GetService<ContentNavigation>()!));
             services.AddSingleton<MenuViewModel>(x =>
@@ -39,7 +41,7 @@ namespace Client
                     x.GetService<ContentNavigation>()!));
             services.AddSingleton<ListViewModel>(x =>
                 new ListViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
-                    x.GetService<ContentNavigation>()!, x.GetService<Configuration>()!));
+                    x.GetService<ContentNavigation>()!));
             services.AddSingleton<InfoViewModel>(x =>
                 new InfoViewModel(x.GetService<TourPlannerClient>()!, x.GetService<Mediator>()!,
                     x.GetService<ContentNavigation>()!));
