@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
-using WebService_Lib.Attributes;
+using Server.DAL;
 
-namespace Server.DAL
+namespace Server_Test.Unit.Mocks
 {
-    // TODO remove later
     public class MockMapApi : IMapApi
     {
         private readonly string path;

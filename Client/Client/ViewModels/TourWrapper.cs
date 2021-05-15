@@ -11,6 +11,9 @@ using Type = Model.Type;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// Acts as an wrapper for <c>Tour</c> for use in WPF.
+    /// </summary>
     [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
     public class TourWrapper : BaseViewModel, IDataErrorInfo
     {
@@ -166,14 +169,104 @@ namespace Client.ViewModels
             }
         }
 
-        // Used to Invoke Child Validation
-        // Based on https://stackoverflow.com/a/6650060/12347616
+        /// <summary>
+        /// Used to Invoke Child Validation
+        /// Based on https://stackoverflow.com/a/6650060/12347616
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void ValidationChanged(object? sender, PropertyChangedEventArgs args)
         {
             if (args.PropertyName != "IsValid") return;
             // Force Validation through property change event
             // Will call `this[string propertyName]` getter
             OnPropertyChanged("Logs");
+        }
+
+        /// <summary>
+        /// Add a new default log (TourLog in form of a TourLogWrapper) to the wrapper.
+        /// </summary>
+        public void AddNewLog()
+        {
+            Logs.Add(WrapTourLog(new TourLog(
+                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10.0, Rating.Good,
+                "Report goes here...", 10.0,
+                20.0, 100, 0
+            )));
+            OnPropertyChanged("Logs");
+        }
+
+        /// <summary>
+        /// Remove a given log from the wrapper.
+        /// </summary>
+        /// <param name="log">
+        /// Log to be removed.
+        /// </param>
+        public void RemoveLog(TourLogWrapper log)
+        {
+            Logs.Remove(log);
+            OnPropertyChanged("Logs");
+        }
+
+        /// <summary>
+        /// Creates a copy of the internal Tour model.
+        /// </summary>
+        /// <returns>
+        /// Copy of internal Tour.
+        /// </returns>
+        public Tour GetRequestTour()
+        {
+            return new(tour.Id, from, to, name, distance, description,
+                Logs.Select(log => log.GetRequestTourLog()).ToList());
+        }
+
+        /// <summary>
+        /// Save changes on the wrapper also in the internal model.
+        /// </summary>
+        public void SaveChanges()
+        {
+            tour.From = from;
+            tour.To = to;
+            tour.Name = name;
+            tour.Distance = distance;
+            tour.Description = description;
+            // Save changes on tour logs
+            logs.ForEach(log => log.SaveChanges());
+            // Update tour logs in Model
+            tour.Logs = logs.Select(log => log.Model).ToList();
+        }
+
+        /// <summary>
+        /// Discard change on the wrapper and re-assign properties with the values
+        /// of the internal model.
+        /// </summary>
+        public void DiscardChanges()
+        {
+            From = tour.From;
+            To = tour.To;
+            Name = tour.Name;
+            Distance = tour.Distance;
+            Description = tour.Description;
+            // Discard tour log changes
+            Logs.ForEach(log => log.DiscardChanges());
+            // Update tour logs in wrapper
+            Logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(WrapTourLog).ToList());
+        }
+
+        /// <summary>
+        /// Wrap TourLog with TourLogWrapper and assign Property changed event.
+        /// This makes data validation on log entries possible.
+        /// </summary>
+        /// <param name="log">Log that should be wrapper and assigned with event.</param>
+        /// <returns>
+        /// TourLog in form of a TourLogWrapper
+        /// </returns>
+        private TourLogWrapper WrapTourLog(TourLog log)
+        {
+            // TourLogWrapper (children) should invoke Data Validation in TourWrapper (parent)
+            var wrapper = new TourLogWrapper(log);
+            wrapper.PropertyChanged += ValidationChanged;
+            return wrapper;
         }
 
         public TourWrapper(Tour tour)
@@ -199,63 +292,6 @@ namespace Client.ViewModels
             this.image = image;
             this.ImageLoaded = imageLoaded;
             this.logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(WrapTourLog).ToList());
-        }
-
-        public void AddNewLog()
-        {
-            Logs.Add(WrapTourLog(new TourLog(
-                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10.0, Rating.Good,
-                "Report goes here...", 10.0,
-                20.0, 100, 0
-            )));
-            OnPropertyChanged("Logs");
-        }
-
-        public void RemoveLog(TourLogWrapper log)
-        {
-            Logs.Remove(log);
-            OnPropertyChanged("Logs");
-        }
-
-        public Tour GetRequestTour()
-        {
-            return new(tour.Id, from, to, name, distance, description,
-                Logs.Select(log => log.GetRequestTourLog()).ToList());
-        }
-
-        public void SaveChanges()
-        {
-            tour.From = from;
-            tour.To = to;
-            tour.Name = name;
-            tour.Distance = distance;
-            tour.Description = description;
-            // Save changes on tour logs
-            logs.ForEach(log => log.SaveChanges());
-            // Update tour logs in Model
-            tour.Logs = logs.Select(log => log.Model).ToList();
-        }
-
-        public void DiscardChanges()
-        {
-            From = tour.From;
-            To = tour.To;
-            Name = tour.Name;
-            Distance = tour.Distance;
-            Description = tour.Description;
-            // Discard tour log changes
-            Logs.ForEach(log => log.DiscardChanges());
-            // Update tour logs in wrapper
-            Logs = new ObservableCollection<TourLogWrapper>(tour.Logs.Select(WrapTourLog).ToList());
-        }
-
-        // Wrap TourLog and assign Property changed event
-        private TourLogWrapper WrapTourLog(TourLog log)
-        {
-            // TourLogWrapper (children) should invoke Data Validation in TourWrapper (parent)
-            var wrapper = new TourLogWrapper(log);
-            wrapper.PropertyChanged += ValidationChanged;
-            return wrapper;
         }
     }
 }

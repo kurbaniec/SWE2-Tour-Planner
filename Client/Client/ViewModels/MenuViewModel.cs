@@ -6,6 +6,9 @@ using Client.Utils.Navigation;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the <c>AppMenu</c> view.
+    /// </summary>
     public class MenuViewModel : BaseViewModel
     {
         private readonly TourPlannerClient tp;
@@ -75,6 +78,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command starts Tour import process
                 if (import != null) return import;
                 import = new RelayCommand(
                     _ => true,
@@ -97,6 +101,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command starts Tour export process for one Tour
                 if (exportThis != null) return exportThis;
                 exportThis = new RelayCommand(
                     _ => true,
@@ -119,6 +124,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command starts Tour export process for all Tours
                 if (exportAll != null) return exportAll;
                 exportAll = new RelayCommand(
                     _ => true,
@@ -141,6 +147,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command starts Tour print process
                 if (print != null) return print;
                 print = new RelayCommand(
                     _ => true,
@@ -168,6 +175,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command should invoke the display of a help page in the default browser
                 if (showHelp != null) return showHelp;
                 showHelp = new RelayCommand(
                     _ => true,
@@ -183,6 +191,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command starts Tour copy process
                 if (copyTour != null) return copyTour;
                 copyTour = new RelayCommand(
                     _ => true,
@@ -195,16 +204,30 @@ namespace Client.ViewModels
 
         // Mediator events
 
+        /// <summary>
+        /// Triggered when app controls should be disabled.
+        /// </summary>
+        /// <param name="o"></param>
         private void TransactionBegin(object? o)
         {
             Busy = true;
         }
 
+        /// <summary>
+        /// Triggered when app control should be enabled again.
+        /// </summary>
+        /// <param name="o"></param>
         private void TransactionEnd(object? o)
         {
             Busy = false;
         }
 
+        /// <summary>
+        /// Changes the current selected Tour.
+        /// </summary>
+        /// <param name="o">
+        /// The new tour.
+        /// </param>
         private void SelectedTourChange(object? o)
         {
             var tour = (TourWrapper?) o;

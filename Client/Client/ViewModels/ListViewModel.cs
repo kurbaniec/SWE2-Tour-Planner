@@ -16,6 +16,9 @@ using Model;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the <c>AppList</c> view.
+    /// </summary>
     public class ListViewModel : BaseViewModel
     {
         private readonly TourPlannerClient tp;
@@ -94,6 +97,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command navigates user to the "AppAdd" view
                 if (openAddTour != null) return openAddTour;
                 openAddTour = new RelayCommand(
                     _ => true,
@@ -125,6 +129,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command starts initialization process where all Tours are queried 
                 if (loadData != null) return loadData;
                 loadData = new RelayCommand(
                     _ => true,
@@ -164,16 +169,30 @@ namespace Client.ViewModels
 
         // Mediator Events
 
+        /// <summary>
+        /// Triggered when app controls should be disabled.
+        /// </summary>
+        /// <param name="o"></param>
         private void TransactionBegin(object? o)
         {
             Busy = true;
         }
 
+        /// <summary>
+        /// Triggered when app control should be enabled again.
+        /// </summary>
+        /// <param name="o"></param>
         private void TransactionEnd(object? o)
         {
             Busy = false;
         }
 
+        /// <summary>
+        /// Triggered when the filter criteria has changed.
+        /// </summary>
+        /// <param name="o">
+        /// Value of the new filter.
+        /// </param>
         private void FilterChange(object? o)
         {
             if (o == null) return;
@@ -181,6 +200,12 @@ namespace Client.ViewModels
             Filter = newFilter;
         }
 
+        /// <summary>
+        /// Last step of the Tour addition process.
+        /// Fetches the image for the given Tour and creates a TourWrapper from it.
+        /// </summary>
+        /// <param name="tour">Added Tour</param>
+        /// <returns>Added Tour as a TourWrapper</returns>
         private async Task<TourWrapper> TourAdditionProcess(Tour tour)
         {
             // Fetch Route Information
@@ -197,6 +222,10 @@ namespace Client.ViewModels
             return newTour;
         }
 
+        /// <summary>
+        /// Triggered when a new Tour was added and should be displayed in the view.
+        /// </summary>
+        /// <param name="o">Added tour</param>
         private async void TourAddition(object? o)
         {
             if (o == null) return;
@@ -208,6 +237,12 @@ namespace Client.ViewModels
             nav.Navigate(ContentPage.AppInfo);
         }
 
+        /// <summary>
+        /// Triggered when a Tour should be copied.
+        /// Calls the Business Layer to add a copy and then performs same steps
+        /// as in a Tour addition.
+        /// </summary>
+        /// <param name="o"></param>
         private async void TourCopy(object? o)
         {
             if (selectedTour == null) return;
@@ -236,6 +271,10 @@ namespace Client.ViewModels
             mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null);
         }
 
+        /// <summary>
+        /// Triggered when a Tour should be removed from the view.
+        /// </summary>
+        /// <param name="o">Tour to be removed from the view.</param>
         private void TourDeletion(object? o)
         {
             if (o == null) return;
@@ -245,6 +284,11 @@ namespace Client.ViewModels
                 Tours.Remove(deleteTour);
         }
 
+        /// <summary>
+        /// Triggered when a Tour Data file should be imported.
+        /// Calls the Business Layer to read the Tours and to add them.
+        /// </summary>
+        /// <param name="o">Path to the exported Tour Data.</param>
         private async void Import(object? o)
         {
             if (o == null) return;
@@ -267,6 +311,11 @@ namespace Client.ViewModels
                     $"Encountered error while importing Tours: \n{importError}", "Tour Planner - Import");
         }
 
+        /// <summary>
+        /// Triggered when a Tour should be exported to a Tour Data file.
+        /// Call the Business Layer for serialization.
+        /// </summary>
+        /// <param name="o">Path where the file should be saved.</param>
         private async void ExportThis(object? o)
         {
             if (o == null) return;
@@ -280,6 +329,11 @@ namespace Client.ViewModels
                 nav.ShowErrorDialog($"Encountered error while exporting Tour: \n{errorMsg}", "Tour Planner - Export");
         }
 
+        /// <summary>
+        /// Triggered when ALL Tours should be exported to a Tour Data file.
+        /// Call the Business Layer for serialization.
+        /// </summary>
+        /// <param name="o">Path where the file should be saved.</param>
         private async void ExportAll(object? o)
         {
             if (o == null) return;

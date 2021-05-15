@@ -5,7 +5,7 @@
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <local:Container x:Key="Container"/>
+            <local:Container x:Key="Container" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

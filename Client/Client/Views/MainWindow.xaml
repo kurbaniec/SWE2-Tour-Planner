@@ -13,31 +13,30 @@
     <Grid>
         <!-- Grid definitions -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="100" MaxWidth="250"/>
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="Auto" MinWidth="100" MaxWidth="250" />
+            <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <!-- Import other views (UserControls) https://stackoverflow.com/a/224816/12347616 -->
         <!-- Menu -->
-        <component:AppMenu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"/>
+        <component:AppMenu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" />
         <!-- Tour List -->
-        <component:AppList Grid.Row="1" Grid.Column="0"/>
+        <component:AppList Grid.Row="1" Grid.Column="0" />
         <!-- Splitter -->
         <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
         <!-- Main content -->
         <!-- Disable navigation  See: https://stackoverflow.com/a/14156372/12347616 -->
         <!-- Disable shortcuts   See: https://stackoverflow.com/a/11037082/12347616-->
         <!-- Binding             See: https://stackoverflow.com/a/2824996/12347616 -->
-        <Frame Grid.Row="1" Grid.Column="2" 
-            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-            NavigationUIVisibility="Hidden" x:Name="Frame"
-            nav:DisableNavigation.Disable="True"
-            Source="AppWelcome.xaml"
-            Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <Frame Grid.Row="1" Grid.Column="2"
+               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+               NavigationUIVisibility="Hidden" x:Name="Frame"
+               nav:DisableNavigation.Disable="True"
+               Source="AppWelcome.xaml"
+               Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
 </Window>
-                

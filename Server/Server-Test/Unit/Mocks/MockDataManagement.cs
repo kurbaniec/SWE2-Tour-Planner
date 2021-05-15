@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Model;
+using Server.DAL;
 using Server.Setup;
 using WebService_Lib.Attributes;
 using Type = Model.Type;
 
-namespace Server.DAL
+namespace Server_Test.Unit.Mocks
 {
-    // TODO remove later 
-    //[Component]
     public class MockDataManagement : IDataManagement
     {
         private List<Tour> tours;
@@ -18,7 +17,6 @@ namespace Server.DAL
         public MockDataManagement()
         {
             tours = new List<Tour>();
-            /*
             var tour = new Tour(
                 1000,
                 "A", "B",
@@ -31,7 +29,7 @@ namespace Server.DAL
                             Type.Car,
                             TimeSpan.Zero, 
                             100,
-                            10,
+                            Rating.Great,
                             "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
                             55.0,
                             60,
@@ -42,7 +40,7 @@ namespace Server.DAL
                             Type.Car,
                             TimeSpan.Zero, 
                             100,
-                            10,
+                            Rating.Good,
                             "Great",
                             55.0,
                             60,
@@ -59,7 +57,7 @@ namespace Server.DAL
                 new List<TourLog>()
             );
             tours.Add(tour);
-            tours.Add(tour2);*/
+            tours.Add(tour2);
         }
         
         public (List<Tour>?, string) GetTours()
@@ -94,20 +92,6 @@ namespace Server.DAL
             tours.Add(tour);
             return (tour, string.Empty);
         }
-
-        /*
-        public (List<Tour>?, string) AddTours(List<Tour> rawTours)
-        {
-            var newTours = new List<Tour>();
-            foreach (var t in rawTours)
-            {
-                var (newTour, errorMsg) = AddTour(t);
-                if (newTour is { }) newTours.Add(newTour);
-                else return (null, errorMsg);
-            }
-
-            return (newTours, string.Empty);
-        }*/
 
         public (Tour?, string) UpdateTour(Tour tour)
         {

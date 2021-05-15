@@ -4,10 +4,15 @@ using Client.Utils.Navigation;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the <c>MainWindow</c> view.
+    /// </summary>
     public class MainViewModel : BaseViewModel
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly Mediator mediator;
 
+        // ReSharper disable once NotAccessedField.Local
         private readonly ContentNavigation nav;
 
         private Page? currentPage;

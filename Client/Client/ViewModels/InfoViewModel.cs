@@ -8,6 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the <c>AppInfo</c> view.
+    /// </summary>
     public class InfoViewModel : BaseViewModel
     {
         private readonly TourPlannerClient tp;
@@ -94,6 +97,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command starts Tour update process
                 if (acceptEdit != null) return acceptEdit;
                 acceptEdit = new RelayCommand(
                     _ => !Busy &&
@@ -137,6 +141,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command starts Tour deletion process
                 if (deleteTour != null) return deleteTour;
                 deleteTour = new RelayCommand(
                     _ => !Busy,
@@ -188,6 +193,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command adds a new TourLog to current selected Tour
                 if (addLog != null) return addLog;
                 addLog = new RelayCommand(
                     _ => !Busy, _ =>
@@ -207,6 +213,7 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command removes a TourLog from current selected Tour
                 if (deleteLog != null) return deleteLog;
                 deleteLog = new RelayCommand(
                     _ => !Busy, p =>
@@ -222,6 +229,12 @@ namespace Client.ViewModels
             }
         }
 
+        /// <summary>
+        /// Changes the current selected Tour.
+        /// </summary>
+        /// <param name="o">
+        /// The new tour.
+        /// </param>
         private void SelectedTourChange(object? o)
         {
             selectedTour?.DiscardChanges();

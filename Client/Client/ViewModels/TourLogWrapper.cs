@@ -4,6 +4,9 @@ using Type = Model.Type;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// Acts as an wrapper for <c>TourLog</c> for use in WPF.
+    /// </summary>
     public class TourLogWrapper : BaseViewModel
     {
         private readonly TourLog log;
@@ -182,6 +185,12 @@ namespace Client.ViewModels
         {
         }
 
+        /// <summary>
+        /// Creates a copy of the internal TourLog model.
+        /// </summary>
+        /// <returns>
+        /// Copy of internal TourLog.
+        /// </returns>
         public TourLog GetRequestTourLog()
         {
             return new(log.Id, (DateTime) date!, type, (TimeSpan) duration!, (int) distance!, rating, report,
@@ -189,6 +198,9 @@ namespace Client.ViewModels
                 stops);
         }
 
+        /// <summary>
+        /// Save changes on the wrapper also in the internal model.
+        /// </summary>
         public void SaveChanges()
         {
             log.Date = (DateTime) date!;
@@ -203,6 +215,10 @@ namespace Client.ViewModels
             log.Stops = stops;
         }
 
+        /// <summary>
+        /// Discard change on the wrapper and re-assign properties with the values
+        /// of the internal model.
+        /// </summary>
         public void DiscardChanges()
         {
             Date = log.Date;

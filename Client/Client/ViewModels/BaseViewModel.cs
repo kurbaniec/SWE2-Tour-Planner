@@ -3,6 +3,10 @@ using System.Runtime.CompilerServices;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// Abstract ViewModel that implements <c>OnPropertyChanged</c>
+    /// which all ViewModels use.
+    /// </summary>
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
