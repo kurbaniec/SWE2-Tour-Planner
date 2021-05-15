@@ -1,8 +1,11 @@
-﻿using System;
-using WebService_Lib;
+﻿using WebService_Lib;
 
 namespace Server
 {
+    /// <summary>
+    /// Entry point for the TourPlanner Server application.
+    /// Powered by <c>WebServiceLib</c>.
+    /// </summary>
     class Program
     {
         static void Main(string[] args)

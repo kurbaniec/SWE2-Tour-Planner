@@ -12,12 +12,22 @@ using WebService_Lib.Server;
 
 namespace Server.Controllers
 {
+    /// <summary>
+    /// <c>Controller</c> class that manages all Client requests.
+    /// </summary>
     [Controller]
     public class TourController
     {
         [Autowired] private readonly TourPlannerServer tp = null!;
         private readonly ILogger logger = WebServiceLogging.CreateLogger<TourController>();
 
+        /// <summary>
+        /// Endpoint used to query all Tours.
+        /// </summary>
+        /// <returns>
+        /// JSON representation of all Tours on valid requests.
+        /// Else Plaintext response with error message with an unsuccessful status code.
+        /// </returns>
         [Get("/api/tours")]
         public Response GetTours()
         {
@@ -32,10 +42,20 @@ namespace Server.Controllers
             {
                 logger.Log(LogLevel.Error, $"Encountered exception in {MethodBase.GetCurrentMethod()}:");
                 logger.Log(LogLevel.Error, ex.StackTrace);
-                return Response.Status(Status.BadRequest);
+                return Response.PlainText("Invalid request", Status.BadRequest);
             }
         }
 
+        /// <summary>
+        /// Endpoint used to request Route Information Image.
+        /// </summary>
+        /// <param name="id">
+        /// Id of the Tour of whom the image is requested. 
+        /// </param>
+        /// <returns>
+        /// Image payload.
+        /// Else Plaintext response with error message with an unsuccessful status code.
+        /// </returns>
         [Get("/api/route")]
         public Response GetRouteImage(PathVariable<int> id)
         {
@@ -52,6 +72,16 @@ namespace Server.Controllers
             return Response.PlainText("Invalid request", Status.BadRequest);
         }
 
+        /// <summary>
+        /// Endpoint used to add new Tours.
+        /// </summary>
+        /// <param name="json">
+        /// JSON representation of the Tour to add.
+        /// </param>
+        /// <returns>
+        /// JSON representation of the newly added Tour.
+        /// Else Plaintext response with error message with an unsuccessful status code.
+        /// </returns>
         [Post("/api/tour")]
         public Response AddTour([JsonString] string json)
         {
@@ -82,6 +112,16 @@ namespace Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Endpoint used to add multiple new Tours.
+        /// </summary>
+        /// <param name="json">
+        /// JSON representation of the Tours to add.
+        /// </param>
+        /// <returns>
+        /// JSON representation of the newly added Tours.
+        /// Else Plaintext response with error message with an unsuccessful status code.
+        /// </returns>
         [Post("/api/tours")]
         public Response AddTours([JsonString] string json)
         {
@@ -112,6 +152,16 @@ namespace Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Endpoint used to update Tours.
+        /// </summary>
+        /// <param name="json">
+        /// JSON representation of the Tours to update.
+        /// </param>
+        /// <returns>
+        /// JSON representation of the updated Tour.
+        /// Else Plaintext response with error message with an unsuccessful status code.
+        /// </returns>
         [Put("/api/tour")]
         public Response UpdateTour([JsonString] string json)
         {
@@ -142,6 +192,16 @@ namespace Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Endpoint used to delete Tours.
+        /// </summary>
+        /// <param name="id">
+        /// Id of the Tour which should be deleted.
+        /// </param>
+        /// <returns>
+        /// Successful status code with no content.
+        /// Else Plaintext response with error message with an unsuccessful status code.
+        /// </returns>
         [Delete("/api/tour")]
         public Response DeleteTour(PathVariable<int> id)
         {
@@ -153,7 +213,17 @@ namespace Server.Controllers
 
             return Response.PlainText("Not valid Route id given", Status.BadRequest);
         }
-        
+
+        /// <summary>
+        /// Endpoint used to request pdf reports for a given Tour.
+        /// </summary>
+        /// <param name="id">
+        /// Id of the Tour for which the report should be generated.
+        /// </param>
+        /// <returns>
+        /// File payload.
+        /// Else Plaintext response with error message with an unsuccessful status code.
+        /// </returns>
         [Get("/api/export/full")]
         public Response GetPdfExportFull(PathVariable<int> id)
         {
@@ -165,12 +235,23 @@ namespace Server.Controllers
                     var response = Response.File(path);
                     return response ?? Response.PlainText("Could not locate export", Status.InternalServerError);
                 }
+
                 return Response.PlainText(errorMsg, Status.BadRequest);
             }
 
             return Response.PlainText("Invalid request", Status.BadRequest);
         }
-        
+
+        /// <summary>
+        /// Endpoint used to request pdf summary-reports for a given Tour.
+        /// </summary>
+        /// <param name="id">
+        /// Id of the Tour for which the report should be generated.
+        /// </param>
+        /// <returns>
+        /// File payload.
+        /// Else Plaintext response with error message with an unsuccessful status code.
+        /// </returns>
         [Get("/api/export/summary")]
         public Response GetPdfExportSummary(PathVariable<int> id)
         {
@@ -182,6 +263,7 @@ namespace Server.Controllers
                     var response = Response.File(path);
                     return response ?? Response.PlainText("Could not locate export", Status.InternalServerError);
                 }
+
                 return Response.PlainText(errorMsg, Status.BadRequest);
             }
 
