@@ -4,6 +4,7 @@ namespace Client.Utils.Mediators
 {
     /// <summary>
     /// Mediator Pattern.
+    /// Provides an intuitive way for interactions between ViewModels.
     /// Learn more here https://marlongrech.wordpress.com/2008/03/20/more-than-just-mvc-for-wpf/.
     /// Based on https://www.codeproject.com/Articles/35277/MVVM-Mediator-Pattern by Sacha Barber.
     /// </summary>

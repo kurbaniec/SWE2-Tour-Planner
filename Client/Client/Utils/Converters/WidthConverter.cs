@@ -7,11 +7,13 @@ using System.Windows.Markup;
 
 namespace Client.Utils.Converters
 {
+    /// <summary>
+    /// Converter used to make grids "responsive" by capping their max width
+    /// in half, when the application covers more than 50 percent of screen width.
+    /// </summary>
     public class WidthConverter : MarkupExtension, IValueConverter
     {
         private static WidthConverter? instance;
-
-        #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -36,8 +38,6 @@ namespace Client.Utils.Converters
         {
             return null!;
         }
-
-        #endregion
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {

@@ -5,12 +5,16 @@ using System.Windows.Markup;
 
 namespace Client.Utils.Converters
 {
+    /// <summary>
+    /// Returns boolean value that answers question if the given object is not null.
+    /// </summary>
     public class IsNotNullConverter : MarkupExtension, IValueConverter
     {
         private static IsNotNullConverter? instance;
         
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             return (value != null);
         }
 

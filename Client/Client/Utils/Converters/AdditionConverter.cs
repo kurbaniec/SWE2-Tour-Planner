@@ -7,6 +7,9 @@ using System.Windows.Markup;
 
 namespace Client.Utils.Converters
 {
+    /// <summary>
+    /// Converter that performs an addition with the "value" and "parameter" and returns it.
+    /// </summary>
     public class AdditionConverter : MarkupExtension, IValueConverter
     {
         private static AdditionConverter? instance;

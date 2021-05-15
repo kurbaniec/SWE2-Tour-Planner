@@ -1,5 +1,4 @@
-﻿using System;
-using Client.Logic.BL;
+﻿using Client.Logic.BL;
 using Client.Logic.DAL;
 using Client.Logic.Setup;
 using Client.Utils.Mediators;
@@ -9,15 +8,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Client
 {
+    /// <summary>
+    /// Builds the service provider for IoC.
+    /// instantiated in App.xml.
+    /// See: https://github.com/kienboec/EventListerInCSharp/blob/main/EventListerInCSharp/IoCContainerConfig.cs
+    /// </summary>
     public class Container
     {
         private readonly ServiceProvider serviceProvider;
-
-        /// <summary>
-        /// Builds the service provider for IoC.
-        /// instantiated in App.xml.
-        /// See: https://github.com/kienboec/EventListerInCSharp/blob/main/EventListerInCSharp/IoCContainerConfig.cs
-        /// </summary>
+        
         public Container()
         {
             var services = new ServiceCollection();
