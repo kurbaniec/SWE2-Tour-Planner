@@ -53,7 +53,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: server-${{ matrix.os }}
-          path: ./*.zip
+          path: ./Server/*.zip
           retention-days: 1
 
   build_client:
@@ -86,7 +86,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: client-${{ matrix.os }}
-          path: ./*.zip
+          path: ./Client/*.zip
           retention-days: 1
       
     
