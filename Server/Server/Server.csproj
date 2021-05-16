@@ -14,6 +14,11 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.1" />
     <PackageReference Include="Npgsql" Version="5.0.1.1" />
     <PackageReference Include="QuestPDF" Version="2021.4.0" />
+    <!-- QuestPDF uses SkiaSharp which makes problems on Linux with the included dependendcy -->
+    <!-- So we want to use the native version on Linux -->
+    <!-- See: https://stackoverflow.com/a/60401988/12347616 -->
+    <!-- And: https://stackoverflow.com/a/59543473/12347616 -->
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.80.2" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
   </ItemGroup>
 
   <!-- See: https://stackoverflow.com/a/51544654/12347616-->
