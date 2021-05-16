@@ -85,7 +85,7 @@ jobs:
           7z.exe a -tzip windows-build.zip release
       - uses: actions/upload-artifact@v2
         with:
-          name: client-${{ matrix.os }}
+          name: client-windows-latest
           path: ./Client/*.zip
           retention-days: 1
       
