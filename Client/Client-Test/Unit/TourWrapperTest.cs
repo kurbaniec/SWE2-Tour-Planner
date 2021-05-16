@@ -4,6 +4,9 @@ using NUnit.Framework;
 
 namespace Client_Test.Unit
 {
+    /// <summary>
+    /// Tests the <c>TourWrapper</c> class for consistency.
+    /// </summary>
     public class TourWrapperTest
     {
         [OneTimeSetUp]

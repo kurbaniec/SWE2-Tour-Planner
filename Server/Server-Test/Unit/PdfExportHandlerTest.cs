@@ -7,6 +7,10 @@ using Server_Test.Unit.Mocks;
 
 namespace Server_Test.Unit
 {
+    /// <summary>
+    /// Tests the <c>PdfExportHandler</c> class invoked via the
+    /// <c>TourPlannerServer</c> wrapper.
+    /// </summary>
     public class PdfExportHandlerTest
     {
         private string basePath;

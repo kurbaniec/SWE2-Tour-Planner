@@ -9,6 +9,9 @@ using Type = Model.Type;
 
 namespace Server_Test.Unit.Mocks
 {
+    /// <summary>
+    /// Simple concrete in-memory implementation of <c>IDataManagement</c>.
+    /// </summary>
     public class MockDataManagement : IDataManagement
     {
         private List<Tour> tours;

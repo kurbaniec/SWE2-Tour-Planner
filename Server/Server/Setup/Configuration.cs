@@ -79,8 +79,13 @@ namespace Server.Setup
             PostgresConnString = $"Server={ip};Port={port};User Id={user};Password={password};";
             logger.Log(LogLevel.Debug, "Configuration read and initialized");
         }
-
-        // Use only for debug purposes
+        
+        /// <summary>
+        /// Use this constructor only for debug purposes.
+        /// </summary>
+        /// <param name="routePath"></param>
+        /// <param name="exportPath"></param>
+        /// <param name="connString"></param>
         public Configuration(string routePath, string exportPath, string connString)
         {
             RoutePath = routePath;

@@ -10,6 +10,10 @@ using NUnit.Framework;
 
 namespace Client_Test.Unit
 {
+    /// <summary>
+    /// Tests the <c>DataHandler</c> class invoked via the
+    /// <c>TourPlannerClient</c> wrapper.
+    /// </summary>
     public class DataHandlerTest
     {
         private string basePath;

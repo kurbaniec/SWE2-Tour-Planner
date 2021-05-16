@@ -4,6 +4,9 @@ using Server.DAL;
 
 namespace Server_Test.Unit.Mocks
 {
+    /// <summary>
+    /// Simple concrete implementation of <c>IMapApi</c>.
+    /// </summary>
     public class MockMapApi : IMapApi
     {
         private readonly string path;
@@ -37,6 +40,7 @@ namespace Server_Test.Unit.Mocks
             {
                 Directory.CreateDirectory(path);
             }*/
+            path = string.Empty;
         }
     }
 }

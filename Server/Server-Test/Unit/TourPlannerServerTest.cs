@@ -9,6 +9,9 @@ using Server_Test.Unit.Mocks;
 
 namespace Server_Test.Unit
 {
+    /// <summary>
+    /// Tests the <c>TourPlannerServer</c> wrapper basic error handling for invalid Tour data.
+    /// </summary>
     public class TourPlannerServerTest
     {
         private string basePath;

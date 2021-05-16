@@ -6,6 +6,9 @@ using Type = Model.Type;
 
 namespace Client_Test.Unit
 {
+    /// <summary>
+    /// Tests the <c>TourLogWrapper</c> class for consistency.
+    /// </summary>
     public class TourLogWrapperTest
     {
         [OneTimeSetUp]
