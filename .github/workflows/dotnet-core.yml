@@ -43,13 +43,13 @@ jobs:
         run: >
           mkdir release &&
           mv Server/bin/Release/net5.0 release &&
-          zip -r ubuntu-build.zip release
+          zip -r server-ubuntu-build.zip release
       - name: Create release
         if: matrix.os == 'windows-latest'
         run: >
           mkdir release &&
           move Server/bin/Release/net5.0 release &&
-          7z.exe a -tzip windows-build.zip release
+          7z.exe a -tzip server-windows-build.zip release
       - uses: actions/upload-artifact@v2
         with:
           name: server-${{ matrix.os }}
@@ -82,7 +82,7 @@ jobs:
         run: >
           mkdir release &&
           move Client/bin/Release/net5.0-windows release &&
-          7z.exe a -tzip windows-build.zip release
+          7z.exe a -tzip client-windows-build.zip release
       - uses: actions/upload-artifact@v2
         with:
           name: client-windows-latest
