@@ -5,7 +5,7 @@ using System.Windows.Navigation;
 namespace Client.Utils.Navigation
 {
     /// <summary>
-    /// Used to disable navigation via shortcuts.
+    /// Used to disable navigation via shortcuts in a <c>Frame</c>.
     /// See: https://stackoverflow.com/a/11037082/12347616
     /// </summary>
     public static class DisableNavigation

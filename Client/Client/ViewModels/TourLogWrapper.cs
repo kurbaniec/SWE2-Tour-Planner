@@ -4,14 +4,17 @@ using Type = Model.Type;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// Acts as an wrapper for <c>TourLog</c> for use in WPF.
+    /// </summary>
     public class TourLogWrapper : BaseViewModel
     {
         private readonly TourLog log;
         public TourLog Model => log;
 
-        private DateTime date;
+        private DateTime? date;
 
-        public DateTime Date
+        public DateTime? Date
         {
             get => date;
             set
@@ -35,9 +38,9 @@ namespace Client.ViewModels
             }
         }
 
-        private TimeSpan duration;
+        private TimeSpan? duration;
 
-        public TimeSpan Duration
+        public TimeSpan? Duration
         {
             get => duration;
             set
@@ -48,22 +51,23 @@ namespace Client.ViewModels
             }
         }
 
-        private int distance;
+        private double? distance;
 
-        public int Distance
+        public double? Distance
         {
             get => distance;
             set
             {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (distance == value) return;
                 distance = value;
                 OnPropertyChanged();
             }
         }
 
-        private int rating;
+        private Rating rating;
 
-        public int Rating
+        public Rating Rating
         {
             get => rating;
             set
@@ -87,40 +91,43 @@ namespace Client.ViewModels
             }
         }
 
-        private double avgSpeed;
+        private double? avgSpeed;
 
-        public double AvgSpeed
+        public double? AvgSpeed
         {
             get => avgSpeed;
             set
             {
-                if (Math.Abs(avgSpeed - value) < 0.001) return;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (avgSpeed == value) return;
                 avgSpeed = value;
                 OnPropertyChanged();
             }
         }
 
-        private double maxSpeed;
+        private double? maxSpeed;
 
-        public double MaxSpeed
+        public double? MaxSpeed
         {
             get => maxSpeed;
             set
             {
-                if (Math.Abs(maxSpeed - value) < 0.001) return;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (maxSpeed == value) return;
                 maxSpeed = value;
                 OnPropertyChanged();
             }
         }
 
-        private double heightDifference;
+        private double? heightDifference;
 
-        public double HeightDifference
+        public double? HeightDifference
         {
             get => heightDifference;
             set
             {
-                if (Math.Abs(heightDifference - value) < 0.001) return;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (heightDifference == value) return;
                 heightDifference = value;
                 OnPropertyChanged();
             }
@@ -135,6 +142,20 @@ namespace Client.ViewModels
             {
                 if (stops == value) return;
                 stops = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool isValid = true;
+
+        public bool IsValid
+        {
+            get => isValid;
+            set
+            {
+                // Why negation?
+                // HasValidationErrors = false => IsValid = true
+                isValid = !value;
                 OnPropertyChanged();
             }
         }
@@ -156,7 +177,7 @@ namespace Client.ViewModels
 
         public TourLogWrapper() : this(
             new TourLog(
-                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10, 10,
+                DateTime.Today, Type.Car, TimeSpan.FromHours(1), 10.0, Rating.Good,
                 "Report goes here...", 10.0,
                 20.0, 100, 0
             )
@@ -164,26 +185,40 @@ namespace Client.ViewModels
         {
         }
 
+        /// <summary>
+        /// Creates a copy of the internal TourLog model.
+        /// </summary>
+        /// <returns>
+        /// Copy of internal TourLog.
+        /// </returns>
         public TourLog GetRequestTourLog()
         {
-            return new TourLog(date, type, duration, distance, rating, report, avgSpeed, maxSpeed, heightDifference,
+            return new(log.Id, (DateTime) date!, type, (TimeSpan) duration!, (int) distance!, rating, report,
+                (double) avgSpeed!, (double) maxSpeed!, (double) heightDifference!,
                 stops);
         }
 
+        /// <summary>
+        /// Save changes on the wrapper also in the internal model.
+        /// </summary>
         public void SaveChanges()
         {
-            log.Date = date;
+            log.Date = (DateTime) date!;
             log.Type = type;
-            log.Duration = duration;
-            log.Distance = distance;
+            log.Duration = (TimeSpan) duration!;
+            log.Distance = (int) distance!;
             log.Rating = rating;
             log.Report = report;
-            log.AvgSpeed = avgSpeed;
-            log.MaxSpeed = maxSpeed;
-            log.HeightDifference = heightDifference;
+            log.AvgSpeed = (double) avgSpeed!;
+            log.MaxSpeed = (double) maxSpeed!;
+            log.HeightDifference = (double) heightDifference!;
             log.Stops = stops;
         }
 
+        /// <summary>
+        /// Discard change on the wrapper and re-assign properties with the values
+        /// of the internal model.
+        /// </summary>
         public void DiscardChanges()
         {
             Date = log.Date;

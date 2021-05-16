@@ -1,10 +1,14 @@
 ﻿using System;
 using Client.ViewModels;
+using Model;
 using NUnit.Framework;
 using Type = Model.Type;
 
 namespace Client_Test.Unit
 {
+    /// <summary>
+    /// Tests the <c>TourLogWrapper</c> class for consistency.
+    /// </summary>
     public class TourLogWrapperTest
     {
         [OneTimeSetUp]
@@ -18,11 +22,11 @@ namespace Client_Test.Unit
         public void DefaultConstructor()
         {
             var wrapper = new TourLogWrapper();
-            Assert.AreEqual(DateTime.Today.Day, wrapper.Date.Day);
+            Assert.AreEqual(DateTime.Today.Day, wrapper.Date!.Value.Day);
             Assert.AreEqual(Type.Car, wrapper.Type);
             Assert.AreEqual(TimeSpan.FromHours(1), wrapper.Duration);
             Assert.AreEqual(10, wrapper.Distance);
-            Assert.AreEqual(10, wrapper.Rating);
+            Assert.AreEqual(Rating.Good, wrapper.Rating);
             Assert.AreEqual("Report goes here...", wrapper.Report);
             Assert.AreEqual(10.0, wrapper.AvgSpeed);
             Assert.AreEqual(20.0, wrapper.MaxSpeed);
@@ -37,10 +41,10 @@ namespace Client_Test.Unit
         {
             var wrapper = new TourLogWrapper();
             var newDate = DateTime.Today - TimeSpan.FromDays(10);
-            var newType = Type.Bicycle;
+            var newType = Type.Bike;
             var newDuration = TimeSpan.FromHours(2);
             var newDistance = 1000;
-            var newRating = 0;
+            var newRating = Rating.Bad;
             var newReport = ":/";
             var newAvgSpeed = 15.5;
             var newMaxSpeed = 25.5;
@@ -80,10 +84,10 @@ namespace Client_Test.Unit
         {
             var wrapper = new TourLogWrapper();
             var newDate = DateTime.Today - TimeSpan.FromDays(10);
-            var newType = Type.Bicycle;
+            var newType = Type.Bike;
             var newDuration = TimeSpan.FromHours(2);
             var newDistance = 1000;
-            var newRating = 0;
+            var newRating = Rating.Bad;
             var newReport = ":/";
             var newAvgSpeed = 15.5;
             var newMaxSpeed = 25.5;
@@ -139,7 +143,7 @@ namespace Client_Test.Unit
             Assert.AreEqual(Type.Car, requestModel.Type);
             Assert.AreEqual(TimeSpan.FromHours(1), requestModel.Duration);
             Assert.AreEqual(10, requestModel.Distance);
-            Assert.AreEqual(10, requestModel.Rating);
+            Assert.AreEqual(Rating.Good, requestModel.Rating);
             Assert.AreEqual("Report goes here...", requestModel.Report);
             Assert.AreEqual(10.0, requestModel.AvgSpeed);
             Assert.AreEqual(20.0, requestModel.MaxSpeed);

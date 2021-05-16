@@ -4,18 +4,20 @@ using System.Text.Json.Serialization;
 
 namespace Model
 {
+    /// <summary>
+    /// Data model that represents a Tour.
+    /// </summary>
     public class Tour
     {
         public int Id { get; set; }
         public string From { set; get; }
         public string To { set; get; }
         public string Name { set; get; }
-        public int Distance { set; get; }
+        public double Distance { set; get; }
         public string Description { set; get; }
-        public string Image { set; get; }
         public List<TourLog> Logs { set; get; }
         
-        public Tour(string from, string to, string name, int distance, string description, string image,
+        public Tour(string from, string to, string name, double distance, string description,
             List<TourLog> logs)
         {
             From = from;
@@ -23,22 +25,20 @@ namespace Model
             Name = name;
             Distance = distance;
             Description = description;
-            Image = image;
             Logs = logs;
         }
 
-        public Tour(string from, string to, string name, int distance, string description, string image)
+        public Tour(string from, string to, string name, double distance, string description)
         {
             From = from;
             To = to;
             Name = name;
             Distance = distance;
             Description = description;
-            Image = image;
             Logs = new List<TourLog>();
         }
         
-        public Tour(int id, string @from, string to, string name, int distance, string description, string image, List<TourLog> logs)
+        public Tour(int id, string @from, string to, string name, double distance, string description, List<TourLog> logs)
         {
             Id = id;
             From = @from;
@@ -46,10 +46,16 @@ namespace Model
             Name = name;
             Distance = distance;
             Description = description;
-            Image = image;
             Logs = logs;
         }
-        
-        public Tour() {}
+
+        public Tour()
+        {
+            From = string.Empty;
+            To = string.Empty;
+            Name = string.Empty;
+            Description = string.Empty;
+            Logs = new List<TourLog>();
+        }
     }
 }
