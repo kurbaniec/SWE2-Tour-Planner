@@ -81,7 +81,7 @@ jobs:
       - name: Create release
         run: >
           mkdir release &&
-          move Client/bin/Release/net5.0 release &&
+          move Client/bin/Release/net5.0-windows release &&
           7z.exe a -tzip windows-build.zip release
       - uses: actions/upload-artifact@v2
         with:
