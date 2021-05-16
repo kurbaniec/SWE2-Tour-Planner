@@ -1,23 +1,23 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
+﻿using System.Windows.Controls;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
-using Client.Views;
-using Client.ViewModels;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the <c>MainWindow</c> view.
+    /// </summary>
     public class MainViewModel : BaseViewModel
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly Mediator mediator;
 
+        // ReSharper disable once NotAccessedField.Local
         private readonly ContentNavigation nav;
 
-        private Page currentPage;
+        private Page? currentPage;
 
-        public Page CurrentPage
+        public Page? CurrentPage
         {
             get => currentPage;
             set
@@ -31,12 +31,6 @@ namespace Client.ViewModels
         {
             this.mediator = mediator;
             this.nav = nav;
-
-            mediator.Register(o =>
-            {
-                var model = (TourWrapper) o;
-                Console.WriteLine($"Selected {model.Name}");
-            }, ViewModelMessages.SelectedTourChange);
         }
     }
 }

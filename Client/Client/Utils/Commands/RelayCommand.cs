@@ -4,7 +4,7 @@ using System.Windows.Input;
 namespace Client.Utils.Commands
 {
     /// <summary>
-    /// RelayCommand definition for code reuse
+    /// RelayCommand definition for code reuse.
     /// See: https://stackoverflow.com/a/1468830/12347616
     /// </summary>
     public class RelayCommand : ICommand

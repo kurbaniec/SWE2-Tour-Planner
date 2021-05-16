@@ -3,7 +3,7 @@
 namespace Client
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Entry point for the TourPlanner Client application.
     /// </summary>
     public partial class App : Application
     {

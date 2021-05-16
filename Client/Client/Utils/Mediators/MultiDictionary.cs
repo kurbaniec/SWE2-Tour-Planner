@@ -9,9 +9,9 @@ namespace Client.Utils.Mediators
     /// Based on https://www.codeproject.com/Articles/35277/MVVM-Mediator-Pattern by Sacha Barber.
     /// </summary>
     /// <typeparam name="T">The type of the key</typeparam>
-    /// <typeparam name="K">The type of the list contents</typeparam>
-    public class MultiDictionary<T, K>
-        : Dictionary<T, List<K>>
+    /// <typeparam name="TK">The type of the list contents</typeparam>
+    public class MultiDictionary<T, TK>
+        : Dictionary<T, List<TK>> where T: notnull
     {
 
         #region Private Methods
@@ -21,12 +21,7 @@ namespace Client.Utils.Mediators
         {
             if (!ContainsKey(key))
             {
-                this[key] = new List<K>(1);
-            }
-            else
-            {
-                if (this[key] == null)
-                    this[key] = new List<K>(1);
+                this[key] = new List<TK>(1);
             }
         }
 
@@ -40,7 +35,7 @@ namespace Client.Utils.Mediators
         /// <param name="key">The key where to place the
         /// item in the value list</param>
         /// <param name="newItem">The new item to add</param>
-        public void AddValue(T key, K newItem)
+        public void AddValue(T key, TK newItem)
         {
             EnsureKey(key);
             this[key].Add(newItem);
@@ -52,7 +47,7 @@ namespace Client.Utils.Mediators
         /// </summary>
         /// <param name="key">The key where to place the item in the value list</param>
         /// <param name="newItems">The new items to add</param>
-        public void AddValues(T key, IEnumerable<K> newItems)
+        public void AddValues(T key, IEnumerable<TK> newItems)
         {
             EnsureKey(key);
             this[key].AddRange(newItems);
@@ -65,7 +60,7 @@ namespace Client.Utils.Mediators
         /// <param name="key">The key from where to remove the value</param>
         /// <param name="value">The value to remove</param>
         /// <returns>Returns false if the key was not found</returns>
-        public bool RemoveValue(T key, K value)
+        public bool RemoveValue(T key, TK value)
         {
             if (!ContainsKey(key))
                 return false;
@@ -79,13 +74,13 @@ namespace Client.Utils.Mediators
         }
 
         /// <summary>
-        /// Removes all items that match the prediacte
+        /// Removes all items that match the predicate
         /// If the value list is empty the key is removed from the dict
         /// </summary>
         /// <param name="key">The key from where to remove the value</param>
         /// <param name="match">The predicate to match the items</param>
         /// <returns>Returns false if the key was not found</returns>
-        public bool RemoveAllValue(T key, Predicate<K> match)
+        public bool RemoveAllValue(T key, Predicate<TK> match)
         {
             if (!ContainsKey(key))
                 return false;

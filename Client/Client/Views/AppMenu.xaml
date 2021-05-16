@@ -3,29 +3,73 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:Client.Views"
              xmlns:viewModel="clr-namespace:Client.ViewModels"
+             xmlns:converters="clr-namespace:Client.Utils.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding MenuViewModel, Source={StaticResource Container}}">
+    <!-- Add Boolean values as resources https://stackoverflow.com/a/4997669/12347616 -->
+    <UserControl.Resources>
+        <s:Boolean x:Key="True">True</s:Boolean>
+        <s:Boolean x:Key="False">False</s:Boolean>
+    </UserControl.Resources>
     <DockPanel>
         <!-- Set menu https://www.wpf-tutorial.com/common-interface-controls/menu-control/ -->
         <Menu DockPanel.Dock="Top">
+            <Menu.Style>
+                <Style TargetType="Menu">
+                    <Setter Property="IsEnabled" Value="True" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Busy}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Menu.Style>
             <MenuItem Header="File">
-                <MenuItem Header="Export" />
+                <MenuItem Header="Import" Command="{Binding Import}" />
+                <MenuItem Header="Export" IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}">
+                    <MenuItem Header="This Tour" Command="{Binding ExportThis}" />
+                    <MenuItem Header="All Tours" Command="{Binding ExportAll}" />
+                </MenuItem>
+                <MenuItem Header="Print" IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}">
+                    <MenuItem Header="Full" Command="{Binding Print}" CommandParameter="{StaticResource False}" />
+                    <MenuItem Header="Summary" Command="{Binding Print}" CommandParameter="{StaticResource True}" />
+                </MenuItem>
+                <MenuItem.LayoutTransform>
+                    <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
+                </MenuItem.LayoutTransform>
             </MenuItem>
-            <MenuItem Header="Settings"></MenuItem>
-            <MenuItem Header="Help"></MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Copy Tour"
+                          IsEnabled="{Binding SelectedTour, Converter={converters:IsNotNullConverter}}"
+                          Command="{Binding CopyTour}" />
+                <MenuItem.LayoutTransform>
+                    <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
+                </MenuItem.LayoutTransform>
+            </MenuItem>
+            <MenuItem Header="Help" Command="{Binding ShowHelp}">
+                <MenuItem.LayoutTransform>
+                    <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
+                </MenuItem.LayoutTransform>
+            </MenuItem>
         </Menu>
         <!-- Stretch textbox https://stackoverflow.com/a/37663956/12347616 -->
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBox Text="{Binding Path=Filter, UpdateSourceTrigger=PropertyChanged}" />
-            <Button Grid.Column="1" Command="{Binding ClearFilter}">Clear</Button>
+            <Button Grid.Column="1" Command="{Binding ClearFilter}">
+                Clear
+                <Button.LayoutTransform>
+                    <ScaleTransform ScaleX="1.25" ScaleY="1.25" />
+                </Button.LayoutTransform>
+            </Button>
         </Grid>
     </DockPanel>
-    
+
 </UserControl>

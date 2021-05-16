@@ -1,25 +1,29 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using Client.Logic.BL;
 using Client.Utils.Commands;
+using Client.Utils.Logging;
 using Client.Utils.Mediators;
 using Client.Utils.Navigation;
+using Microsoft.Extensions.Logging;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the <c>AppInfo</c> view.
+    /// </summary>
     public class InfoViewModel : BaseViewModel
     {
+        private readonly TourPlannerClient tp;
         private readonly Mediator mediator;
-
         private readonly ContentNavigation nav;
+        private readonly ILogger logger = ApplicationLogging.CreateLogger<InfoViewModel>();
 
         private TourWrapper? selectedTour;
 
         public TourWrapper? SelectedTour
         {
             get => selectedTour;
-            set
+            private set
             {
                 if (value == selectedTour || value == null) return;
                 selectedTour = value;
@@ -48,22 +52,22 @@ namespace Client.ViewModels
             {
                 if (changeEditMode != null) return changeEditMode;
                 changeEditMode = new RelayCommand(
-                    p => true,
-                    p => Edit = !Edit
+                    _ => true,
+                    _ => Edit = !Edit
                 );
                 return changeEditMode;
             }
         }
 
-        private bool waitingForResponse;
+        private bool busy;
 
-        public bool WaitingForResponse
+        public bool Busy
         {
-            get => waitingForResponse;
+            get => busy;
             set
             {
-                if (value == waitingForResponse) return;
-                waitingForResponse = value;
+                if (value == busy) return;
+                busy = value;
                 OnPropertyChanged();
             }
         }
@@ -76,8 +80,8 @@ namespace Client.ViewModels
             {
                 if (cancelEdit != null) return cancelEdit;
                 cancelEdit = new RelayCommand(
-                    p => !WaitingForResponse,
-                    p =>
+                    _ => !Busy,
+                    _ =>
                     {
                         selectedTour?.DiscardChanges();
                         Edit = false;
@@ -93,24 +97,93 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command starts Tour update process
                 if (acceptEdit != null) return acceptEdit;
                 acceptEdit = new RelayCommand(
-                    p => !WaitingForResponse,
-                    async (p) =>
+                    _ => !Busy &&
+                         (SelectedTour == null || SelectedTour.IsValid),
+                    async _ =>
                     {
-                        WaitingForResponse = true;
+                        if (selectedTour is null) return;
+                        Busy = true;
                         Edit = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
-                        await Task.Run(() =>
+                        logger.Log(LogLevel.Information,
+                            $"Trying to update Tour with id {selectedTour.Model.Id}");
+                        var (updatedTour, errorMsg) = await tp.UpdateTour(selectedTour.GetRequestTour());
+                        if (updatedTour is { })
                         {
-                            Thread.Sleep(5000);
-                        });
-                        selectedTour?.SaveChanges();
-                        WaitingForResponse = false;
+                            logger.Log(LogLevel.Information,
+                                $"Update for Tour with id {selectedTour.Model.Id} was successful");
+                            mediator.NotifyColleagues(ViewModelMessages.TourAddition, updatedTour);
+                            nav.ShowInfoDialog("Update was successful", "Tour Planer - Update Tour");
+                        }
+                        else
+                        {
+                            logger.Log(LogLevel.Warning,
+                                $"Update for Tour with id {selectedTour.Model.Id} was not successful");
+                            nav.ShowErrorDialog(
+                                $"Encountered error while updating Tour: \n{errorMsg}",
+                                "Tour Planner - Update Tour");
+                        }
+
+                        Busy = false;
                         mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
                     }
                 );
                 return acceptEdit;
+            }
+        }
+
+        private ICommand? deleteTour;
+
+        public ICommand DeleteTour
+        {
+            get
+            {
+                // Command starts Tour deletion process
+                if (deleteTour != null) return deleteTour;
+                deleteTour = new RelayCommand(
+                    _ => !Busy,
+                    async _ =>
+                    {
+                        if (selectedTour is null) return;
+                        logger.Log(LogLevel.Information,
+                            $"Asking Users if Tour with id {selectedTour.Model.Id} should be really deleted");
+                        var ok = nav.ShowInfoDialogWithQuestion(
+                            "Do you really want to delete this Tour?\nThis process is not reversible.",
+                            "Tour Planner - Delete Tour");
+                        if (!ok) return;
+                        Busy = true;
+                        Edit = false;
+                        mediator.NotifyColleagues(ViewModelMessages.TransactionBegin, null!);
+                        logger.Log(LogLevel.Information, "Starting deletion process");
+                        var (isDeleted, errorMsg) = await tp.DeleteTour(selectedTour.Model.Id);
+                        if (isDeleted)
+                        {
+                            logger.Log(LogLevel.Information,
+                                $"Deletion of Tour with id {selectedTour.Model.Id} was successful");
+                            mediator.NotifyColleagues(ViewModelMessages.TourDeletion, selectedTour.Model.Id);
+                            SelectedTour = null;
+                            nav.Navigate(ContentPage.AppWelcome);
+                            nav.ShowInfoDialog(
+                                "Deletion of Tour was successful",
+                                "Tour Planner - Delete Tour");
+                        }
+                        else
+                        {
+                            logger.Log(LogLevel.Warning,
+                                $"Deletion of Tour with id {selectedTour.Model.Id} was not successful");
+                            nav.ShowErrorDialog(
+                                $"Encountered error while deleting Tour: \n{errorMsg}",
+                                "Tour Planner - Delete Tour");
+                        }
+
+                        Busy = false;
+                        mediator.NotifyColleagues(ViewModelMessages.TransactionEnd, null!);
+                    }
+                );
+                return deleteTour;
             }
         }
 
@@ -120,10 +193,10 @@ namespace Client.ViewModels
         {
             get
             {
+                // Command adds a new TourLog to current selected Tour
                 if (addLog != null) return addLog;
                 addLog = new RelayCommand(
-                    p => !WaitingForResponse,
-                    async (p) =>
+                    _ => !Busy, _ =>
                     {
                         if (SelectedTour is null) return;
                         Edit = true;
@@ -134,20 +207,49 @@ namespace Client.ViewModels
             }
         }
 
+        private ICommand? deleteLog;
 
-        public InfoViewModel(Mediator mediator, ContentNavigation nav)
+        public ICommand DeleteLog
         {
+            get
+            {
+                // Command removes a TourLog from current selected Tour
+                if (deleteLog != null) return deleteLog;
+                deleteLog = new RelayCommand(
+                    _ => !Busy, p =>
+                    {
+                        if (SelectedTour is null) return;
+                        if (p is TourLogWrapper log)
+                        {
+                            SelectedTour.RemoveLog(log);
+                        }
+                    }
+                );
+                return deleteLog;
+            }
+        }
+
+        /// <summary>
+        /// Changes the current selected Tour.
+        /// </summary>
+        /// <param name="o">
+        /// The new tour.
+        /// </param>
+        private void SelectedTourChange(object? o)
+        {
+            selectedTour?.DiscardChanges();
+            if (Edit) Edit = false;
+            var tour = (TourWrapper?) o;
+            SelectedTour = tour;
+        }
+
+        public InfoViewModel(TourPlannerClient tp, Mediator mediator, ContentNavigation nav)
+        {
+            this.tp = tp;
             this.mediator = mediator;
             this.nav = nav;
             // Register to changes
-            mediator.Register(o =>
-            {
-                selectedTour?.DiscardChanges();
-                if (Edit) 
-                    Edit = false;
-                var tour = (TourWrapper) o;
-                SelectedTour = tour;
-            }, ViewModelMessages.SelectedTourChange);
+            mediator.Register(SelectedTourChange, ViewModelMessages.SelectedTourChange);
         }
     }
 }

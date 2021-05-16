@@ -1,0 +1,19 @@
+{
+    "client": {
+        "base-url": "http://localhost:8080",
+        "logger-config": "logger.client.config"
+    },
+    "server": {
+        "port": 8080,
+        "db": {
+            "user": "postgres",
+            "password": "postgres",
+            "ip": "localhost",
+            "port": 5432
+        },
+        "logger-config": "logger.server.config",
+        "mapquest-api-key": "<insert key here>",
+        "routes-path": "maps",
+        "exports-path": "exports"
+    }
+}

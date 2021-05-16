@@ -9,44 +9,120 @@ on:
 jobs:
   build_server:
 
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: Server
+    
     steps:
-    - name: Checkout repository and submodules
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.100
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build Server
-      run: dotnet build --configuration Release --no-restore
-    - name: Test Server
-      run: dotnet test --no-restore --verbosity normal
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Rename config
+        if: matrix.os == 'ubuntu-latest'
+        run: mv ../{config.template,config}.json
+      - name: Rename config
+        if: matrix.os == 'windows-latest'
+        run: mv ..\config.template.json ..\config.json
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build Server
+        run: dotnet build --configuration Release --no-restore
+      - name: Test Server
+        run: dotnet test --no-restore --verbosity normal
+      - name: Create release
+        if: matrix.os == 'ubuntu-latest'
+        run: >
+          mkdir release &&
+          mv Server/bin/Release/net5.0 release &&
+          zip -r ubuntu-build.zip release
+      - name: Create release
+        if: matrix.os == 'windows-latest'
+        run: >
+          mkdir release &&
+          move Server/bin/Release/net5.0 release &&
+          7z.exe a -tzip windows-build.zip release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: server-${{ matrix.os }}
+          path: ./Server/*.zip
+          retention-days: 1
 
   build_client:
-
     runs-on: windows-latest
     defaults:
       run:
         working-directory: Client
     steps:
-    - name: Checkout repository and submodules
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.100
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build Client
-      run: dotnet build --configuration Release --no-restore
-    - name: Test Client
-      run: dotnet test --no-restore --verbosity normal
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Rename config
+        run: mv ..\config.template.json ..\config.json
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build Client
+        run: dotnet build --configuration Release --no-restore
+      - name: Test Client
+        run: dotnet test --no-restore --verbosity normal
+      - name: Create release
+        run: >
+          mkdir release &&
+          move Client/bin/Release/net5.0-windows release &&
+          7z.exe a -tzip windows-build.zip release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: client-${{ matrix.os }}
+          path: ./Client/*.zip
+          retention-days: 1
+      
+    
+  release:
+    needs: [build_server, build_client]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v2
+      - name: Display fetched artifacts
+        run: ls -R
+
+      - name: Development Release
+        if: github.ref == 'refs/heads/development'
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest-dev"
+          prerelease: true
+          title: "Development Builds"
+          files: |
+            server-ubuntu-latest/*.zip
+            server-windows-latest/*.zip
+            client-windows-latest/*.zip
+    
+      - name: Stable Release
+        if: github.ref == 'refs/heads/main'
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest-stable"
+          prerelease: true
+          title: "Stable Builds"
+          files: |
+            server-ubuntu-latest/*.zip
+            server-windows-latest/*.zip
+            client-windows-latest/*.zip
+
+  

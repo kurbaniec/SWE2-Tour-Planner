@@ -1,28 +1,35 @@
 ﻿using System;
 using System.IO;
-using WebService_Lib.Attributes;
+using Server.DAL;
 
-namespace Server.DAL
+namespace Server_Test.Unit.Mocks
 {
-    // TODO remove later
-    [Component]
+    /// <summary>
+    /// Simple concrete implementation of <c>IMapApi</c>.
+    /// </summary>
     public class MockMapApi : IMapApi
     {
         private readonly string path;
         public string RoutePath => path;
-
-        public bool SaveRouteImage(string @from, string to, string id)
+        public (MapApiResponse?, string) GetRouteInfo(string@from, string to)
         {
-            return true;
+            return (new MapApiResponse(1, "", ""), string.Empty);
         }
 
-        public string? GetRouteImagePath(int id)
+        public (bool, string) SaveRouteImage(int id, string boundingBox, string sessionId)
         {
-            return path + Path.DirectorySeparatorChar + "map.png";
+            return (true, "");
+        }
+
+        public (string?, string) GetRouteImagePath(int id)
+        {
+            //return (path + Path.DirectorySeparatorChar + "map.png", string.Empty);
+            return (null, string.Empty);
         }
 
         public MockMapApi()
         {
+            /*
             // Get project directory
             string runningPath = AppDomain.CurrentDomain.BaseDirectory!;
             // Platform agnostic path
@@ -32,7 +39,8 @@ namespace Server.DAL
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
-            }
+            }*/
+            path = string.Empty;
         }
     }
 }
