@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Moq;
+﻿using System.IO;
 using NUnit.Framework;
 using Server.BL;
 using Server.DAL;
@@ -38,7 +35,7 @@ namespace Server_Test.Unit
         }
         
         [Test, TestCase(TestName = "Export Tour Report", Description =
-             "Export Tour Report (without Route Image)"
+             "Export Tour Report (without Route Image)."
          )]
         public void ExportFullReport()
         {
@@ -56,7 +53,7 @@ namespace Server_Test.Unit
         }
         
         [Test, TestCase(TestName = "Export Tour Summary Report", Description =
-             "Export Tour Summary Report (without Route Image)"
+             "Export Tour Summary Report (without Route Image)."
          )]
         public void ExportSummaryReport()
         {
@@ -74,7 +71,7 @@ namespace Server_Test.Unit
         }
         
         [Test, TestCase(TestName = "Export Report for nonexistent Tour", Description =
-             "Export Report for nonexistent Tour (MockDataManagement only has Tours 1000 & 1001)"
+             "Export Report for nonexistent Tour (MockDataManagement only has Tours 1000 & 1001)."
          )]
         public void ExportReportForNonexistentTour()
         {
