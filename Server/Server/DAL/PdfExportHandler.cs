@@ -145,6 +145,7 @@ namespace Server.DAL
                         stack.Element(ComposeRouteImage);
                     }
 
+                    if (Model.Logs.Count <= 0) return;
                     if (!IsSummary)
                     {
                         stack.Element().PageBreak();
