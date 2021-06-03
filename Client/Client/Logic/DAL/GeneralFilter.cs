@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Globalization;
+using System.Reflection;
 using Client.Utils.Logging;
 using Microsoft.Extensions.Logging;
 
@@ -44,6 +45,10 @@ namespace Client.Logic.DAL
 
                 foreach (var property in o.GetType().GetProperties())
                 {
+                    // Default property of objects? Results in ReflectionExceptions...
+                    if (property.Name == "Item") 
+                        continue;
+                    
                     // Check if is IEnumerable and iterate over
                     // Note: Strings are IEnumerable but in this context not useful
                     // See: https://stackoverflow.com/a/6735081/12347616
