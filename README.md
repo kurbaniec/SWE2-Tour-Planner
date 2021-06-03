@@ -97,12 +97,48 @@ Both server and client feature internally a layered architecture:
 
 Each project uses the same definition for the `Tour` data model which is found in its own Solution called `Model`.  
 
+### UX Design
+
+The client application uses WPF for visual representation. It is very basic and styling is minimal, nonetheless it features more modern features like a responsive design.
+
+Tour addition is simple, the UI shows which fields are necessary or not and allows only further processing if all fields are filled.
+
+![](.img/add_tour_1.png)
+
+![](.img/add_tour_2.png)
+
+The tour info page is the most sophisticated part of the UI. It features a responsive design which adapts to the width of the application window as seen in the next two images.
+
+![](.img/tour_info_1.png)
+
+![](.img/tour_info_2.png)
+
+The info page is also used to update existing tours or adding new tour logs. To do so one must press the pencil ✏️ button next to the tour title to enter edit mode. When updating the origin and/or the destination of the tour the distance and route information image will be updated accordingly. One can add as many tour logs as one wants and also update and delete them in edit mode. 
+
+After editing, changes can be saved or discarded. One can also delete the whole tour and all corresponding tour logs.
+
+![](.img/tour_info_3.png)
+
+When a route information image cannot be loaded (poor network conditions or the server lost the corresponding image) the client will display an internally generated Bitmap image.
+
+![](.img/missing_info.png)
+
+At the top one can find a search bar that searches the given keyword in all fields of tours and tour logs.
+
+![](.img/search_1.png)
+
+Here for example the search filter finds an corresponding match in the title of one tour.
+
+![](.img/search_2.png)
+
 ### Used Libraries
 
 List of some import libraries used throughout the project:
 
 * `Webservice_Lib`    
   REST-server & Dependency Injection used in the server, based on last semesters Webservice project which can be used now as a [library](https://github.com/kurbaniec/WebServiceLib)
+* `System.Windows` with `PresentationFramework`    
+  WPF Framework for UI of the client
 * `Npgsql`     
   Postgres Database Access in the server
 * `Microsoft.Extensions.Logging` with `Log4Net `     
@@ -112,14 +148,33 @@ List of some import libraries used throughout the project:
 
 ### Implemented Design Patterns
 
-* MVVM      
+* MVVM        
+  Event driven programming of user interfaces which are separated in `View`, `ViewModel` and `Model` components.
   
-* Mediator Pattern      
-  
+* Mediator Pattern        
+  Communication between objects through a mediator. The objects do not communicate together directly but instead rely on the mediator.  Used for communication between `ViewModel`s. 
 
 ### Unit Test Design
 
+Unit tests are written with the help of the `Nunit` Framework and are separated in client tests and server tests.
 
+#### Server
+
+* `TourPlannerServerTest`      
+  Tests the Business Layer of the server, especially validation rules (`Tour` from field cannot be empty and so on). Uses predefined classes that are used as substitutes instead of the concrete `DAL` classes.
+* `PdfExportHandlerTest`    
+  Checks if pdf export is working correctly (creating files for valid `Tour`s). This seems rather unnecessary but it provided very useful because the used pdf generation library  `QuestPDF` relied on another dependency which was not designed for Linux. Adding a reference to the valid Linux dependency when building the server on Linux fixed the problem.
+
+#### Client
+
+* `TourWrapperTest`   
+  Tests the ViewModel which wraps the tour model and is used for binding. This is important because the Wrapper can save but also discard changes on the model. Only the underlying model is send to the server for CRUD operations so it needs to be guaranteed that it is always in a valid state.
+* `TourLogWrapperTest`     
+  Same as `TourWrapperTest` but for tour log models and not tours.
+* `DataHandlerTest`     
+  Tests the Import/Export of tours through the Business Layer and asserts that data is correctly serialized/deserialized.  
+* `GeneralFilterTest`     
+  Tests the Filter of tours (used in the View for the `ObservableCollection`) and checks if search keywords are found in tour or tour log properties.
 
 ### Unique Feature
 
