@@ -178,11 +178,15 @@ Unit tests are written with the help of the `Nunit` Framework and are separated 
 
 ### Unique Feature
 
+The project uses Github Actions for testing & building of artefacts. If one pushes to the `main` or `development` branch the pipeline is triggered and executed.
 
+On the [releases](https://github.com/kurbaniec/SWE2-Tour-Planner/releases) page one can find the latest builds. There one can find always two releases, the latest stable or latest development builds.
+
+![](.img/actions.png)
 
 ### Bonus Feature
 
-REST-server
+The project implements an optional bonus feature: a REST-server that is responsible for data management and persistence.
 
 ### Time Tracking
 
@@ -194,21 +198,14 @@ https://github.com/kurbaniec/SWE2-Tour-Planner
 
 ### Encountered Problems
 
-#### Responsive Design
+Most encountered problems were WPF-related. This was my first WPF project so I had to get used to the fundamentals of it and how layout/styling is achieved.
 
-WrapPanel with two Grids (that stretch to infinite)
+Some examples:
 
-Force Wrapping via `WidthConverter`
-
-#### Scrolling
-
-Logs are Listviews with an internal Scrollviewer by default. This Scrollviewer can be removed.
-
-See: https://stackoverflow.com/a/11451793/12347616
-
-Also DataGrids have a scroller...
-
-#### DataGrid
-
-Bind one item to DataGrid? Solution: ItemSourceConverter, returns a plain list!.
+* Responsive Design     
+  Implemented with a `WrapPanel` and two `Grid`s inside it. The width of the `Grid`s is capped through a custom `WidthConverter` class which reads the screen size and window size of the application and translates it accordingly.
+* Scrolling      
+  The logs in the tour info page are realized with a `ListView` which has an internal `ScrollViewer` by default. But it can be removed so the `ScrollViewer` of the page can work correctly.
+* `DataGrid` with one item     
+  Each log in the tour info page is represented through a `DataGrid` in an `Expander`. But `DataGrid`s typically do not support one single item. The solution is a custom `ItemSourceConverter` that takes an item and returns a plain List with only the item in it.
 
